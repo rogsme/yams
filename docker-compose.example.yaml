@@ -148,7 +148,6 @@ services:
       - VPN_TYPE=openvpn
       - OPENVPN_USER=<vpn_user>
       - OPENVPN_PASSWORD=<vpn_password>
-      - SERVER_COUNTRIES=<vpn_country>
       - OPENVPN_CIPHERS=AES-256-GCM
     restart: unless-stopped
 
