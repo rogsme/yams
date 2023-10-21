@@ -321,35 +321,28 @@ cp .env.example "$env_file" || send_error_message "Your user ($USER) needs to ha
 :END:
 
 #+begin_src bash
-# Set PUID
 sed -i -e "s/<your_PUID>/$puid/g" "$env_file"
+ -e "s/<your_PGID>/$pgid/g" "$env_file" \
+ -e "s;<media_folder>;$media_folder;g" "$env_file" \
+ -e "s;<media_service>;$media_service;g" "$env_file" \
+ -e "s;<media_service>;$media_service;g" "$filename"
 
-# Set PGID
-sed -i -e "s/<your_PGID>/$pgid/g" "$env_file"
-
-# Set media_folder
-sed -i -e "s;<media_folder>;$media_folder;g" "$env_file"
-
-# Set media_service
-sed -i -e "s;<media_service>;$media_service;g" "$env_file"
-sed -i -e "s;<media_service>;$media_service;g" "$filename"
 if [ "$media_service" == "plex" ]; then
     sed -i -e "s;#network_mode: host # plex;network_mode: host # plex;g" "$filename"
 fi
 
-# Set config folder
 sed -i -e "s;<install_location>;$install_location;g" "$env_file"
 
 # Set VPN
 if [ "$setup_vpn" == "y" ]; then
-    sed -i -e "s;<vpn_service>;$vpn_service;g" "$env_file"
-    sed -i -e "s;<vpn_user>;$vpn_user;g" "$env_file"
-    sed -i -e "s;<vpn_password>;$vpn_password;g" "$env_file"
-    sed -i -e "s;<vpn_enabled>;$setup_vpn;g" "$env_file"
-    sed -i -e "s;#network_mode: \"service:gluetun\";network_mode: \"service:gluetun\";g" "$filename"
-    sed -i -e "s;ports: # qbittorrent;#port: # qbittorrent;g" "$filename"
-    sed -i -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename"
-    sed -i -e "s;#- 8080:8080/tcp # gluetun;- 8080:8080/tcp # gluetun;g" "$filename"
+    sed -i -e "s;<vpn_service>;$vpn_service;g" "$env_file" \
+     -e "s;<vpn_user>;$vpn_user;g" "$env_file" \
+     -e "s;<vpn_password>;$vpn_password;g" "$env_file" \
+     -e "s;<vpn_enabled>;$setup_vpn;g" "$env_file" \
+     -e "s;#network_mode: \"service:gluetun\";network_mode: \"service:gluetun\";g" "$filename" \
+     -e "s;ports: # qbittorrent;#port: # qbittorrent;g" "$filename" \
+     -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename" \
+     -e "s;#- 8080:8080/tcp # gluetun;- 8080:8080/tcp # gluetun;g" "$filename"
 fi
 #+end_src
 
