@@ -293,11 +293,6 @@ if [ "$setup_vpn" == "y" ]; then
         fi
     done
     echo
-
-    echo "What country do you want to use?"
-    echo "If you are using: NordVPN, Perfect Privacy, Private Internet Access, VyprVPN, WeVPN or Windscribe, then input a region"
-    read -p "You can check the countries/regions list for your VPN here: https://github.com/qdm12/gluetun/wiki/$vpn_service#servers [brazil]: " vpn_country
-    vpn_country=${vpn_country:-"brazil"}
 fi
 
 echo "Configuring the docker-compose file for the user \"$username\" on \"$install_location\"..."
