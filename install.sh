@@ -77,7 +77,10 @@ read -p "Where do you want to install the docker-compose file? [$default_install
 install_location=${install_location:-$default_install_location}
 
 if [ ! -d "$install_location" ]; then
-    if ! mkdir -p "$install_location"; then
+    echo "The directory \"$install_location\" does not exists. Attempting to create..."
+    if mkdir -p "$install_location"; then
+        send_success_message "Directory $install_location created ✅"
+    else
         send_error_message "There was an error creating the installation directory at \"$install_location\". Make sure you have the necessary permissions ❌"
     fi
 fi
@@ -104,10 +107,10 @@ media_directory_correct=${media_directory_correct:-"n"}
 
 if [ ! -d "$media_directory" ]; then
     echo "The directory \"$media_directory\" does not exists. Attempting to create..."
-    if ! mkdir -p "$media_directory"; then
-        send_error_message "There was an error creating the installation directory at \"$media_directory\". Make sure you have the necessary permissions ❌"
-    else
+    if mkdir -p "$media_directory"; then
         send_success_message "Directory $media_directory created ✅"
+    else
+        send_error_message "There was an error creating the installation directory at \"$media_directory\". Make sure you have the necessary permissions ❌"
     fi
 fi
 
