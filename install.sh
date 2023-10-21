@@ -32,12 +32,12 @@ send_error_message() {
     exit 255
 }
 
-check_dependencies() {
+check_dependencides() {
     if command -v "$1" &> /dev/null; then
-        send_success_message "$1 exists ✅"
+        send_success_message "$1 exists ✅ "
     else
-        echo -e "\e[31m⚠️ $1 not found! ⚠️\e[0m"
-        read -p "Do you want YAMS to install docker and docker-compose? (IT ONLY WORKS ON DEBIAN AND UBUNTU) [y/N]: " install_docker
+        echo -e $(printf "\e[31m ⚠️ $1 not found! ⚠️\e[0m")
+        read -p "Do you want YAMS to install docker and docker-compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! [y/N]: " install_docker
         install_docker=${install_docker:-"n"}
 
         if [ "$install_docker" == "y" ]; then
