@@ -71,17 +71,22 @@ if [[ "$EUID" = 0 ]]; then
     send_error_message "YAMS has to run without sudo! Please, run it again with regular permissions"
 fi
 
-read -p "Where do you want to install the docker-compose file? [/opt/yams]: " install_location
+default_install_location="/opt/yams"
 
-install_location=${install_location:-/opt/yams}
-[[ -f "$install_location" ]] || mkdir -p "$install_location" || send_error_message "There was an error with your install location! Make sure the directory exists and the user \"$USER\" has permissions on it"
-install_location=$(realpath "$install_location")
+read -p "Where do you want to install the docker-compose file? [$default_install_location]: " install_location
+install_location=${install_location:-$default_install_location}
+
+if [ ! -d "$install_location" ]; then
+    if ! mkdir -p "$install_location"; then
+        send_error_message "There was an error creating the installation directory at \"$install_location\". Make sure you have the necessary permissions."
+    fi
+fi
+
 filename="$install_location/docker-compose.yaml"
 custom_file_filename="$install_location/docker-compose.custom.yaml"
 env_file="$install_location/.env"
 
 read -p "What's the user that is going to own the media server files? [$USER]: " username
-
 username=${username:-$USER}
 
 if id -u "$username" &>/dev/null; then
@@ -94,29 +99,27 @@ fi
 read -p "Please, input your media folder [/srv/media]: " media_folder
 media_folder=${media_folder:-"/srv/media"}
 
-realpath "$media_folder" &>/dev/null || send_error_message "There was an error with your media folder! The directory \"$media_folder\" does not exist!"
-
-media_folder=$(realpath "$media_folder")
+if [ ! -d "$media_folder" ]; then
+    send_error_message "The directory \"$media_folder\" does not exist!"
+fi
 
 read -p "Are you sure your media folder is \"$media_folder\"? [y/N]: " media_folder_correct
 media_folder_correct=${media_folder_correct:-"n"}
 
 if [ "$media_folder_correct" == "n" ]; then
-    send_error_message "Media folder is not correct. Please, fix it and run the script again"
+    send_error_message "Media folder is not correct. Please fix it and run the script again ❌"
 fi
 
-echo
-echo
-echo
-echo "Time to choose your media service."
-echo "Your media service is the one responsible for serving your files to your network."
-echo "By default, YAMS support 3 media services:"
+echo -e "\n\n\nTime to choose your media service."
+echo "Your media service is responsible for serving your files to your network."
+echo "By default, YAMS supports 3 media services:"
 echo "- jellyfin (recommended, easier)"
 echo "- emby"
 echo "- plex (advanced, always online)"
+
 read -p "Choose your media service [jellyfin]: " media_service
 media_service=${media_service:-"jellyfin"}
-media_service=$(echo "$media_service" | sed -e 's/\(.*\)/\L\1/')
+media_service=$(echo "$media_service" | awk '{print tolower($0)}')
 
 media_service_port=8096
 if [ "$media_service" == "plex" ]; then
@@ -124,26 +127,24 @@ if [ "$media_service" == "plex" ]; then
 fi
 
 if echo "emby plex jellyfin" | grep -qw "$media_service"; then
-    echo "YAMS is going to install \"$media_service\" on port \"$media_service_port\""
+    echo -e "\nYAMS is going to install \"$media_service\" on port \"$media_service_port\""
 else
     send_error_message "\"$media_service\" is not supported by YAMS. Are you sure you chose the correct service?"
 fi
 
-echo
-echo
-echo
-echo "Time to set up the VPN."
+echo -e "\nTime to set up the VPN."
 echo "You can check the supported VPN list here: https://yams.media/advanced/vpn."
+
 read -p "Do you want to configure a VPN? [Y/n]: " setup_vpn
 setup_vpn=${setup_vpn:-"y"}
 
 if [ "$setup_vpn" == "y" ]; then
     read -p "What's your VPN service? (with spaces) [mullvad]: " vpn_service
     vpn_service=${vpn_service:-"mullvad"}
-    echo
-    echo "You should read $vpn_service's documentation in case it has different configurations for username and password."
+
+    echo -e "\nYou should read $vpn_service's documentation in case it has different configurations for username and password."
     echo "The documentation for $vpn_service is here: https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
-    echo
+
     read -p "What's your VPN username? (without spaces): " vpn_user
 
     unset vpn_password
@@ -185,8 +186,10 @@ for file_mapping in "${copy_files[@]}"; do
     destination_file="${file_mapping##*:}"
 
     echo -e "\nCopying $source_file to $destination_file..."
-    if ! cp "$source_file" "$destination_file"; then
-        send_error_message "Failed to copy $source_file to $destination_file. Ensure your user ($USER) has the necessary permissions."
+    if cp "$source_file" "$destination_file"; then
+        send_success_message "$source_file was copied successfuly! ✅"
+    else
+        send_error_message "Failed to copy $source_file to $destination_file. Ensure your user ($USER) has the necessary permissions ❌"
     fi
 done
 
@@ -230,16 +233,6 @@ if sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
     send_success_message "YAMS CLI installed successfully ✅"
 else
     send_error_message "Failed to install YAMS CLI. Make sure you have the necessary permissions ❌"
-fi
-
-if [[ -d "$media_folder" ]]; then
-    send_success_message "Media folder \"$media_folder\" exists ✅"
-else
-    if sudo mkdir -p "$media_folder"; then
-        send_success_message "Media folder \"$media_folder\" created ✅"
-    else
-        send_error_message "Failed to create or access the media folder. Check permissions ❌"
-    fi
 fi
 
 if sudo chown -R "$puid":"$pgid" "$media_folder"; then
