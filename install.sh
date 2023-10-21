@@ -203,6 +203,7 @@ if [ "$setup_vpn" == "y" ]; then
     sed -i -e "s;<vpn_service>;$vpn_service;g" "$env_file"
     sed -i -e "s;<vpn_user>;$vpn_user;g" "$env_file"
     sed -i -e "s;<vpn_password>;$vpn_password;g" "$env_file"
+    sed -i -e "s;<vpn_enabled>;$setup_vpn;g" "$env_file"
     sed -i -e "s;#network_mode: \"service:gluetun\";network_mode: \"service:gluetun\";g" "$filename"
     sed -i -e "s;ports: # qbittorrent;#port: # qbittorrent;g" "$filename"
     sed -i -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename"
