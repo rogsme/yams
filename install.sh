@@ -23,10 +23,6 @@ echo "To finish the installation of the CLI"
 echo "===================================================="
 echo ""
 
-# ============================================================================================
-# Functions to ease development
-# ============================================================================================
-
 send_success_message() {
     echo -e $(printf "\e[32m$1\e[0m")
 }
@@ -65,9 +61,6 @@ running_services_location() {
     echo "Portainer: http://$host_ip:9000/"
 }
 
-# ============================================================================================
-# Check all the prerequisites are installed before continuing
-# ============================================================================================
 echo "Checking prerequisites..."
 
 
@@ -78,14 +71,8 @@ if [[ "$EUID" = 0 ]]; then
     send_error_message "YAMS has to run without sudo! Please, run it again with regular permissions"
 fi
 
-# ============================================================================================
-
-# ============================================================================================
-# Gathering information
-# ============================================================================================
 read -p "Where do you want to install the docker-compose file? [/opt/yams]: " install_location
 
-# Checking if the install_location exists
 install_location=${install_location:-/opt/yams}
 [[ -f "$install_location" ]] || mkdir -p "$install_location" || send_error_message "There was an error with your install location! Make sure the directory exists and the user \"$USER\" has permissions on it"
 install_location=$(realpath "$install_location")
@@ -93,7 +80,6 @@ filename="$install_location/docker-compose.yaml"
 
 read -p "What's the user that is going to own the media server files? [$USER]: " username
 
-# Checking that the user exists
 username=${username:-$USER}
 
 if id -u "$username" &>/dev/null; then
@@ -106,8 +92,6 @@ fi
 read -p "Please, input your media folder [/srv/media]: " media_folder
 media_folder=${media_folder:-"/srv/media"}
 
-# Checking that the media folder exists
-
 realpath "$media_folder" &>/dev/null || send_error_message "There was an error with your media folder! The directory \"$media_folder\" does not exist!"
 
 media_folder=$(realpath "$media_folder")
@@ -119,7 +103,6 @@ if [ "$media_folder_correct" == "n" ]; then
     send_error_message "Media folder is not correct. Please, fix it and run the script again"
 fi
 
-# Setting the preferred media service
 echo
 echo
 echo
@@ -144,7 +127,6 @@ else
     send_error_message "\"$media_service\" is not supported by YAMS. Are you sure you chose the correct service?"
 fi
 
-# Adding the VPN
 echo
 echo
 echo
@@ -194,13 +176,7 @@ if [ "$setup_vpn" == "y" ]; then
 fi
 
 echo "Configuring the docker-compose file for the user \"$username\" on \"$install_location\"..."
-# ============================================================================================
 
-# ============================================================================================
-# Actually installing everything!
-# ============================================================================================
-
-# Copy the docker-compose file from the example to the real one
 echo ""
 echo "Copying $filename..."
 
@@ -239,10 +215,8 @@ if [ "$setup_vpn" == "y" ]; then
     fi
 fi
 
-# Set yams script
 sed -i -e "s;<filename>;$filename;g" yams
 sed -i -e "s;<install_location>;$install_location;g" yams
-
 
 send_success_message "Everything installed correctly! 🎉"
 
@@ -250,11 +224,6 @@ echo "Running the server..."
 echo "This is going to take a while..."
 
 docker-compose -f "$filename" up -d
-# ============================================================================================
-
-# ============================================================================================
-# Cleaning up...
-# ============================================================================================
 
 send_success_message "We need your sudo password to install the yams CLI and correct permissions..."
 sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams
@@ -297,4 +266,3 @@ echo "https://yams.media/config"
 echo
 echo "========================================================"
 exit 0
-# ============================================================================================
