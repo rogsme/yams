@@ -77,6 +77,7 @@ install_location=${install_location:-/opt/yams}
 [[ -f "$install_location" ]] || mkdir -p "$install_location" || send_error_message "There was an error with your install location! Make sure the directory exists and the user \"$USER\" has permissions on it"
 install_location=$(realpath "$install_location")
 filename="$install_location/docker-compose.yaml"
+env_file="$install_location/.env"
 
 read -p "What's the user that is going to own the media server files? [$USER]: " username
 
@@ -168,6 +169,11 @@ if [ "$setup_vpn" == "y" ]; then
         fi
     done
     echo
+
+    echo "What country do you want to use?"
+    echo "If you are using: NordVPN, Perfect Privacy, Private Internet Access, VyprVPN, WeVPN or Windscribe, then input a region"
+    read -p "You can check the countries/regions list for your VPN here: https://github.com/qdm12/gluetun/wiki/$vpn_service#servers [brazil]: " vpn_country
+    vpn_country=${vpn_country:-"brazil"}
 fi
 
 echo "Configuring the docker-compose file for the user \"$username\" on \"$install_location\"..."
@@ -176,30 +182,32 @@ echo ""
 echo "Copying $filename..."
 
 cp docker-compose.example.yaml "$filename" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
+cp .env.example "$env_file" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
 
 # Set PUID
-sed -i -e "s/<your_PUID>/$puid/g" "$filename"
+sed -i -e "s/<your_PUID>/$puid/g" "$env_file"
 
 # Set PGID
-sed -i -e "s/<your_PGID>/$pgid/g" "$filename"
+sed -i -e "s/<your_PGID>/$pgid/g" "$env_file"
 
 # Set media_folder
-sed -i -e "s;<media_folder>;$media_folder;g" "$filename"
+sed -i -e "s;<media_folder>;$media_folder;g" "$env_file"
 
 # Set media_service
+sed -i -e "s;<media_service>;$media_service;g" "$env_file"
 sed -i -e "s;<media_service>;$media_service;g" "$filename"
 if [ "$media_service" == "plex" ]; then
     sed -i -e "s;#network_mode: host # plex;network_mode: host # plex;g" "$filename"
 fi
 
 # Set config folder
-sed -i -e "s;<install_location>;$install_location;g" "$filename"
+sed -i -e "s;<install_location>;$install_location;g" "$env_file"
 
 # Set VPN
 if [ "$setup_vpn" == "y" ]; then
-    sed -i -e "s;<vpn_service>;$vpn_service;g" "$filename"
-    sed -i -e "s;<vpn_user>;$vpn_user;g" "$filename"
-    sed -i -e "s;<vpn_password>;$vpn_password;g" "$filename"
+    sed -i -e "s;<vpn_service>;$vpn_service;g" "$env_file"
+    sed -i -e "s;<vpn_user>;$vpn_user;g" "$env_file"
+    sed -i -e "s;<vpn_password>;$vpn_password;g" "$env_file"
     sed -i -e "s;#network_mode: \"service:gluetun\";network_mode: \"service:gluetun\";g" "$filename"
     sed -i -e "s;ports: # qbittorrent;#port: # qbittorrent;g" "$filename"
     sed -i -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename"
