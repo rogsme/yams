@@ -11,8 +11,8 @@ services:
       - PGID=${PGID}
       - VERSION=docker
     volumes:
-      - ${MEDIA_FOLDER}/movies:/data/movies
-      - ${MEDIA_FOLDER}/tvshows:/data/tvshows
+      - ${MEDIA_DIRECTORY}/movies:/data/movies
+      - ${MEDIA_DIRECTORY}/tvshows:/data/tvshows
       - ${INSTALL_LOCATION}/config/${MEDIA_SERVICE}:/config
     ports:
       - 8096:8096
@@ -27,7 +27,7 @@ services:
       - PGID=${PGID}
       - WEB_UI_PORT=8080
     volumes:
-      - ${MEDIA_FOLDER}/downloads:/downloads
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
       - ${INSTALL_LOCATION}/config/qbittorrent:/config
     restart: unless-stopped
     ports: # qbittorrent
@@ -43,8 +43,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_FOLDER}/tvshows:/tv
-      - ${MEDIA_FOLDER}/downloads:/downloads
+      - ${MEDIA_DIRECTORY}/tvshows:/tv
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
       - ${INSTALL_LOCATION}/config/sonarr:/config
     ports:
       - 8989:8989
@@ -59,8 +59,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_FOLDER}/movies:/movies
-      - ${MEDIA_FOLDER}/downloads:/downloads
+      - ${MEDIA_DIRECTORY}/movies:/movies
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
       - ${INSTALL_LOCATION}/config/radarr:/config
     ports:
       - 7878:7878
@@ -75,8 +75,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_FOLDER}/music:/music
-      - ${MEDIA_FOLDER}/downloads:/downloads
+      - ${MEDIA_DIRECTORY}/music:/music
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
       - ${INSTALL_LOCATION}/config/lidarr:/config
     ports:
       - 8686:8686
@@ -91,8 +91,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_FOLDER}/books:/books
-      - ${MEDIA_FOLDER}/downloads:/downloads
+      - ${MEDIA_DIRECTORY}/books:/books
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
       - ${INSTALL_LOCATION}/config/readarr:/config
     ports:
       - 8787:8787
@@ -107,8 +107,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_FOLDER}/movies:/movies
-      - ${MEDIA_FOLDER}/tvshows:/tv
+      - ${MEDIA_DIRECTORY}/movies:/movies
+      - ${MEDIA_DIRECTORY}/tvshows:/tv
       - ${INSTALL_LOCATION}/config/bazarr:/config
     ports:
       - 6767:6767

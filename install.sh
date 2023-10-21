@@ -96,20 +96,23 @@ else
     send_error_message "The user \"$username\" doesn't exist!"
 fi
 
-read -p "Please, input your media folder [/srv/media]: " media_folder
-media_folder=${media_folder:-"/srv/media"}
+read -p "Please, input your media directory [/srv/media]: " media_folder
+media_directory=${media_directory:-"/srv/media"}
 
-if [ ! -d "$media_folder" ]; then
-    if ! mkdir -p "$media_folder"; then
-        send_error_message "There was an error creating the installation directory at \"$media_folder\". Make sure you have the necessary permissions ❌"
+read -p "Are you sure your media directory is \"$media_directory\"? [y/N]: " media_directory_correct
+media_directory_correct=${media_directory_correct:-"n"}
+
+if [ ! -d "$media_directory" ]; then
+    echo "The directory \"$media_directory\" does not exists. Attempting to create..."
+    if ! mkdir -p "$media_directory"; then
+        send_error_message "There was an error creating the installation directory at \"$media_directory\". Make sure you have the necessary permissions ❌"
+    else
+        send_success_message "Directory $media_directory created ✅"
     fi
 fi
 
-read -p "Are you sure your media folder is \"$media_folder\"? [y/N]: " media_folder_correct
-media_folder_correct=${media_folder_correct:-"n"}
-
-if [ "$media_folder_correct" == "n" ]; then
-    send_error_message "Media folder is not correct. Please fix it and run the script again ❌"
+if [ "$media_directory_correct" == "n" ]; then
+    send_error_message "Media directory is not correct. Please fix it and run the script again ❌"
 fi
 
 echo -e "\n\n\nTime to choose your media service."
@@ -197,7 +200,7 @@ done
 
 sed -i -e "s|<your_PUID>|$puid|g" "$env_file" \
  -e "s|<your_PGID>|$pgid|g" "$env_file" \
- -e "s|<media_folder>|$media_folder|g" "$env_file" \
+ -e "s|<media_directory>|$media_directory|g" "$env_file" \
  -e "s|<media_service>|$media_service|g" "$env_file" \
  -e "s|<media_service>|$media_service|g" "$filename"
 
@@ -237,7 +240,7 @@ else
     send_error_message "Failed to install YAMS CLI. Make sure you have the necessary permissions ❌"
 fi
 
-if sudo chown -R "$puid":"$pgid" "$media_folder"; then
+if sudo chown -R "$puid":"$pgid" "$media_directory"; then
     send_success_message "Media folder ownership and permissions set successfully ✅"
 else
     send_error_message "Failed to set ownership and permissions for the media folder. Check permissions ❌"
