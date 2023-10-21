@@ -107,4 +107,7 @@ if [ "$option" == "update" ]; then
         sed -i -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename"
         sed -i -e "s;#- 8080:8080/tcp # gluetun;- 8080:8080/tcp # gluetun;g" "$filename"
     fi
+
+    $dc up -d
+    echo "YAMS was updated and it is starting. Wait 1 min until all the services are up and running..."
 fi
