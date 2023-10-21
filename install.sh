@@ -71,7 +71,7 @@ if [[ "$EUID" = 0 ]]; then
     send_error_message "YAMS has to run without sudo! Please, run it again with regular permissions"
 fi
 
-default_install_location="/opt/yams"
+default_install_directory="/opt/yams"
 
 read -p "Where do you want to install the docker-compose file? [$default_install_location]: " install_directory
 install_directory=${install_directory:-$default_install_directory}
