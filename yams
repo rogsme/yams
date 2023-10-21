@@ -73,7 +73,7 @@ fi
 if [ "$option" == "destroy" ]; then
     echo
     echo
-    read -pr "Are you sure you want to destroy all your yams services? THIS IS NOT RECOVERABLE! ⚠️ ️🚨 [y/N]: " destroy_now
+    read -p "Are you sure you want to destroy all your yams services? THIS IS NOT RECOVERABLE! ⚠️ ️🚨 [y/N]: " destroy_now
     destroy_now=${destroy_now:-"n"}
     if [ "$destroy_now" == "y" ]; then
         $dc down
