@@ -184,7 +184,7 @@ install_location=${install_location:-$default_install_location}
 
 if [ ! -d "$install_location" ]; then
     if ! mkdir -p "$install_location"; then
-        send_error_message "There was an error creating the installation directory at \"$install_location\". Make sure you have the necessary permissions."
+        send_error_message "There was an error creating the installation directory at \"$install_location\". Make sure you have the necessary permissions ❌"
     fi
 fi
 
@@ -220,7 +220,9 @@ read -p "Please, input your media folder [/srv/media]: " media_folder
 media_folder=${media_folder:-"/srv/media"}
 
 if [ ! -d "$media_folder" ]; then
-    send_error_message "The directory \"$media_folder\" does not exist!"
+    if ! mkdir -p "$media_folder"; then
+        send_error_message "There was an error creating the installation directory at \"$media_folder\". Make sure you have the necessary permissions ❌"
+    fi
 fi
 
 read -p "Are you sure your media folder is \"$media_folder\"? [y/N]: " media_folder_correct
