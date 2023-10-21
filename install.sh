@@ -73,7 +73,7 @@ fi
 
 default_install_directory="/opt/yams"
 
-read -p "Where do you want to install the docker-compose file? [$default_install_location]: " install_directory
+read -p "Where do you want to install the docker-compose file? [$default_install_directory]: " install_directory
 install_directory=${install_directory:-$default_install_directory}
 
 if [ ! -d "$install_directory" ]; then
