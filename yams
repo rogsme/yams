@@ -3,6 +3,7 @@ set -euo pipefail
 
 
 dc="docker-compose -f <filename>"
+install_location="<install_location>"
 
 option=${1:-"--help"}
 
@@ -17,6 +18,7 @@ help() {
    echo "start      starts yams services"
    echo "destroy    destroy yams services so you can start from scratch"
    echo "check-vpn  checks if the VPN is working as expected"
+   echo "update     updates YAMS
 }
 
 send_success_message() {
@@ -79,5 +81,23 @@ if [ $option == "destroy" ]; then
         echo
         echo "yams services were destroyed. To restart, run: "
         echo "\$ yams start"
+    fi
+fi
+
+if [ $option == "update" ]; then
+    echo "Updating YAMS..."
+    $dc stop
+    rm -rf /tmp/yams && mkdir /tmp/yams
+    wget https://gitlab.com/rogs/yams/-/raw/master/docker-compose.example.yaml -O /tmp/yams/docker-compose.example.yml > /dev/null 2>&1
+    source $install_location/.env
+
+    filename="$install_location/docker-compose.yaml"
+
+    cp /tmp/yams/docker-compose.example.yml $filename
+
+
+    sed -i -e "s;<media_service>;$MEDIA_SERVICE;g" "$filename"
+    if [ "$MEDIA_SERVICE" == "plex" ]; then
+        sed -i -e "s;#network_mode: host # plex;network_mode: host # plex;g" "$filename"
     fi
 fi
