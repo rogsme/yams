@@ -77,6 +77,7 @@ install_location=${install_location:-/opt/yams}
 [[ -f "$install_location" ]] || mkdir -p "$install_location" || send_error_message "There was an error with your install location! Make sure the directory exists and the user \"$USER\" has permissions on it"
 install_location=$(realpath "$install_location")
 filename="$install_location/docker-compose.yaml"
+custom_file_filename="$install_location/docker-compose.custom.yaml"
 env_file="$install_location/.env"
 
 read -p "What's the user that is going to own the media server files? [$USER]: " username
@@ -178,6 +179,7 @@ echo "Copying $filename..."
 
 cp docker-compose.example.yaml "$filename" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
 cp .env.example "$env_file" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
+cp docker-compose.custom.yaml "$custom_file_filename" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
 
 sed -i -e "s/<your_PUID>/$puid/g" "$env_file" \
  -e "s/<your_PGID>/$pgid/g" "$env_file" \
@@ -203,8 +205,9 @@ if [ "$setup_vpn" == "y" ]; then
      -e "s;#- 8080:8080/tcp # gluetun;- 8080:8080/tcp # gluetun;g" "$filename"
 fi
 
-sed -i -e "s;<filename>;$filename;g" yams
-sed -i -e "s;<install_location>;$install_location;g" yams
+sed -i -e "s;<filename>;$filename;g" yams \
+ -e "s;<custom_file_filename>;$custom_file_filename;g" yams \
+ -e "s;<install_location>;$install_location;g" yams
 
 send_success_message "Everything installed correctly! 🎉"
 

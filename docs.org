@@ -180,6 +180,7 @@ install_location=${install_location:-/opt/yams}
 [[ -f "$install_location" ]] || mkdir -p "$install_location" || send_error_message "There was an error with your install location! Make sure the directory exists and the user \"$USER\" has permissions on it"
 install_location=$(realpath "$install_location")
 filename="$install_location/docker-compose.yaml"
+custom_file_filename="$install_location/docker-compose.custom.yaml"
 env_file="$install_location/.env"
 
 read -p "What's the user that is going to own the media server files? [$USER]: " username
@@ -313,6 +314,7 @@ echo "Copying $filename..."
 
 cp docker-compose.example.yaml "$filename" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
 cp .env.example "$env_file" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
+cp docker-compose.custom.yaml "$custom_file_filename" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
 #+end_src
 
 ** Set PUID, PGID, Media Folder, Media Service, Config folder and VPN
@@ -352,8 +354,9 @@ fi
 :END:
 
 #+begin_src bash
-sed -i -e "s;<filename>;$filename;g" yams
-sed -i -e "s;<install_location>;$install_location;g" yams
+sed -i -e "s;<filename>;$filename;g" yams \
+ -e "s;<custom_file_filename>;$custom_file_filename;g" yams \
+ -e "s;<install_location>;$install_location;g" yams
 #+end_src
 
 ** Success message!
