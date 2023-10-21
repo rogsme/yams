@@ -18,41 +18,41 @@ help() {
    echo "start      starts yams services"
    echo "destroy    destroy yams services so you can start from scratch"
    echo "check-vpn  checks if the VPN is working as expected"
-   echo "update     updates YAMS
+   echo "update     updates YAMS"
 }
 
 send_success_message() {
-    echo -e $(printf "\e[32m$1\e[0m")
+    echo -e "$(printf "\e[32m$1\e[0m")"
 }
 
 send_error_message() {
-    echo -e $(printf "\e[31m$1\e[0m")
+    echo -e "$(printf "\e[31m$1\e[0m")"
     exit 255
 }
 
-if [ $option == "--help" ]; then
+if [ "$option" == "--help" ]; then
     help
     exit 0
 fi
 
-if [ $option == "restart" ]; then
+if [ "$option" == "restart" ]; then
     $dc stop && $dc up -d
     echo "YAMS is starting. Wait 1 min until all the services are up and running..."
     exit 0
 fi
 
-if [ $option == "stop" ]; then
+if [ "$option" == "stop" ]; then
     $dc stop
     exit 0
 fi
 
-if [ $option == "start" ]; then
+if [ "$option" == "start" ]; then
     $dc up -d
     echo "YAMS is starting. Wait 1 min until all the services are up and running..."
     exit 0
 fi
 
-if [ $option == "check-vpn" ]; then
+if [ "$option" == "check-vpn" ]; then
     echo "Getting your qBittorrent IP..."
     qbittorrent_ip=$(docker exec qbittorrent sh -c "curl -s ifconfig.me");
     echo "$qbittorrent_ip"
@@ -63,19 +63,19 @@ if [ $option == "check-vpn" ]; then
     echo "$your_ip"
     echo "Your local IP country is $(curl -s https://am.i.mullvad.net/country)"
     echo
-    if [ $qbittorrent_ip == $your_ip ]; then
+    if [ "$qbittorrent_ip" == "$your_ip" ]; then
 	   send_error_message "Your IPs are the same! qBittorrent is NOT working! ⚠️"
    else
 	   send_success_message "Your IPs are different. qBittorrent is working as expected! ✅ "
    fi
 fi
 
-if [ $option == "destroy" ]; then
+if [ "$option" == "destroy" ]; then
     echo
     echo
-    read -p "Are you sure you want to destroy all your yams services? THIS IS NOT RECOVERABLE! ⚠️ ️🚨 [y/N]: " destroy_now
+    read -pr "Are you sure you want to destroy all your yams services? THIS IS NOT RECOVERABLE! ⚠️ ️🚨 [y/N]: " destroy_now
     destroy_now=${destroy_now:-"n"}
-    if [ $destroy_now == "y" ]; then
+    if [ "$destroy_now" == "y" ]; then
         $dc down
         echo
         echo
@@ -84,7 +84,7 @@ if [ $option == "destroy" ]; then
     fi
 fi
 
-if [ $option == "update" ]; then
+if [ "$option" == "update" ]; then
     echo "Updating YAMS..."
     $dc stop
     rm -rf /tmp/yams && mkdir /tmp/yams
