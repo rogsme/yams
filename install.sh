@@ -73,21 +73,21 @@ fi
 
 default_install_location="/opt/yams"
 
-read -p "Where do you want to install the docker-compose file? [$default_install_location]: " install_location
-install_location=${install_location:-$default_install_location}
+read -p "Where do you want to install the docker-compose file? [$default_install_location]: " install_directory
+install_directory=${install_directory:-$default_install_directory}
 
-if [ ! -d "$install_location" ]; then
-    echo "The directory \"$install_location\" does not exists. Attempting to create..."
-    if mkdir -p "$install_location"; then
-        send_success_message "Directory $install_location created ✅"
+if [ ! -d "$install_directory" ]; then
+    echo "The directory \"$install_directory\" does not exists. Attempting to create..."
+    if mkdir -p "$install_directory"; then
+        send_success_message "Directory $install_directory created ✅"
     else
-        send_error_message "There was an error creating the installation directory at \"$install_location\". Make sure you have the necessary permissions ❌"
+        send_error_message "There was an error creating the installation directory at \"$install_directory\". Make sure you have the necessary permissions ❌"
     fi
 fi
 
-filename="$install_location/docker-compose.yaml"
-custom_file_filename="$install_location/docker-compose.custom.yaml"
-env_file="$install_location/.env"
+filename="$install_directory/docker-compose.yaml"
+custom_file_filename="$install_directory/docker-compose.custom.yaml"
+env_file="$install_directory/.env"
 
 read -p "What's the user that is going to own the media server files? [$USER]: " username
 username=${username:-$USER}
@@ -181,7 +181,7 @@ if [ "$setup_vpn" == "y" ]; then
     echo
 fi
 
-echo "Configuring the docker-compose file for the user \"$username\" on \"$install_location\"..."
+echo "Configuring the docker-compose file for the user \"$username\" on \"$install_directory\"..."
 
 copy_files=(
     "docker-compose.example.yaml:$filename"
@@ -211,7 +211,7 @@ if [ "$media_service" == "plex" ]; then
     sed -i -e "s|#network_mode: host # plex|network_mode: host # plex|g" "$filename"
 fi
 
-sed -i -e "s|<install_location>|$install_location|g" "$env_file"
+sed -i -e "s|<install_directory>|$install_directory|g" "$env_file"
 
 if [ "$setup_vpn" == "y" ]; then
     sed -i -e "s|<vpn_service>|$vpn_service|g" "$env_file" \
@@ -226,7 +226,7 @@ fi
 
 sed -i -e "s|<filename>|$filename|g" yams \
  -e "s|<custom_file_filename>|$custom_file_filename|g" yams \
- -e "s|<install_location>|$install_location|g" yams
+ -e "s|<install_directory>|$install_directory|g" yams
 
 send_success_message "Everything installed correctly! 🎉"
 
@@ -244,22 +244,28 @@ else
 fi
 
 if sudo chown -R "$puid":"$pgid" "$media_directory"; then
-    send_success_message "Media folder ownership and permissions set successfully ✅"
+    send_success_message "Media directory ownership and permissions set successfully ✅"
 else
-    send_error_message "Failed to set ownership and permissions for the media folder. Check permissions ❌"
+    send_error_message "Failed to set ownership and permissions for the media directory. Check permissions ❌"
 fi
 
-if [[ -d "$install_location/config" ]]; then
-    send_success_message "Configuration folder \"$install_location/config\" exists ✅"
+if sudo chown -R "$puid":"$pgid" "$install_directory"; then
+    send_success_message "Install directory ownership and permissions set successfully ✅"
 else
-    if sudo mkdir -p "$install_location/config"; then
-        send_success_message "Configuration folder \"$install_location/config\" created ✅"
+    send_error_message "Failed to set ownership and permissions for the install directory. Check permissions ❌"
+fi
+
+if [[ -d "$install_directory/config" ]]; then
+    send_success_message "Configuration folder \"$install_directory/config\" exists ✅"
+else
+    if sudo mkdir -p "$install_directory/config"; then
+        send_success_message "Configuration folder \"$install_directory/config\" created ✅"
     else
         send_error_message "Failed to create or access the configuration folder. Check permissions ❌"
     fi
 fi
 
-if sudo chown -R "$puid":"$pgid" "$install_location/config"; then
+if sudo chown -R "$puid":"$pgid" "$install_directory/config"; then
     send_success_message "Configuration folder ownership and permissions set successfully ✅"
 else
     send_error_message "Failed to set ownership and permissions for the configuration folder. Check permissions ❌"
@@ -281,7 +287,7 @@ echo "     \__\/        \  \::/       \  \:\        \  \::/   "
 echo "                   \__\/         \__\/         \__\/    "
 echo "========================================================"
 send_success_message "All done!✅  Enjoy YAMS!"
-echo "You can check the installation on $install_location"
+echo "You can check the installation on $install_directory"
 echo "========================================================"
 echo "Everything should be running now! To check everything running, go to:"
 echo
