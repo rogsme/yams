@@ -168,11 +168,6 @@ if [ "$setup_vpn" == "y" ]; then
         fi
     done
     echo
-
-    echo "What country do you want to use?"
-    echo "If you are using: NordVPN, Perfect Privacy, Private Internet Access, VyprVPN, WeVPN or Windscribe, then input a region"
-    read -p "You can check the countries/regions list for your VPN here: https://github.com/qdm12/gluetun/wiki/$vpn_service#servers [brazil]: " vpn_country
-    vpn_country=${vpn_country:-"brazil"}
 fi
 
 echo "Configuring the docker-compose file for the user \"$username\" on \"$install_location\"..."
@@ -204,15 +199,11 @@ sed -i -e "s;<install_location>;$install_location;g" "$filename"
 if [ "$setup_vpn" == "y" ]; then
     sed -i -e "s;<vpn_service>;$vpn_service;g" "$filename"
     sed -i -e "s;<vpn_user>;$vpn_user;g" "$filename"
-    sed -i -e "s;<vpn_country>;$vpn_country;g" "$filename"
     sed -i -e "s;<vpn_password>;$vpn_password;g" "$filename"
     sed -i -e "s;#network_mode: \"service:gluetun\";network_mode: \"service:gluetun\";g" "$filename"
     sed -i -e "s;ports: # qbittorrent;#port: # qbittorrent;g" "$filename"
     sed -i -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename"
     sed -i -e "s;#- 8080:8080/tcp # gluetun;- 8080:8080/tcp # gluetun;g" "$filename"
-    if echo "nordvpn perfect privacy private internet access vyprvpn wevpn windscribe" | grep -qw "$vpn_service"; then
-        sed -i -e "s;SERVER_COUNTRIES;SERVER_REGIONS;g" "$filename"
-    fi
 fi
 
 sed -i -e "s;<filename>;$filename;g" yams
