@@ -174,40 +174,48 @@ fi
 
 echo "Configuring the docker-compose file for the user \"$username\" on \"$install_location\"..."
 
-echo ""
-echo "Copying $filename..."
+copy_files=(
+    "docker-compose.example.yaml:$filename"
+    ".env.example:$env_file"
+    "docker-compose.custom.yaml:$custom_file_filename"
+)
 
-cp docker-compose.example.yaml "$filename" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
-cp .env.example "$env_file" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
-cp docker-compose.custom.yaml "$custom_file_filename" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
+for file_mapping in "${copy_files[@]}"; do
+    source_file="${file_mapping%%:*}"
+    destination_file="${file_mapping##*:}"
 
-sed -i -e "s/<your_PUID>/$puid/g" "$env_file" \
- -e "s/<your_PGID>/$pgid/g" "$env_file" \
- -e "s;<media_folder>;$media_folder;g" "$env_file" \
- -e "s;<media_service>;$media_service;g" "$env_file" \
- -e "s;<media_service>;$media_service;g" "$filename"
+    echo -e "\nCopying $source_file to $destination_file..."
+    if ! cp "$source_file" "$destination_file"; then
+        send_error_message "Failed to copy $source_file to $destination_file. Ensure your user ($USER) has the necessary permissions."
+    fi
+done
+
+sed -i -e "s|<your_PUID>|$puid|g" "$env_file" \
+ -e "s|<your_PGID>|$pgid|g" "$env_file" \
+ -e "s|<media_folder>|$media_folder|g" "$env_file" \
+ -e "s|<media_service>|$media_service|g" "$env_file" \
+ -e "s|<media_service>|$media_service|g" "$filename"
 
 if [ "$media_service" == "plex" ]; then
-    sed -i -e "s;#network_mode: host # plex;network_mode: host # plex;g" "$filename"
+    sed -i -e "s|#network_mode: host # plex|network_mode: host # plex|g" "$filename"
 fi
 
-sed -i -e "s;<install_location>;$install_location;g" "$env_file"
+sed -i -e "s|<install_location>|$install_location|g" "$env_file"
 
-# Set VPN
 if [ "$setup_vpn" == "y" ]; then
-    sed -i -e "s;<vpn_service>;$vpn_service;g" "$env_file" \
-     -e "s;<vpn_user>;$vpn_user;g" "$env_file" \
-     -e "s;<vpn_password>;$vpn_password;g" "$env_file" \
-     -e "s;<vpn_enabled>;$setup_vpn;g" "$env_file" \
-     -e "s;#network_mode: \"service:gluetun\";network_mode: \"service:gluetun\";g" "$filename" \
-     -e "s;ports: # qbittorrent;#port: # qbittorrent;g" "$filename" \
-     -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename" \
-     -e "s;#- 8080:8080/tcp # gluetun;- 8080:8080/tcp # gluetun;g" "$filename"
+    sed -i -e "s|<vpn_service>|$vpn_service|g" "$env_file" \
+     -e "s|<vpn_user>|$vpn_user|g" "$env_file" \
+     -e "s|<vpn_password>|$vpn_password|g" "$env_file" \
+     -e "s|<vpn_enabled>|$setup_vpn|g" "$env_file" \
+     -e "s|#network_mode: \"service:gluetun\"|network_mode: \"service:gluetun\"|g" "$filename" \
+     -e "s|ports: # qbittorrent|#port: # qbittorrent|g" "$filename" \
+     -e "s|- 8080:8080 # qbittorrent|#- 8080:8080 # qbittorrent|g" "$filename" \
+     -e "s|#- 8080:8080/tcp # gluetun|- 8080:8080/tcp # gluetun|g" "$filename"
 fi
 
-sed -i -e "s;<filename>;$filename;g" yams \
- -e "s;<custom_file_filename>;$custom_file_filename;g" yams \
- -e "s;<install_location>;$install_location;g" yams
+sed -i -e "s|<filename>|$filename|g" yams \
+ -e "s|<custom_file_filename>|$custom_file_filename|g" yams \
+ -e "s|<install_location>|$install_location|g" yams
 
 send_success_message "Everything installed correctly! 🎉"
 
