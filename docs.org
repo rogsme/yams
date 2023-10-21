@@ -110,12 +110,12 @@ This function verifies that the dependencies are installed. ~Docker~ and ~docker
 for YAMS to work.
 
 #+begin_src bash
-check_dependencides() {
-    if command -v $1 &> /dev/null; then
-        send_success_message "$1 exists ✅ "
+check_dependencies() {
+    if command -v "$1" &> /dev/null; then
+        send_success_message "$1 exists ✅"
     else
-        echo -e $(printf "\e[31m ⚠️ $1 not found! ⚠️\e[0m")
-        read -p "Do you want YAMS to install docker and docker-compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! [y/N]: " install_docker
+        echo -e "\e[31m⚠️ $1 not found! ⚠️\e[0m"
+        read -p "Do you want YAMS to install docker and docker-compose? (IT ONLY WORKS ON DEBIAN AND UBUNTU) [y/N]: " install_docker
         install_docker=${install_docker:-"n"}
 
         if [ "$install_docker" == "y" ]; then
@@ -138,15 +138,25 @@ finish installing.
 #+begin_src bash
 running_services_location() {
     host_ip=$(hostname -I | awk '{ print $1 }')
-    echo "qBittorrent: http://$host_ip:8080/"
-    echo "Radarr: http://$host_ip:7878/"
-    echo "Sonarr: http://$host_ip:8989/"
-    echo "Lidarr: http://$host_ip:8686/"
-    echo "Readarr: http://$host_ip:8787/"
-    echo "Prowlarr: http://$host_ip:9696/"
-    echo "Bazarr: http://$host_ip:6767/"
-    echo "$media_service: http://$host_ip:$media_service_port/"
-    echo "Portainer: http://$host_ip:9000/"
+
+    services=(
+        "qBittorrent:8080"
+        "Radarr:7878"
+        "Sonarr:8989"
+        "Lidarr:8686"
+        "Readarr:8787"
+        "Prowlarr:9696"
+        "Bazarr:6767"
+        "$media_service:$media_service_port"
+        "Portainer:9000"
+    )
+
+    echo -e "Service URLs:"
+    for service in "${services[@]}"; do
+        service_name="${service%%:*}"
+        service_port="${service##*:}"
+        echo "$service_name: http://$host_ip:$service_port/"
+    done
 }
 #+end_src
 
