@@ -179,7 +179,7 @@ echo "Copying $filename..."
 cp docker-compose.example.yaml "$filename" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
 cp .env.example "$env_file" || send_error_message "Your user ($USER) needs to have permissions on the installation folder!"
 
-sed -i -e "s/<your_PUID>/$puid/g" "$env_file"
+sed -i -e "s/<your_PUID>/$puid/g" "$env_file" \
  -e "s/<your_PGID>/$pgid/g" "$env_file" \
  -e "s;<media_folder>;$media_folder;g" "$env_file" \
  -e "s;<media_service>;$media_service;g" "$env_file" \

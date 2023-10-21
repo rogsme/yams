@@ -321,7 +321,7 @@ cp .env.example "$env_file" || send_error_message "Your user ($USER) needs to ha
 :END:
 
 #+begin_src bash
-sed -i -e "s/<your_PUID>/$puid/g" "$env_file"
+sed -i -e "s/<your_PUID>/$puid/g" "$env_file" \
  -e "s/<your_PGID>/$pgid/g" "$env_file" \
  -e "s;<media_folder>;$media_folder;g" "$env_file" \
  -e "s;<media_service>;$media_service;g" "$env_file" \
