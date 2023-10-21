@@ -99,7 +99,7 @@ else
     send_error_message "The user \"$username\" doesn't exist!"
 fi
 
-read -p "Please, input your media directory [/srv/media]: " media_folder
+read -p "Please, input your media directory [/srv/media]: " media_directory
 media_directory=${media_directory:-"/srv/media"}
 
 read -p "Are you sure your media directory is \"$media_directory\"? [y/N]: " media_directory_correct
