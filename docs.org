@@ -23,8 +23,10 @@
   - [[#set-puid-pgid-media-folder-media-service-config-folder-and-vpn][Set PUID, PGID, Media Folder, Media Service, Config folder and VPN]]
   - [[#set-the-configuration-for-the-yams-binary][Set the configuration for the YAMS binary]]
   - [[#success-message][Success message!]]
-- [[#clean-up][Clean up]]
+- [[#final-steps][Final steps]]
   - [[#install-the-yams-cli][Install the YAMS CLI]]
+  - [[#create-and-set-the-correct-permissions-to-the-media-folder][Create and set the correct permissions to the media folder]]
+  - [[#create-the-config-directory][Create the config directory]]
 - [[#display-closing-message][Display closing message]]
 
 * Welcome message
@@ -374,7 +376,7 @@ echo "This is going to take a while..."
 
 docker-compose -f "$filename" up -d
 #+end_src
-* Clean up
+* Final steps
 :PROPERTIES:
 :ID:       65ce5828-b69a-4a0e-83f6-b029e19caea1
 :END:
@@ -383,13 +385,69 @@ docker-compose -f "$filename" up -d
 :ID:       f4f9d166-8a2b-4d79-bc7f-fe73ecf5fb77
 :END:
 
+This steps requires ~sudo~ because it's copying the main yams script to the ~/usr/local/bin/yams~
+directory.
+
 #+begin_src bash
-send_success_message "We need your sudo password to install the yams CLI and correct permissions..."
-sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams
-[[ -f "$media_folder" ]] || sudo mkdir -p "$media_folder" || send_error_message "There was an error with your install location!"
-sudo chown -R "$puid":"$pgid" "$media_folder"
-[[ -f $install_location/config ]] || sudo mkdir -p "$install_location/config"
-sudo chown -R "$puid":"$pgid" "$install_location"
+echo -e "\nWe need your sudo password to install the YAMS CLI and configure permissions..."
+
+if sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
+    echo "YAMS CLI installed successfully."
+else
+    send_error_message "Failed to install YAMS CLI. Make sure you have the necessary permissions."
+fi
+#+end_src
+
+** Create and set the correct permissions to the media folder
+:PROPERTIES:
+:ID:       4cfb9397-776d-46db-84cc-54b78395cba8
+:END:
+
+Now, we validate the media folder exists. If it doesn't we'll try and create it. If it can't be created,
+it will raise an error.
+
+#+begin_src bash
+if [[ -d "$media_folder" ]]; then
+    echo "Media folder \"$media_folder\" exists."
+else
+    if sudo mkdir -p "$media_folder"; then
+        echo "Media folder \"$media_folder\" created."
+    else
+        send_error_message "Failed to create or access the media folder. Check permissions."
+    fi
+fi
+
+if sudo chown -R "$puid":"$pgid" "$media_folder"; then
+    echo "Media folder ownership and permissions set successfully."
+else
+    send_error_message "Failed to set ownership and permissions for the media folder. Check permissions."
+fi
+#+end_src
+
+** Create the config directory
+:PROPERTIES:
+:ID:       699f35fe-edde-406d-be0b-3ff2eaa6d7eb
+:END:
+
+This is where all the configurations are going to be saved. If it doesn't it will try and create it. If
+it can't be created, we'll raise an error.
+
+#+begin_src bash
+if [[ -d "$install_location/config" ]]; then
+    echo "Configuration folder \"$install_location/config\" exists."
+else
+    if sudo mkdir -p "$install_location/config"; then
+        echo "Configuration folder \"$install_location/config\" created."
+    else
+        send_error_message "Failed to create or access the configuration folder. Check permissions."
+    fi
+fi
+
+if sudo chown -R "$puid":"$pgid" "$install_location/config"; then
+    echo "Configuration folder ownership and permissions set successfully."
+else
+    send_error_message "Failed to set ownership and permissions for the configuration folder. Check permissions."
+fi
 #+end_src
 
 * Display closing message

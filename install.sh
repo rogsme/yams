@@ -216,12 +216,45 @@ echo "This is going to take a while..."
 
 docker-compose -f "$filename" up -d
 
-send_success_message "We need your sudo password to install the yams CLI and correct permissions..."
-sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams
-[[ -f "$media_folder" ]] || sudo mkdir -p "$media_folder" || send_error_message "There was an error with your install location!"
-sudo chown -R "$puid":"$pgid" "$media_folder"
-[[ -f $install_location/config ]] || sudo mkdir -p "$install_location/config"
-sudo chown -R "$puid":"$pgid" "$install_location"
+echo -e "\nWe need your sudo password to install the YAMS CLI and configure permissions..."
+
+if sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
+    echo "YAMS CLI installed successfully."
+else
+    send_error_message "Failed to install YAMS CLI. Make sure you have the necessary permissions."
+fi
+
+if [[ -d "$media_folder" ]]; then
+    echo "Media folder \"$media_folder\" exists."
+else
+    if sudo mkdir -p "$media_folder"; then
+        echo "Media folder \"$media_folder\" created."
+    else
+        send_error_message "Failed to create or access the media folder. Check permissions."
+    fi
+fi
+
+if sudo chown -R "$puid":"$pgid" "$media_folder"; then
+    echo "Media folder ownership and permissions set successfully."
+else
+    send_error_message "Failed to set ownership and permissions for the media folder. Check permissions."
+fi
+
+if [[ -d "$install_location/config" ]]; then
+    echo "Configuration folder \"$install_location/config\" exists."
+else
+    if sudo mkdir -p "$install_location/config"; then
+        echo "Configuration folder \"$install_location/config\" created."
+    else
+        send_error_message "Failed to create or access the configuration folder. Check permissions."
+    fi
+fi
+
+if sudo chown -R "$puid":"$pgid" "$install_location/config"; then
+    echo "Configuration folder ownership and permissions set successfully."
+else
+    send_error_message "Failed to set ownership and permissions for the configuration folder. Check permissions."
+fi
 
 printf "\033c"
 
