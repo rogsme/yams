@@ -147,7 +147,7 @@ Just let them know YAMS sent you there 😎
 
 - [X] Support for multiple media servers (Jellyfin and Plex). [Done ✅]
 - [X] Add [[https://www.portainer.io/][Portainer]]. [Done ✅]
-- [X] Add updatE Functionality (~Yams update~). [Done ✅]
+- [X] Add updatE Functionality (~yams update~). [Done ✅]
 - [ ] Consider moving to Alpine images (might not be possible without a big change on the docker-compose file).
 - [ ] Add multiple download clients to choose from.
 - [ ] Add Jackett as an "yams extra".
