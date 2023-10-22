@@ -5,6 +5,7 @@
 This is a highly opinionated media server.
 
 Website: [[https://yams.media][https://yams.media]]
+Code documentation and explanation: [docs.org](https://gitlab.com/rogs/yams/-/blob/master/docs.org)
 
 * Description
 :PROPERTIES:
