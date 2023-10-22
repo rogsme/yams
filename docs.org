@@ -1,5 +1,5 @@
 #+title: Docs
-#+PROPERTY: header-args :tangle setup.sh
+#+PROPERTY: header-args :tangle install.sh
 #+auto_tangle: t
 
 * Table of contents :toc:
