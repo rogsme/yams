@@ -108,6 +108,7 @@ restart    restarts yams services
 stop       stops all yams services
 start      starts yams services
 destroy    destroy yams services so you can start from scratch
+update     updates YAMS
 #+end_src
 * How to configure?
 :PROPERTIES:
