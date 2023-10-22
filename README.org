@@ -139,7 +139,7 @@ They are the ones doing the real work, I just created a docker-compose file and 
 
 Just let them know YAMS sent you there 😎
 
-* todo [3/17]
+* todo [4/17]
 :PROPERTIES:
 :ID:       eba4712e-fa8a-42c8-bc32-b593141c99a4
 :END:
@@ -147,7 +147,7 @@ Just let them know YAMS sent you there 😎
 
 - [X] Support for multiple media servers (Jellyfin and Plex). [Done ✅]
 - [X] Add [[https://www.portainer.io/][Portainer]]. [Done ✅]
-- [ ] Add update functionality (~yams update~). [Working on it 👨‍💻]
+- [X] Add updatE Functionality (~Yams update~). [Done ✅]
 - [ ] Consider moving to Alpine images (might not be possible without a big change on the docker-compose file).
 - [ ] Add multiple download clients to choose from.
 - [ ] Add Jackett as an "yams extra".
