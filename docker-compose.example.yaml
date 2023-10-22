@@ -3,17 +3,17 @@ version: "3"
 services:
   # <media_service> is used to serve your media to the client devices
   <media_service>:
-    image: lscr.io/linuxserver/<media_service>
-    container_name: <media_service>
+    image: lscr.io/linuxserver/${MEDIA_SERVICE}
+    container_name: ${MEDIA_SERVICE}
     #network_mode: host # plex
     environment:
-      - PUID=<your_PUID>
-      - PGID=<your_PGID>
+      - PUID=${PUID}
+      - PGID=${PGID}
       - VERSION=docker
     volumes:
-      - <media_folder>/movies:/data/movies
-      - <media_folder>/tvshows:/data/tvshows
-      - <install_location>/config/<media_service>:/config
+      - ${MEDIA_DIRECTORY}/movies:/data/movies
+      - ${MEDIA_DIRECTORY}/tvshows:/data/tvshows
+      - ${INSTALL_LOCATION}/config/${MEDIA_SERVICE}:/config
     ports:
       - 8096:8096
     restart: unless-stopped
@@ -23,12 +23,12 @@ services:
     image: lscr.io/linuxserver/qbittorrent
     container_name: qbittorrent
     environment:
-      - PUID=<your_PUID>
-      - PGID=<your_PGID>
+      - PUID=${PUID}
+      - PGID=${PGID}
       - WEB_UI_PORT=8080
     volumes:
-      - <media_folder>/downloads:/downloads
-      - <install_location>/config/qbittorrent:/config
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - ${INSTALL_LOCATION}/config/qbittorrent:/config
     restart: unless-stopped
     ports: # qbittorrent
       - 8080:8080 # qbittorrent
@@ -40,12 +40,12 @@ services:
     image: lscr.io/linuxserver/sonarr
     container_name: sonarr
     environment:
-      - PUID=<your_PUID>
-      - PGID=<your_PGID>
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - <media_folder>/tvshows:/tv
-      - <media_folder>/downloads:/downloads
-      - <install_location>/config/sonarr:/config
+      - ${MEDIA_DIRECTORY}/tvshows:/tv
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - ${INSTALL_LOCATION}/config/sonarr:/config
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -56,12 +56,12 @@ services:
     image: lscr.io/linuxserver/radarr
     container_name: radarr
     environment:
-      - PUID=<your_PUID>
-      - PGID=<your_PGID>
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - <media_folder>/movies:/movies
-      - <media_folder>/downloads:/downloads
-      - <install_location>/config/radarr:/config
+      - ${MEDIA_DIRECTORY}/movies:/movies
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - ${INSTALL_LOCATION}/config/radarr:/config
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -72,12 +72,12 @@ services:
     image: lscr.io/linuxserver/lidarr
     container_name: lidarr
     environment:
-      - PUID=<your_PUID>
-      - PGID=<your_PGID>
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - <media_folder>/music:/music
-      - <media_folder>/downloads:/downloads
-      - <install_location>/config/lidarr:/config
+      - ${MEDIA_DIRECTORY}/music:/music
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - ${INSTALL_LOCATION}/config/lidarr:/config
     ports:
       - 8686:8686
     restart: unless-stopped
@@ -88,12 +88,12 @@ services:
     image: lscr.io/linuxserver/readarr:develop
     container_name: readarr
     environment:
-      - PUID=<your_PUID>
-      - PGID=<your_PGID>
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - <media_folder>/books:/books
-      - <media_folder>/downloads:/downloads
-      - <install_location>/config/readarr:/config
+      - ${MEDIA_DIRECTORY}/books:/books
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - ${INSTALL_LOCATION}/config/readarr:/config
     ports:
       - 8787:8787
     restart: unless-stopped
@@ -104,12 +104,12 @@ services:
     image: lscr.io/linuxserver/bazarr
     container_name: bazarr
     environment:
-      - PUID=<your_PUID>
-      - PGID=<your_PGID>
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - <media_folder>/movies:/movies
-      - <media_folder>/tvshows:/tv
-      - <install_location>/config/bazarr:/config
+      - ${MEDIA_DIRECTORY}/movies:/movies
+      - ${MEDIA_DIRECTORY}/tvshows:/tv
+      - ${INSTALL_LOCATION}/config/bazarr:/config
     ports:
       - 6767:6767
     restart: unless-stopped
@@ -120,10 +120,10 @@ services:
     image: lscr.io/linuxserver/prowlarr
     container_name: prowlarr
     environment:
-      - PUID=<your_PUID>
-      - PGID=<your_PGID>
+      - PUID=${PUID}
+      - PGID=${PGID}
     volumes:
-      - <install_location>/config/prowlarr:/config
+      - ${INSTALL_LOCATION}/config/prowlarr:/config
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -142,12 +142,12 @@ services:
       - 8388:8388/udp # Shadowsocks
       #- 8080:8080/tcp # gluetun
     volumes:
-      - <install_location>/config/gluetun:/config
+      - ${INSTALL_LOCATION}/config/gluetun:/config
     environment:
-      - VPN_SERVICE_PROVIDER=<vpn_service>
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE}
       - VPN_TYPE=openvpn
-      - OPENVPN_USER=<vpn_user>
-      - OPENVPN_PASSWORD=<vpn_password>
+      - OPENVPN_USER=${VPN_USER}
+      - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - OPENVPN_CIPHERS=AES-256-GCM
     restart: unless-stopped
 
@@ -160,7 +160,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - <install_location>/config/portainer:/data
+      - ${INSTALL_LOCATION}/config/portainer:/data
     restart: unless-stopped
 
   # Watchtower is going to keep our instances updated
