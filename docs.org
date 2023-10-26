@@ -201,8 +201,8 @@ if [ ! -d "$install_directory" ]; then
     fi
 fi
 
-if [ ! -w "$install_directory" ]; then
-    send_error_message "The directory \"$install_directory\" is not writtable by the current user. Set the correct permissions or try a different directory" ❌
+if [ ! -w "$install_directory" ] || [ ! -r "$install_directory" ]; then
+    send_error_message "The directory \"$install_directory\" is not writable or readable by the current user. Set the correct permissions or try a different directory" ❌
 fi
 
 filename="$install_directory/docker-compose.yaml"
