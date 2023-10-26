@@ -84,7 +84,7 @@ Before installing, make sure you have:
 #+begin_src bash
 $ git clone https://gitlab.com/rogs/yams.git
 $ cd yams
-$ ./install.sh
+$ bash install.sh
 #+end_src
 
 And follow the instructions.
