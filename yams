@@ -53,21 +53,26 @@ if [ "$option" == "start" ]; then
 fi
 
 if [ "$option" == "check-vpn" ]; then
-    echo "Getting your qBittorrent IP..."
-    qbittorrent_ip=$(docker exec qbittorrent sh -c "curl -s ifconfig.me");
-    echo "$qbittorrent_ip"
-    echo "Your country in qBittorrent is $($dc exec -it qbittorrent sh -c 'curl -s https://am.i.mullvad.net/country')"
-    echo
     echo "Getting your IP..."
-    your_ip=$(curl -s ifconfig.me)
+    your_ip=$(curl -s api.ipify.org)
     echo "$your_ip"
     echo "Your local IP country is $(curl -s https://am.i.mullvad.net/country)"
     echo
-    if [ "$qbittorrent_ip" == "$your_ip" ]; then
-	   send_error_message "Your IPs are the same! qBittorrent is NOT working! ⚠️"
-   else
-	   send_success_message "Your IPs are different. qBittorrent is working as expected! ✅ "
-   fi
+    echo
+    echo "Getting your qBittorrent IP..."
+
+    qbittorrent_ip=$(docker exec qbittorrent sh -c "curl -s api.ipify.org");
+    if [ -n "$qbittorrent_ip" ]; then
+        echo "$qbittorrent_ip"
+        echo "Your country in qBittorrent is $(docker exec -it qbittorrent sh -c 'curl -s https://am.i.mullvad.net/country')"
+        if [ "$qbittorrent_ip" == "$your_ip" ]; then
+            send_error_message "Your IPs are the same! qBittorrent is exposing your IP! ⚠️"
+        else
+            send_success_message "Your IPs are different. qBittorrent is masking your IP! ✅ "
+        fi
+    else
+        send_error_message "Failed to retrieve qBittorrent IP. Please check your setup. ⚠️"
+    fi
 fi
 
 if [ "$option" == "destroy" ]; then
