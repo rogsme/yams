@@ -82,8 +82,8 @@ Before installing, make sure you have:
 :END:
 
 #+begin_src bash
-$ git clone https://gitlab.com/rogs/yams.git
-$ cd yams
+$ git clone --depth=1 https://gitlab.com/rogs/yams.git /tmp/yams
+$ cd /tmp/yams
 $ bash install.sh
 #+end_src
 
