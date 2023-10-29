@@ -1,10 +1,7 @@
 #+title: YAMS: Yet Another Media Server
 
 @@html:<img src="https://visitor-badge.laobi.icu/badge?page_id=rogs.yams" alt="visitor badge"/>@@
-@@html:<img alt="Discord" src="https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord">@@
-@@html:<img alt="Matrix" src="https://img.shields.io/matrix/%23yams-space%3Achat.rogs.me?logo=Matrix&label=Matrix">@@
-
-[[https://github.com/rogsme/xepelin_test/actions][file:https://github.com/rogsme/xepelin_test/actions/workflows/lint.yml/badge.svg]]
+@@html:<a href="https://discord.gg/cpnAm2Mu"><img alt="Discord" src="https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord"></a>@@
 
 This is a highly opinionated media server.
 
