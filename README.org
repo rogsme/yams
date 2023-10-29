@@ -4,6 +4,8 @@
 @@html:<img alt="Discord" src="https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord">@@
 @@html:<img alt="Matrix" src="https://img.shields.io/matrix/%23yams-space%3Achat.rogs.me?logo=Matrix&label=Matrix">@@
 
+[[https://github.com/rogsme/xepelin_test/actions][file:https://github.com/rogsme/xepelin_test/actions/workflows/lint.yml/badge.svg]]
+
 This is a highly opinionated media server.
 
 - Website: [[https://yams.media][https://yams.media]].
