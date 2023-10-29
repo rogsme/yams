@@ -2,6 +2,9 @@
 
 @@html:<img src="https://visitor-badge.laobi.icu/badge?page_id=rogs.yams" alt="visitor badge"/>@@
 
+[[https://discord.gg/cpnAm2Mu][file:https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord]]
+[[https://matrix.to/#/#yams-chat:chat.rogs.me][file:https://img.shields.io/matrix/%23yams-space%3Achat.rogs.me?logo=Matrix&label=Matrix]]
+
 This is a highly opinionated media server.
 
 - Website: [[https://yams.media][https://yams.media]].
