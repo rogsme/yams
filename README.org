@@ -3,7 +3,7 @@
 @@html:<img src="https://visitor-badge.laobi.icu/badge?page_id=rogs.yams" alt="visitor badge"/>@@
 
 @@html:<img alt="Discord" src="https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord">@@
-https://discord.gg/cpnAm2Mu
+[[https://discord.gg/cpnAm2Mu][Link]]
 
 This is a highly opinionated media server.
 
