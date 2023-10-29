@@ -1,14 +1,14 @@
 #+title: YAMS: Yet Another Media Server
 
 @@html:<img src="https://visitor-badge.laobi.icu/badge?page_id=rogs.yams" alt="visitor badge"/>@@
-
 @@html:<img alt="Discord" src="https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord">@@
-[[https://discord.gg/cpnAm2Mu][Link]]
 
 This is a highly opinionated media server.
 
 - Website: [[https://yams.media][https://yams.media]].
 - Code documentation and explanation: [[https://gitlab.com/rogs/yams/-/blob/master/docs.org][docs.org]].
+- Discord: [[https://discord.gg/cpnAm2Mu]]
+- Matrix: [[https://matrix.to/#/#yams-space:chat.rogs.me]]
 
 * Description
 :PROPERTIES:
