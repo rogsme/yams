@@ -22,7 +22,7 @@ Thank you for your interest in contributing to YAMS! We appreciate your help in 
 2. *Clone Your Fork*: Clone your forked repository to your local development environment using Git.
 
    #+BEGIN_SRC bash
-   git clone https://gitlab.com/rogs/yams.git
+   git clone https://gitlab.com/your-username/yams.git
    cd yams
    #+END_SRC
 
