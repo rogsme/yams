@@ -16,50 +16,50 @@ Thank you for your interest in contributing to YAMS! We appreciate your help in 
 :ID:       b43436c3-1350-4272-899d-a21f416449c3
 :END:
 
-1. **Fork the Repository**: Start by forking the YAMS repository on GitLab by clicking the "Fork" button
+1. *Fork the Repository*: Start by forking the YAMS repository on GitLab by clicking the "Fork" button
    at the top right of the repository page: [[https://gitlab.com/rogs/yams][YAMS on GitLab]].
 
-2. **Clone Your Fork**: Clone your forked repository to your local development environment using Git.
+2. *Clone Your Fork*: Clone your forked repository to your local development environment using Git.
 
    #+BEGIN_SRC bash
    git clone https://gitlab.com/rogs/yams.git
    cd yams
    #+END_SRC
 
-3. **Create a New Branch**: Create a new branch for your changes. It's a good practice to name your
+3. *Create a New Branch*: Create a new branch for your changes. It's a good practice to name your
    branch descriptively.
 
    #+BEGIN_SRC bash
    git checkout -b your-branch-name
    #+END_SRC
 
-4. **Make Changes**: Make the necessary code changes, additions, or improvements in your branch. Ensure
+4. *Make Changes*: Make the necessary code changes, additions, or improvements in your branch. Ensure
    that your code follows our coding standards and guidelines.
 
-5. **Test Your Changes**: Test your changes to ensure they work as expected and do not introduce any new
+5. *Test Your Changes*: Test your changes to ensure they work as expected and do not introduce any new
    issues.
 
-6. **Commit Your Changes**: Commit your changes with a descriptive commit message.
+6. *Commit Your Changes*: Commit your changes with a descriptive commit message.
 
    #+BEGIN_SRC bash
    git add .
    git commit -m "Your descriptive commit message"
    #+END_SRC
 
-7. **Push Your Changes**: Push your branch to your forked repository on GitLab.
+7. *Push Your Changes*: Push your branch to your forked repository on GitLab.
 
    #+BEGIN_SRC bash
    git push origin your-branch-name
    #+END_SRC
 
-8. **Create a Merge Request (MR)**: Go to the original YAMS repository on GitLab and click on "New Merge
+8. *Create a Merge Request (MR)*: Go to the original YAMS repository on GitLab and click on "New Merge
    Request." Select your branch as the source and create the MR. Provide a clear and detailed description
    of your changes.
 
-9. **Review and Collaborate**: Your MR will be reviewed by the project maintainers. Be prepared to
+9. *Review and Collaborate*: Your MR will be reviewed by the project maintainers. Be prepared to
    address any feedback or make further improvements based on the review.
 
-10. **Merging**: Once your MR is approved, it will be merged into the YAMS project. Congratulations,
+10. *Merging*: Once your MR is approved, it will be merged into the YAMS project. Congratulations,
     you've contributed to YAMS!
 
 * Code of Conduct
@@ -67,7 +67,7 @@ Thank you for your interest in contributing to YAMS! We appreciate your help in 
 :ID:       5a779ef7-0fc2-4767-95f1-c33e4cbaaf01
 :END:
 
-Basically, don't be an asshole. You can read our Code of Conduct here: https://gitlab.com/rogs/yams/-/blob/master/CODE_OF_CONDUCT.org
+Basically, don't be an asshole. You can read our Code of Conduct here: [[https://gitlab.com/rogs/yams/-/blob/master/CODE_OF_CONDUCT.org]]
 
 * Questions and Support
 :PROPERTIES:
@@ -75,6 +75,6 @@ Basically, don't be an asshole. You can read our Code of Conduct here: https://g
 :END:
 
 If you have any questions or need support while contributing to YAMS, feel free to reach out to us on
-[[https://forum.yams.media/][Our forums]] or our chats: [[https://matrix.to/#/#yams-space:chat.rogs.me][Matrix]] / [[https://discord.gg/cpnAm2Mu][Discord]]
+[[https://forum.yams.media/][our forums]] or our chats: [[https://matrix.to/#/#yams-space:chat.rogs.me][Matrix]] / [[https://discord.gg/cpnAm2Mu][Discord]]
 
 Thank you for helping make YAMS better!
