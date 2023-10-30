@@ -1,0 +1,94 @@
+#+TITLE: YAMS Code of Conduct
+#+DESCRIPTION: Guidelines for maintaining a respectful and inclusive community in YAMS.
+
+YAMS - Yet Another Media Server is committed to providing a welcoming and inclusive community for all
+contributors, users, and collaborators. We value and respect diversity and want to ensure that everyone
+can participate in the project, free from discrimination, harassment, and other forms of misconduct.
+
+* Table of contents :toc:
+:PROPERTIES:
+:ID:       8de21907-f40f-4505-8314-89067b0bedeb
+:END:
+- [[#expected-behavior][Expected Behavior]]
+- [[#unacceptable-behavior][Unacceptable Behavior]]
+- [[#reporting-violations][Reporting Violations]]
+- [[#consequences][Consequences]]
+- [[#acknowledgment][Acknowledgment]]
+- [[#additional-resources][Additional Resources]]
+
+* Expected Behavior
+:PROPERTIES:
+:ID:       505b6020-1337-4be7-ae5b-1e02c871a336
+:END:
+
+We expect all participants in the YAMS community to adhere to the following guidelines:
+
+1. Be respectful and considerate of others. Treat all individuals with kindness and empathy.
+
+2. Exercise patience and understanding. We all come from different backgrounds and have varying levels of
+   expertise.
+
+3. Listen to others and value their opinions and ideas, even if they differ from your own.
+
+4. Refrain from using offensive or derogatory language, as well as any form of harassment, including but
+   not limited to verbal, physical, or sexual harassment.
+
+5. Respect people's privacy. Do not share personal information without permission.
+
+6. Help maintain a positive and collaborative atmosphere in discussions, comments, and interactions.
+
+* Unacceptable Behavior
+:PROPERTIES:
+:ID:       35e35147-912f-4a4d-99ae-91dd04f275a4
+:END:
+
+The following behaviors are considered unacceptable within the YAMS community:
+
+1. Harassment, bullying, or discrimination based on race, gender, sexual orientation, religion,
+   disability, or any other personal characteristics.
+
+2. Trolling, flaming, or any form of personal attacks.
+
+3. Unsolicited sexual advances or inappropriate comments.
+
+4. Posting offensive, obscene, or inappropriate material.
+
+5. Excessive self-promotion or spamming.
+
+6. Any other behavior that creates an unwelcoming or hostile environment.
+
+* Reporting Violations
+:PROPERTIES:
+:ID:       3336e772-4cf3-4f5b-ac26-b637e3dc0afe
+:END:
+
+If you witness or experience behavior that violates this Code of Conduct, please report it to the project
+maintainers by contacting [roger at rogs.me]. All reports will be treated confidentially and
+will be taken seriously.
+
+* Consequences
+:PROPERTIES:
+:ID:       d4f8557c-9218-4780-9dbc-2c2f9535de20
+:END:
+
+Violation of this Code of Conduct may result in actions taken by the project maintainers, including
+warnings, temporary suspension, or permanent exclusion from the community.
+
+* Acknowledgment
+:PROPERTIES:
+:ID:       8a5354bb-a99f-43c6-8d4b-af758716acdf
+:END:
+
+By participating in the YAMS community, you agree to abide by this Code of Conduct. We encourage all
+contributors, users, and collaborators to help us create a positive and inclusive environment for
+everyone.
+
+Thank you for your understanding and cooperation.
+
+* Additional Resources
+:PROPERTIES:
+:ID:       dfb7ecd0-6693-431f-8219-f87e0fa9bbee
+:END:
+
+For additional information or guidance, please refer to the [[https://www.contributor-covenant.org/version/2/0/code_of_conduct/][Contributor Covenant Code of Conduct]], which
+serves as a reference for this Code of Conduct.
