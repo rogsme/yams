@@ -25,7 +25,7 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
-      - WEB_UI_PORT=8080
+      - WEBUI_PORT=8080
     volumes:
       - ${MEDIA_DIRECTORY}/downloads:/downloads
       - ${INSTALL_LOCATION}/config/qbittorrent:/config
