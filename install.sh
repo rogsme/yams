@@ -224,7 +224,7 @@ sed -i -e "s|<your_PUID>|$puid|g" "$env_file" \
 if [ "$media_service" == "plex" ]; then
     sed -i -e "s|#network_mode: host # plex|network_mode: host # plex|g" "$filename" \
      -e "s|ports: # plex|#ports: # plex|g" "$filename" \
-     -e "s|- 8096:8096 # plex|#- 8096:8096 # plex|g" "$filename" \
+     -e "s|- 8096:8096 # plex|#- 8096:8096 # plex|g" "$filename"
 fi
 
 sed -i -e "s|<install_directory>|$install_directory|g" "$env_file"
