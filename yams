@@ -3,7 +3,7 @@ set -euo pipefail
 
 
 dc="docker-compose -f <filename> -f <custom_file_filename>"
-install_location="<install_location>"
+install_directory="<install_directory>"
 
 option=${1:-"--help"}
 
@@ -94,16 +94,18 @@ if [ "$option" == "update" ]; then
     $dc stop
     rm -rf /tmp/yams && mkdir /tmp/yams
     wget https://gitlab.com/rogs/yams/-/raw/master/docker-compose.example.yaml -O /tmp/yams/docker-compose.example.yml > /dev/null 2>&1
-    source $install_location/.env
+    source $install_directory/.env
 
-    filename="$install_location/docker-compose.yaml"
+    filename="$install_directory/docker-compose.yaml"
 
     cp /tmp/yams/docker-compose.example.yml $filename
 
 
     sed -i -e "s;<media_service>;$MEDIA_SERVICE;g" "$filename"
     if [ "$MEDIA_SERVICE" == "plex" ]; then
-        sed -i -e "s;#network_mode: host # plex;network_mode: host # plex;g" "$filename"
+        sed -i -e "s|#network_mode: host # plex|network_mode: host # plex|g" "$filename" \
+            -e "s|ports: # plex|#ports: # plex|g" $filename \
+            -e "s|- 8096:8096 # plex|#- 8096:8096 # plex|g" $filename
     fi
 
     if [ "$VPN_ENABLED" == "y" ]; then
