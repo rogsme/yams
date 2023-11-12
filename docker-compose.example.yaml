@@ -14,8 +14,8 @@ services:
       - ${MEDIA_DIRECTORY}/movies:/data/movies
       - ${MEDIA_DIRECTORY}/tvshows:/data/tvshows
       - ${INSTALL_LOCATION}/config/${MEDIA_SERVICE}:/config
-    ports:
-      - 8096:8096
+    ports: # plex
+      - 8096:8096 # plex
     restart: unless-stopped
 
   # qBitorrent is used to download torrents
