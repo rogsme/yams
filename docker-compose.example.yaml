@@ -13,7 +13,7 @@ services:
     volumes:
       - ${MEDIA_DIRECTORY}/movies:/data/movies
       - ${MEDIA_DIRECTORY}/tvshows:/data/tvshows
-      - ${INSTALL_LOCATION}/config/${MEDIA_SERVICE}:/config
+      - ${INSTALL_DIRECTORY}/config/${MEDIA_SERVICE}:/config
     ports: # plex
       - 8096:8096 # plex
     restart: unless-stopped
@@ -28,7 +28,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - ${MEDIA_DIRECTORY}/downloads:/downloads
-      - ${INSTALL_LOCATION}/config/qbittorrent:/config
+      - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
     restart: unless-stopped
     ports: # qbittorrent
       - 8080:8080 # qbittorrent
@@ -45,7 +45,7 @@ services:
     volumes:
       - ${MEDIA_DIRECTORY}/tvshows:/tv
       - ${MEDIA_DIRECTORY}/downloads:/downloads
-      - ${INSTALL_LOCATION}/config/sonarr:/config
+      - ${INSTALL_DIRECTORY}/config/sonarr:/config
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -61,7 +61,7 @@ services:
     volumes:
       - ${MEDIA_DIRECTORY}/movies:/movies
       - ${MEDIA_DIRECTORY}/downloads:/downloads
-      - ${INSTALL_LOCATION}/config/radarr:/config
+      - ${INSTALL_DIRECTORY}/config/radarr:/config
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -77,7 +77,7 @@ services:
     volumes:
       - ${MEDIA_DIRECTORY}/music:/music
       - ${MEDIA_DIRECTORY}/downloads:/downloads
-      - ${INSTALL_LOCATION}/config/lidarr:/config
+      - ${INSTALL_DIRECTORY}/config/lidarr:/config
     ports:
       - 8686:8686
     restart: unless-stopped
@@ -93,7 +93,7 @@ services:
     volumes:
       - ${MEDIA_DIRECTORY}/books:/books
       - ${MEDIA_DIRECTORY}/downloads:/downloads
-      - ${INSTALL_LOCATION}/config/readarr:/config
+      - ${INSTALL_DIRECTORY}/config/readarr:/config
     ports:
       - 8787:8787
     restart: unless-stopped
@@ -109,7 +109,7 @@ services:
     volumes:
       - ${MEDIA_DIRECTORY}/movies:/movies
       - ${MEDIA_DIRECTORY}/tvshows:/tv
-      - ${INSTALL_LOCATION}/config/bazarr:/config
+      - ${INSTALL_DIRECTORY}/config/bazarr:/config
     ports:
       - 6767:6767
     restart: unless-stopped
@@ -123,7 +123,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${INSTALL_LOCATION}/config/prowlarr:/config
+      - ${INSTALL_DIRECTORY}/config/prowlarr:/config
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -142,7 +142,7 @@ services:
       - 8388:8388/udp # Shadowsocks
       #- 8080:8080/tcp # gluetun
     volumes:
-      - ${INSTALL_LOCATION}/config/gluetun:/config
+      - ${INSTALL_DIRECTORY}/config/gluetun:/config
     environment:
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE}
       - VPN_TYPE=openvpn
@@ -160,7 +160,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${INSTALL_LOCATION}/config/portainer:/data
+      - ${INSTALL_DIRECTORY}/config/portainer:/data
     restart: unless-stopped
 
   # Watchtower is going to keep our instances updated
