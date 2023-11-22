@@ -20,7 +20,7 @@ services:
 
   # qBitorrent is used to download torrents
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent
+    image: lscr.io/linuxserver/qbittorrent:4.6.0
     container_name: qbittorrent
     environment:
       - PUID=${PUID}
