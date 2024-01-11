@@ -25,13 +25,28 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
-      - WEBUI_PORT=8080
+      - WEBUI_PORT=8081
     volumes:
       - ${MEDIA_DIRECTORY}/downloads:/downloads
       - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
     restart: unless-stopped
     ports: # qbittorrent
-      - 8080:8080 # qbittorrent
+      - 8081:8081 # qbittorrent
+    #network_mode: "service:gluetun"
+
+  # SABnzbd is used to download from usenet
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - ${INSTALL_DIRECTORY}/config/sabnzbd:/config
+    restart: unless-stopped
+    ports: # sabnzdb
+      - 8080:8080 # sabnzbd
     #network_mode: "service:gluetun"
 
   # Sonarr is used to query, add downloads to the download queue and index TV shows
@@ -141,6 +156,7 @@ services:
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
       #- 8080:8080/tcp # gluetun
+      #- 8081:8081/tcp # gluetun
     volumes:
       - ${INSTALL_DIRECTORY}/config/gluetun:/config
     environment:

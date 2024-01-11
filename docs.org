@@ -140,7 +140,8 @@ running_services_location() {
     host_ip=$(hostname -I | awk '{ print $1 }')
 
     services=(
-        "qBittorrent:8080"
+        "qBittorrent:8081"
+        "SABnzbd:8080"
         "Radarr:7878"
         "Sonarr:8989"
         "Lidarr:8686"
@@ -393,8 +394,11 @@ if [ "$setup_vpn" == "y" ]; then
      -e "s|vpn_password|$vpn_password|g" "$env_file" \
      -e "s|#network_mode: \"service:gluetun\"|network_mode: \"service:gluetun\"|g" "$filename" \
      -e "s|ports: # qbittorrent|#ports: # qbittorrent|g" "$filename" \
-     -e "s|- 8080:8080 # qbittorrent|#- 8080:8080 # qbittorrent|g" "$filename" \
+     -e "s|- 8081:8081 # qbittorrent|#- 8081:8081 # qbittorrent|g" "$filename" \
+     -e "s|ports: # sabnzdb|#ports: # sabnzbd|g" "$filename" \
+     -e "s|- 8080:8080 # sabnzbd|#- 8080:8080 # sabnzbd|g" "$filename" \
      -e "s|#- 8080:8080/tcp # gluetun|- 8080:8080/tcp # gluetun|g" "$filename"
+     -e "s|#- 8081:8081/tcp # gluetun|- 8081:8081/tcp # gluetun|g" "$filename"
 fi
 #+end_src
 
