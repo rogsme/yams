@@ -49,8 +49,8 @@ In no particular order:
 :ID:       01577a0a-852e-481a-b9b3-791b68594f96
 :END:
 You need to have:
-- [[https://www.docker.com/][docker]]
-- [[https://docs.docker.com/compose/][docker-compose]]
+- [[https://www.docker.com/][Docker]]
+- [[https://docs.docker.com/compose/][Docker Compose]]
 
 If you haven't installed them, don't worry! The script will attempt to run both installations (it only
 works in Debian and Ubuntu!)

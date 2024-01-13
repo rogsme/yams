@@ -18,11 +18,8 @@ echo \
 
 sudo apt update
 
-sudo apt install -y docker-ce docker-ce-cli containerd.io
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 sudo usermod -aG docker $USER
-
-sudo curl -L https://github.com/docker/compose/releases/download/v2.15.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
 
 sudo su $USER --session-command "bash install.sh"

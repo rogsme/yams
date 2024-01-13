@@ -32,18 +32,31 @@ send_error_message() {
     exit 255
 }
 
-check_dependencides() {
-    if command -v "$1" &> /dev/null; then
-        send_success_message "$1 exists ✅ "
+check_dependencies() {
+    if command -v docker &> /dev/null; then
+        send_success_message "docker exists ✅ "
+        if docker compose version &> /dev/null; then
+            send_success_message "docker compose exists ✅ "
+        else
+            echo -e $(printf "\e[31m ⚠️ docker compose not found! ⚠️\e[0m")
+            read -p "Do you want YAMS to install Docker Compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! [y/N]: " install_docker
+            install_docker=${install_docker:-"n"}
+
+            if [ "$install_docker" == "y" ]; then
+                bash ./docker.sh
+            else
+                send_error_message "Install Docker Compose and come back later!"
+            fi
+        fi
     else
-        echo -e $(printf "\e[31m ⚠️ $1 not found! ⚠️\e[0m")
-        read -p "Do you want YAMS to install docker and docker-compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! [y/N]: " install_docker
+        echo -e $(printf "\e[31m ⚠️ docker not found! ⚠️\e[0m")
+        read -p "Do you want YAMS to install Docker and Docker Compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! [y/N]: " install_docker
         install_docker=${install_docker:-"n"}
 
         if [ "$install_docker" == "y" ]; then
             bash ./docker.sh
         else
-            send_error_message "Install docker and docker-compose and come back later!"
+            send_error_message "Install Docker and Docker Compose and come back later!"
         fi
     fi
 }
@@ -74,8 +87,7 @@ running_services_location() {
 echo "Checking prerequisites..."
 
 
-check_dependencides "docker"
-check_dependencides "docker-compose"
+check_dependencies
 
 if [[ "$EUID" = 0 ]]; then
     send_error_message "YAMS has to run without sudo! Please, run it again with regular permissions"
@@ -249,7 +261,7 @@ send_success_message "Everything installed correctly! 🎉"
 echo "Running the server..."
 echo "This is going to take a while..."
 
-docker-compose -f "$filename" up -d
+docker compose -f "$filename" up -d
 
 echo -e "\nWe need your sudo password to install the YAMS CLI and configure permissions..."
 
