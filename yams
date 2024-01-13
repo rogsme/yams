@@ -2,7 +2,7 @@
 set -euo pipefail
 
 
-dc="docker-compose -f <filename> -f <custom_file_filename>"
+dc="docker compose -f <filename> -f <custom_file_filename>"
 install_directory="<install_directory>"
 
 option=${1:-"--help"}
