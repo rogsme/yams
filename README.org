@@ -104,13 +104,14 @@ When the script finishes installing without issues, just run:
 $ yams
 yams - Yet Another Media Server
 
-Usage: yams [--help|restart|stop|start]
+Usage: yams [--help|restart|stop|start|destroy|check-vpn|update]
 options:
 --help     displays this help message
 restart    restarts yams services
 stop       stops all yams services
 start      starts yams services
 destroy    destroy yams services so you can start from scratch
+check-vpn  checks if the VPN is working as expected
 update     updates YAMS
 #+end_src
 * How to configure?
