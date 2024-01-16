@@ -10,7 +10,7 @@ option=${1:-"--help"}
 help() {
    echo "yams - Yet Another Media Server"
    echo
-   echo "Usage: yams [--help|restart|stop|start|status]"
+   echo "Usage: yams [--help|restart|stop|start|destroy|check-vpn|update]"
    echo "options:"
    echo "--help     displays this help message"
    echo "restart    restarts yams services"
