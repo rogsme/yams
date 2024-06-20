@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-
 dc="docker compose -f <filename> -f <custom_file_filename>"
 install_directory="<install_directory>"
 
@@ -54,14 +53,14 @@ fi
 
 if [ "$option" == "check-vpn" ]; then
     echo "Getting your IP..."
-    your_ip=$(curl -s api.ipify.org)
+    your_ip=$(curl -s https://ipinfo.io/ip)
     echo "$your_ip"
     echo "Your local IP country is $(curl -s https://am.i.mullvad.net/country)"
     echo
     echo
     echo "Getting your qBittorrent IP..."
 
-    qbittorrent_ip=$(docker exec qbittorrent sh -c "curl -s api.ipify.org");
+    qbittorrent_ip=$(docker exec qbittorrent sh -c 'curl -s https://ipinfo.io/ip');
     if [ -n "$qbittorrent_ip" ]; then
         echo "$qbittorrent_ip"
         echo "Your country in qBittorrent is $(docker exec -it qbittorrent sh -c 'curl -s https://am.i.mullvad.net/country')"
