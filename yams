@@ -29,6 +29,25 @@ send_error_message() {
     exit 255
 }
 
+find_available_ip_endpoint() {
+    ip_endpoints=(
+        "https://ipinfo.io/ip"
+        "https://api.ipify.org"
+        "https://checkip.amazonaws.com"
+        "https://tnedi.me"
+        "https://api.myip.la"
+        "https://wtfismyip.com/text"
+    )
+
+    for ip in ${ip_endpoints[@]}; do
+        endpoint=$(curl -s "$ip")
+        if [ "$endpoint" != "" ]; then
+            echo $ip
+            break
+        fi
+    done
+}
+
 if [ "$option" == "--help" ]; then
     help
     exit 0
@@ -53,14 +72,18 @@ fi
 
 if [ "$option" == "check-vpn" ]; then
     echo "Getting your IP..."
-    your_ip=$(curl -s https://ipinfo.io/ip)
+    ip_endpoint=$(find_available_ip_endpoint)
+    if [ "$ip_endpoint" == "" ]; then
+        send_error_message "No available endpoint to get IP address!"
+    fi
+    your_ip=$(curl -s $ip_endpoint)
     echo "$your_ip"
     echo "Your local IP country is $(curl -s https://am.i.mullvad.net/country)"
     echo
     echo
     echo "Getting your qBittorrent IP..."
 
-    qbittorrent_ip=$(docker exec qbittorrent sh -c 'curl -s https://ipinfo.io/ip');
+    qbittorrent_ip=$(docker exec qbittorrent sh -c "curl -s $ip_endpoint");
     if [ -n "$qbittorrent_ip" ]; then
         echo "$qbittorrent_ip"
         echo "Your country in qBittorrent is $(docker exec -it qbittorrent sh -c 'curl -s https://am.i.mullvad.net/country')"
