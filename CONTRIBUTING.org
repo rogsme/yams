@@ -75,6 +75,6 @@ Basically, don't be an asshole. You can read our Code of Conduct here: [[https:/
 :END:
 
 If you have any questions or need support while contributing to YAMS, feel free to reach out to us on
-[[https://forum.yams.media/][our forums]] or our chats: [[https://matrix.to/#/#yams-space:chat.rogs.me][Matrix]] / [[https://discord.gg/cpnAm2Mu][Discord]]
+[[https://forum.yams.media/][our forums]] or our chats: [[https://matrix.to/#/#yams-space:chat.rogs.me][Matrix]] / [[https://discord.gg/Gwae3tNMST][Discord]]
 
 Thank you for helping make YAMS better!
