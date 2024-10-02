@@ -39,7 +39,7 @@ check_dependencies() {
             send_success_message "docker compose exists ✅ "
         else
             echo -e $(printf "\e[31m ⚠️ docker compose not found! ⚠️\e[0m")
-            read -p "Do you want YAMS to install Docker Compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! [y/N]: " install_docker
+            read -p "Do you want YAMS to install Docker Compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! (y/N) [Default = n]: " install_docker
             install_docker=${install_docker:-"n"}
 
             if [ "$install_docker" == "y" ]; then
@@ -50,7 +50,7 @@ check_dependencies() {
         fi
     else
         echo -e $(printf "\e[31m ⚠️ docker not found! ⚠️\e[0m")
-        read -p "Do you want YAMS to install Docker and Docker Compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! [y/N]: " install_docker
+        read -p "Do you want YAMS to install Docker and Docker Compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! (y/N) [Default = n]: " install_docker
         install_docker=${install_docker:-"n"}
 
         if [ "$install_docker" == "y" ]; then
@@ -128,7 +128,7 @@ fi
 read -p "Please, input your media directory [/srv/media]: " media_directory
 media_directory=${media_directory:-"/srv/media"}
 
-read -p "Are you sure your media directory is \"$media_directory\"? [y/N]: " media_directory_correct
+read -p "Are you sure your media directory is \"$media_directory\"? (y/N) [Default = n]: " media_directory_correct
 media_directory_correct=${media_directory_correct:-"n"}
 
 if [ ! -d "$media_directory" ]; then
@@ -169,7 +169,7 @@ fi
 echo -e "\nTime to set up the VPN."
 echo "You can check the supported VPN list here: https://yams.media/advanced/vpn."
 
-read -p "Do you want to configure a VPN? [Y/n]: " setup_vpn
+read -p "Do you want to configure a VPN? (Y/n) [Default = y]: " setup_vpn
 setup_vpn=${setup_vpn:-"y"}
 
 if [ "$setup_vpn" == "y" ]; then
