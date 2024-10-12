@@ -165,6 +165,7 @@ services:
       - OPENVPN_USER=${VPN_USER}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - OPENVPN_CIPHERS=AES-256-GCM
+      - PORT_FORWARD_ONLY=on
     restart: unless-stopped
 
   # Portainer helps debugging and monitors the containers
