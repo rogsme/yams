@@ -249,6 +249,7 @@ if [ "$setup_vpn" == "y" ]; then
      -e "s|vpn_password|$vpn_password|g" "$env_file" \
      -e "s|#network_mode: \"service:gluetun\"|network_mode: \"service:gluetun\"|g" "$filename" \
      -e "s|ports: # qbittorrent|#ports: # qbittorrent|g" "$filename" \
+     -e "s|ports: # sabnzbd|#ports: # sabnzbd|g" "$filename" \
      -e "s|- 8081:8081 # qbittorrent|#- 8081:8081 # qbittorrent|g" "$filename" \
      -e "s|- 8080:8080 # sabnzbd|#- 8080:8080 # sabnzbd|g" "$filename" \
      -e "s|#- 8080:8080/tcp # gluetun|- 8080:8080/tcp # gluetun|g" "$filename"
