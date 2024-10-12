@@ -17,7 +17,7 @@ help() {
    echo "start      starts yams services"
    echo "destroy    destroy yams services so you can start from scratch"
    echo "check-vpn  checks if the VPN is working as expected"
-   echo "update     updates YAMS"
+   echo "update     updates YAMS (deprecated)"
 }
 
 send_success_message() {
@@ -112,31 +112,5 @@ if [ "$option" == "destroy" ]; then
 fi
 
 if [ "$option" == "update" ]; then
-    echo "Updating YAMS..."
-    $dc stop
-    rm -rf /tmp/yams && mkdir /tmp/yams
-    wget https://gitlab.com/rogs/yams/-/raw/master/docker-compose.example.yaml -O /tmp/yams/docker-compose.example.yml > /dev/null 2>&1
-    source $install_directory/.env
-
-    filename="$install_directory/docker-compose.yaml"
-
-    cp /tmp/yams/docker-compose.example.yml $filename
-
-
-    sed -i -e "s;<media_service>;$MEDIA_SERVICE;g" "$filename"
-    if [ "$MEDIA_SERVICE" == "plex" ]; then
-        sed -i -e "s|#network_mode: host # plex|network_mode: host # plex|g" "$filename" \
-            -e "s|ports: # plex|#ports: # plex|g" $filename \
-            -e "s|- 8096:8096 # plex|#- 8096:8096 # plex|g" $filename
-    fi
-
-    if [ "$VPN_ENABLED" == "y" ]; then
-        sed -i -e "s;#network_mode: \"service:gluetun\";network_mode: \"service:gluetun\";g" "$filename" \
-            -e "s;ports: # qbittorrent;#port: # qbittorrent;g" "$filename" \
-            -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename" \
-            -e "s;#- 8080:8080/tcp # gluetun;- 8080:8080/tcp # gluetun;g" "$filename"
-    fi
-
-    $dc up -d
-    echo "YAMS was updated and it is starting. Wait 1 min until all the services are up and running..."
+    echo "This command is deprecated. Please update YAMS manually."
 fi
