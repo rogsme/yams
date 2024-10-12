@@ -253,6 +253,7 @@ if [ "$setup_vpn" == "y" ]; then
      -e "s|- 8081:8081 # qbittorrent|#- 8081:8081 # qbittorrent|g" "$filename" \
      -e "s|- 8080:8080 # sabnzbd|#- 8080:8080 # sabnzbd|g" "$filename" \
      -e "s|#- 8080:8080/tcp # gluetun|- 8080:8080/tcp # gluetun|g" "$filename"
+     -e "s|#- 8081:8081/tcp # gluetun|- 8081:8081/tcp # gluetun|g" "$filename"
 fi
 
 sed -i -e "s|<filename>|$filename|g" yams \
