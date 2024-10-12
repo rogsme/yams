@@ -33,7 +33,7 @@ services:
       - 8081:8081 # qbittorrent
     #network_mode: "service:gluetun"
 
-  # sabnzbd is used to download from usenet
+  # SABnzbd is used to download from usenet
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
@@ -45,8 +45,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/sabnzbd:/config
-    ports:
-      - 8080:8080
+    ports: # sabnzbd
+      - 8080:8080 # sabnzbd
     restart: unless-stopped
     #network_mode: "service:gluetun"
 
