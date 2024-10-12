@@ -154,7 +154,7 @@ running_services_location() {
 
     services=(
         "qBittorrent:8081"
-        "SABnzbd:8081"
+        "SABnzbd:8080"
         "Radarr:7878"
         "Sonarr:8989"
         "Lidarr:8686"
