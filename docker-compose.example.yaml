@@ -30,7 +30,7 @@ services:
       - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
     restart: unless-stopped
     ports: # qbittorrent
-      - 8080:8080 # qbittorrent
+      - 8081:8081 # qbittorrent
     #network_mode: "service:gluetun"
 
   # sabnzbd is used to download from usenet
