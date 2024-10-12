@@ -65,7 +65,8 @@ running_services_location() {
     host_ip=$(hostname -I | awk '{ print $1 }')
 
     services=(
-        "qBittorrent:8080"
+        "qBittorrent:8081"
+        "SABnzbd:8081"
         "Radarr:7878"
         "Sonarr:8989"
         "Lidarr:8686"
