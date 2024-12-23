@@ -174,8 +174,8 @@ read -p "Do you want to configure a VPN? (Y/n) [Default = y]: " setup_vpn
 setup_vpn=${setup_vpn:-"y"}
 
 if [ "$setup_vpn" == "y" ]; then
-    read -p "What's your VPN service? (with spaces) [mullvad]: " vpn_service
-    vpn_service=${vpn_service:-"mullvad"}
+    read -p "What's your VPN service? (with spaces) [protonvpn]: " vpn_service
+    vpn_service=${vpn_service:-"protonvpn"}
 
     echo -e "\nYou should read $vpn_service's documentation in case it has different configurations for username and password."
     echo "The documentation for $vpn_service is here: https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
