@@ -121,6 +121,7 @@ fi
 if [ "$option" == "backup" ]; then
     echo "Stopping YAMS services..."
     $dc stop > /dev/null 2>&1
+    echo
 
     echo "Backing up YAMS to $destination..."
     echo "This may take a while depending on the size of your installation."
@@ -132,11 +133,13 @@ if [ "$option" == "backup" ]; then
     cp $(which yams) $install_directory
     tar --exclude='transcoding-temp' -caf "$backup_file" -C "$install_directory" .
 
+    echo
     echo "Backup completed! 🎉"
 
     echo "Starting YAMS services..."
     $dc start > /dev/null 2>&1
 
+    echo
     send_success_message "Backup completed successfully! 🎉"
     echo "Backup file: $backup_file"
 fi
