@@ -129,6 +129,7 @@ if [ "$option" == "backup" ]; then
     backup_date=$(date '+%Y-%m-%d-%s')
     backup_file="$destination/yams-backup-$backup_date.tar.gz"
 
+    cp $(which yams) $install_directory
     tar --exclude='transcoding-temp' -caf "$backup_file" -C "$install_directory" .
 
     echo "Backup completed! 🎉"
