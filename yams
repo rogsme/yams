@@ -119,10 +119,23 @@ if [ "$option" == "update" ]; then
 fi
 
 if [ "$option" == "backup" ]; then
+    echo "Stopping YAMS services..."
+    $dc stop > /dev/null 2>&1
+
     echo "Backing up YAMS to $destination..."
     echo "This may take a while depending on the size of your installation."
     echo "Please wait... ⌛"
-    tar --exclude='transcoding-temp' -cavf $destination/yams-backup-$(date '+%Y-%m-%d-%s').tar.gz $install_directory/
+
+    backup_date=$(date '+%Y-%m-%d-%s')
+    backup_file="$destination/yams-backup-$backup_date.tar.gz"
+
+    tar --exclude='transcoding-temp' -caf "$backup_file" -C "$install_directory" .
+
+    echo "Backup completed! 🎉"
+
+    echo "Starting YAMS services..."
+    $dc start > /dev/null 2>&1
+
     send_success_message "Backup completed successfully! 🎉"
-    echo "Backup file: $destination/yams-backup-$(date '+%Y-%m-%d-%s').tar.gz"
+    echo "Backup file: $backup_file"
 fi
