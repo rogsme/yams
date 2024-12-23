@@ -5,19 +5,22 @@ dc="docker compose -f <filename> -f <custom_file_filename>"
 install_directory="<install_directory>"
 
 option=${1:-"--help"}
+destination=${2:-"."}
+destination=$(realpath "$destination")
 
 help() {
    echo "yams - Yet Another Media Server"
    echo
-   echo "Usage: yams [--help|restart|stop|start|destroy|check-vpn|update (deprecated)]"
+   echo "Usage: yams [--help|restart|stop|start|destroy|check-vpn|backup [destination]|update (deprecated)]"
    echo "options:"
-   echo "--help     displays this help message"
-   echo "restart    restarts yams services"
-   echo "stop       stops all yams services"
-   echo "start      starts yams services"
-   echo "destroy    destroy yams services so you can start from scratch"
-   echo "check-vpn  checks if the VPN is working as expected"
-   echo "update     updates YAMS (deprecated)"
+   echo "--help                   displays this help message"
+   echo "restart                  restarts yams services"
+   echo "stop                     stops all yams services"
+   echo "start                    starts yams services"
+   echo "destroy                  destroy yams services so you can start from scratch"
+   echo "check-vpn                checks if the VPN is working as expected"
+   echo "backup [destination]     backs up yams to the destination location"
+   echo "update                   updates YAMS (deprecated)"
 }
 
 send_success_message() {
@@ -113,4 +116,13 @@ fi
 
 if [ "$option" == "update" ]; then
     echo "This command is deprecated. Please update YAMS manually."
+fi
+
+if [ "$option" == "backup" ]; then
+    echo "Backing up YAMS to $destination..."
+    echo "This may take a while depending on the size of your installation."
+    echo "Please wait... ⌛"
+    tar --exclude='transcoding-temp' -cavf $destination/yams-backup-$(date '+%Y-%m-%d-%s').tar.gz $install_directory/
+    send_success_message "Backup completed successfully! 🎉"
+    echo "Backup file: $destination/yams-backup-$(date '+%Y-%m-%d-%s').tar.gz"
 fi
