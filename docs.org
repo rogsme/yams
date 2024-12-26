@@ -219,14 +219,18 @@ configure_media_service() {
         media_service_port=8096
     fi
 
-    log_success "\nYAMS will install \"$media_service\" on port \"$media_service_port\""
+    echo
+    log_success "YAMS will install \"$media_service\" on port \"$media_service_port\""
 
     # Export for use in other functions
     export media_service media_service_port
 }
 
 configure_vpn() {
-    log_info "\nTime to set up the VPN."
+    echo
+    echo
+    echo
+    log_info "Time to set up the VPN."
     log_info "Supported VPN providers: https://yams.media/advanced/vpn"
 
     read -p "Configure VPN? (Y/n) [Default = y]: " setup_vpn
@@ -240,7 +244,8 @@ configure_vpn() {
     read -p "VPN service? (with spaces) [$DEFAULT_VPN_SERVICE]: " vpn_service
     vpn_service=${vpn_service:-$DEFAULT_VPN_SERVICE}
 
-    log_info "\nPlease check $vpn_service's documentation for specific configuration:"
+    echo
+    log_info "Please check $vpn_service's documentation for specific configuration:"
     log_info "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
 
     read -p "VPN username (without spaces): " vpn_user
@@ -350,7 +355,8 @@ copy_configuration_files() {
 
     for src in "${!files[@]}"; do
         local dest="$install_directory/${files[$src]}"
-        log_info "\nCopying $src to $dest..."
+        echo
+        log_info "Copying $src to $dest..."
 
         if cp "$src" "$dest"; then
             log_success "$src copied successfully ✅"
@@ -414,7 +420,8 @@ update_configuration_files() {
 }
 
 install_cli() {
-    log_info "\nInstalling YAMS CLI..."
+    echo
+    log_info "Installing YAMS CLI..."
     if sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
         log_success "YAMS CLI installed successfully ✅"
     else
@@ -494,7 +501,8 @@ if ! docker compose -f "$install_directory/docker-compose.yaml" up -d; then
 fi
 
 # Install CLI and set permissions
-log_info "\nWe need your sudo password to install the YAMS CLI and configure permissions..."
+echo
+log_info "We need your sudo password to install the YAMS CLI and configure permissions..."
 install_cli
 set_permissions
 
