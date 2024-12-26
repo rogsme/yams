@@ -127,7 +127,10 @@ check_dependencies() {
 }
 
 configure_media_service() {
-    log_info "\nTime to choose your media service."
+    echo
+    echo
+    echo
+    log_info "Time to choose your media service."
     log_info "Your media service is responsible for serving your files to your network."
     log_info "Supported media services:"
     log_info "- jellyfin (recommended, easier)"
