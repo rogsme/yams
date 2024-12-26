@@ -307,6 +307,18 @@ update_configuration_files() {
            -e "s|vpn_enabled|$setup_vpn|g" "$env_file" || \
         log_error "Failed to update .env file"
 
+    # Update VPN configuration in .env file
+if [ "${setup_vpn,,}" == "y" ]; then
+sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=y|" \
+        -e "s|^VPN_SERVICE=.*|VPN_SERVICE=$vpn_service|" \
+        -e "s|^VPN_USER=.*|VPN_USER=$vpn_user|" \
+        -e "s|^VPN_PASSWORD=.*|VPN_PASSWORD=$vpn_password|" "$env_file" || \
+        log_error "Failed to update VPN configuration in .env"
+else
+sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=n|" "$env_file" || \
+        log_error "Failed to update VPN configuration in .env"
+fi
+
     # Update docker-compose.yaml
     log_info "Updating docker-compose configuration..."
     sed -i "s|<media_service>|$media_service|g" "$filename" || \
