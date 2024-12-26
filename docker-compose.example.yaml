@@ -166,6 +166,7 @@ services:
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - OPENVPN_CIPHERS=AES-256-GCM
       - PORT_FORWARD_ONLY=on
+      - DNS_ADDRESS=127.0.0.11
     restart: unless-stopped
 
   # Portainer helps debugging and monitors the containers
