@@ -38,7 +38,7 @@ readonly YELLOW='\033[1;33m'
 readonly NC='\033[0m' # No Color
 
 # Dependencies
-readonly REQUIRED_COMMANDS=("curl" "docker" "docker" "sed" "awk")
+readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
 
 log_success() {
     echo -e "${GREEN}$1${NC}"
