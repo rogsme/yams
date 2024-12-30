@@ -3,10 +3,10 @@
 @@html:<img src="https://visitor-badge.laobi.icu/badge?page_id=rogs.yams" alt="visitor badge"/>@@
 @@html:<img alt="Discord" src="https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord">@@
 
-This is a highly opinionated media server.
+This is a highly opinionated media server that simplifies the setup and management of your home media collection.
 
-- Website: [[https://yams.media][https://yams.media]].
-- Code documentation and explanation: [[https://gitlab.com/rogs/yams/-/blob/master/docs.org][docs.org]].
+- Website: [[https://yams.media][https://yams.media]]
+- Code documentation: [[https://gitlab.com/rogs/yams/-/blob/master/docs.org][docs.org]]
 - Discord: [[https://discord.gg/Gwae3tNMST]]
 - Matrix: [[https://matrix.to/#/#yams-space:chat.rogs.me]]
 
@@ -14,182 +14,212 @@ This is a highly opinionated media server.
 :PROPERTIES:
 :ID:       280135a0-2cff-4e93-8679-7d1a6d56b7b2
 :END:
-This script installs the following software:
-- [[https://sonarr.tv/][Sonarr]]
-- [[https://radarr.video/][Radarr]]
-- [[https://lidarr.audio][Lidarr]]
-- [[https://readarr.com/][Readarr]]
-- [[https://jellyfin.org/][Jellyfin]]
-- [[https://emby.media/][Emby]]
-- [[https://www.plex.tv/][Plex]]
-- [[https://www.qbittorrent.org/][qBittorrent]]
-- [[https://www.bazarr.media/][Bazarr]]
-- [[https://github.com/Prowlarr/Prowlarr][Prowlarr]]
-- [[https://github.com/qdm12/gluetun][gluetun]]
-- [[https://www.portainer.io/][Portainer]]
 
-With this combination, you can create a fully functional media server that is going to download,
-categorize, subtitle and serve your favorite shows, movies, audio and books.
+YAMS installs and configures a complete media server stack using Docker containers:
+
+Download Management:
+- [[https://www.qbittorrent.org/][qBittorrent]] - Torrent client
+- [[https://sabnzbd.org/][SABnzbd]] - Usenet downloader
+- [[https://github.com/qdm12/gluetun][Gluetun]] - VPN client for secure downloads
+
+Media Management:
+- [[https://sonarr.tv/][Sonarr]] - TV show management and automation
+- [[https://radarr.video/][Radarr]] - Movie management and automation
+- [[https://lidarr.audio][Lidarr]] - Music management and automation
+- [[https://readarr.com/][Readarr]] - Books and audiobooks management
+- [[https://www.bazarr.media/][Bazarr]] - Automatic subtitle management
+- [[https://prowlarr.com/][Prowlarr]] - Indexer management for your \*arr apps
+
+Media Servers (Choose One):
+- [[https://jellyfin.org/][Jellyfin]] (Recommended) - Open source media server
+- [[https://emby.media/][Emby]] - Media server with premium features
+- [[https://www.plex.tv/][Plex]] - Popular media server with advanced features
+
+Management & Monitoring:
+- [[https://www.portainer.io/][Portainer]] - Container management UI
+- [[https://containrrr.dev/watchtower/][Watchtower]] - Automatic container updates
 
 * Features
 :PROPERTIES:
 :ID:       0e072c32-3158-4961-869c-49920090f3d5
 :END:
-In no particular order:
-- *Automatic shows/movies download*: Just add your shows and movies to the watch list and it should
-  automatically download the files when they are available.
-- *Automatic clasification and organization*: Your media files should be completely organized by default.
-- *Automatic subtitles download*: Self explanatory. Your media server should automatically download
-  subtitles in the languages you choose, if they are available.
-- *Support for Web, Android, iOS, Android TV and whatever that can support Emby*: Since we are
-  leveraging from Emby, you should be able to watch your favorite media almost anywhere.
+
+YAMS provides a comprehensive media server solution with:
+
+- *Smart Media Management*: Automatically organizes your media library
+  - Downloads new episodes and movies as they become available
+  - Categorizes content into appropriate folders
+  - Manages music and book collections
+  - Fetches subtitles in your preferred languages
+
+- *Flexible Media Access*: Access your content anywhere
+  - Web interface for browser-based streaming
+  - Apps for mobile devices (iOS/Android)
+  - Smart TV apps
+  - Roku, Apple TV, and other streaming devices
+  - Transcoding for optimal playback on any device
+
+- *Security and Privacy*
+  - Built-in VPN support for secure downloads
+  - User management and sharing controls
+  - SSL/TLS encryption support
+
+- *Easy Management*
+  - Simple CLI interface with `yams` command
+  - Web-based management through Portainer
+  - Automatic container updates via Watchtower
+  - Backup and restore functionality
 
 * Dependencies
 :PROPERTIES:
 :ID:       01577a0a-852e-481a-b9b3-791b68594f96
 :END:
-You need to have:
+
+Required:
 - [[https://www.docker.com/][Docker]]
 - [[https://docs.docker.com/compose/][Docker Compose]]
 
-If you haven't installed them, don't worry! The script will attempt to run both installations (it only
-works in Debian and Ubuntu!)
+The installation script can automatically install these on Debian/Ubuntu systems.
 
-* Before running
+* Before Installation
 :PROPERTIES:
 :ID:       1c609bfc-4e6e-4fd8-8129-1b722fd7cda8
 :END:
-Before installing, make sure you have:
-- *An installation location*: The script is going to ask you for a install location, but it will default
-  to ~/opt/yams~. Just make sure your current user has permissions to write on the selected directory.
-- *A media folder*: This is the folder where all your files are going to be downloaded and categorized. If
-  you choose ~/srv/media~, the script is going to create the following folders:
-  + ~/srv/media/tv~: For your TV shows
-  + ~/srv/media/movies~: For your movies
-  + ~/srv/media/music~: For your music
-  + ~/srv/media/books~: For your books
-  + ~/srv/media/downloads~: For your torrent downloads
-  + ~/srv/media/blackhole~: For your torrents blackhole
-- *A regular user to run and own the media files*: You shouldn't use ~root~ for this user, but I'm not
-  your father, nothing is going to stop you lol
-- *A VPN service (optional but STRONGLY recommended):* If you can, choose one from [[https://yams.media/advanced/vpn#official-supported-vpns][this list]]. The VPN I
-  always recommend is [[https://mullvad.net/en/][Mullvad]] because:
-  + They don’t require your email or information to create a new account.
-  + It’s simple to configure.
-  + They only have monthly subscriptions, so you can leave them whenever you want.
-  + You can pay with crypto.
 
-* To run
+Prepare the following:
+
+1. *Installation Location*
+   - Default: ~/opt/yams~
+   - Ensure your user has write permissions
+
+2. *Media Directory*
+   - Default: ~/srv/media~
+   - Will contain subdirectories:
+     + ~/srv/media/tvshows~: TV series
+     + ~/srv/media/movies~: Movies
+     + ~/srv/media/music~: Music files
+     + ~/srv/media/books~: Books and audiobooks
+     + ~/srv/media/downloads~: Temporary download location
+     + ~/srv/media/blackhole~: Watch folder for torrents
+
+3. *Non-root User*
+   - Regular system user to own and manage files
+   - Must have sudo privileges for initial setup
+
+4. *VPN Service* (Optional but Recommended)
+   - Supported providers listed at [[https://yams.media/advanced/vpn#official-supported-vpns][yams.media/advanced/vpn]]
+   - [[https://mullvad.net/en/][Mullvad]] recommended for:
+     + No email required
+     + Simple configuration
+     + Flexible payment options
+     + Monthly subscription model
+
+* Installation
 :PROPERTIES:
 :ID:       a0417c61-3fd8-40a0-9385-6c5aaed37337
 :END:
 
+Quick installation:
+
 #+begin_src bash
-$ git clone --depth=1 https://gitlab.com/rogs/yams.git /tmp/yams
-$ cd /tmp/yams
-$ bash install.sh
+git clone --depth=1 https://gitlab.com/rogs/yams.git /tmp/yams
+cd /tmp/yams
+bash install.sh
 #+end_src
 
-And follow the instructions.
+Follow the interactive prompts to configure your installation.
 
-
-So far, I've tested this in Debian 11 and Ubuntu 22.04.
+Tested on:
+- Debian 11/12
+- Ubuntu 22.04
 
 * Usage
 :PROPERTIES:
 :ID:       9e995141-b386-4962-9842-7209bedc5651
 :END:
-When the script finishes installing without issues, just run:
+
+YAMS provides a simple CLI interface:
+
 #+begin_src
-$ yams
 yams - Yet Another Media Server
 
-Usage: yams [--help|restart|stop|start|destroy|check-vpn|update]
-options:
---help     displays this help message
-restart    restarts yams services
-stop       stops all yams services
-start      starts yams services
-destroy    destroy yams services so you can start from scratch
-check-vpn  checks if the VPN is working as expected
-update     updates YAMS
+Usage: yams [command] [options]
+
+Commands:
+--help                    displays this help message
+restart                   restarts yams services
+stop                      stops all yams services
+start                     starts yams services
+destroy                   destroy yams services so you can start from scratch
+check-vpn                 checks if the VPN is working as expected
+backup                    backs up yams to the destination location
+
+Examples:
+  yams start              # Start all YAMS services
+  yams backup /path/to/backup  # Backup YAMS to specified directory
 #+end_src
-* How to configure?
+
+* Configuration
 :PROPERTIES:
 :ID:       242b8dfa-82ab-4d86-b3ea-0a0af6cf3ad5
 :END:
 
-Go to [[https://yams.media/config/][https://yams.media/config/]] and follow the config instructions
+Complete configuration guide: [[https://yams.media/config/][https://yams.media/config/]]
+
+* Future Development
+:PROPERTIES:
+:ID:       eba4712e-fa8a-42c8-bc32-b593141c99a4
+:END:
+
+Planned features and improvements:
+
+- [X] Multiple media server support (Jellyfin/Emby/Plex)
+- [X] Portainer integration
+- [X] Update functionality
+- [X] Lidarr and Readarr integration
+- [X] Enhanced Usenet support
+- [ ] Alpine-based images for reduced footprint
+- [ ] Additional download clients
+- [ ] Jackett integration
+- [ ] Request management (Jellyseerr/Overseerr)
+- [ ] Dashboard integration (Organizr/Heimdall)
+- [ ] Enhanced themes and customization
+- [ ] WireGuard VPN support
+- [ ] Filebrowser integration
+- [ ] Jellyfin account management
 
 * Donations
 :PROPERTIES:
 :ID:       992fb05d-c171-4ba9-9207-3dd1d467656e
 :END:
-If you *really* wish to donate, first I would like to say thank you from the bottom of my heart! ❤️ Second, I
-would prefer you donate to any of the projects used in this script.
 
-They are the ones doing the real work, I just created a docker-compose file and a couple of bash scripts:
+If you'd like to support YAMS, please consider donating to the underlying projects:
 
-- [[https://www.linuxserver.io/donate][linuxserver.io donations page]]
-- [[https://sonarr.tv/donate][Sonarr donations page]]
-- [[https://radarr.video/donate][Radarr donations page]]
-- [[https://opencollective.com/jellyfin][Jellyfin donations page]]
-- [[https://emby.media/premiere.html][Emby premier page]] (Recommended! I personally use this service)
-- [[https://www.plex.tv/plex-pass/][Plex pass page]]
-- [[https://www.qbittorrent.org/donate][qBittorrent donations page]]
-- [[https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=XHHRWXT9YB7WE&source=url][Bazarr donations page]]
-- [[https://www.paypal.me/qmcgaw][gluetun donations page]]
-- [[https://opencollective.com/Prowlarr#sponsor][Prowlarr donations page]]
+- [[https://www.linuxserver.io/donate][linuxserver.io]]
+- [[https://sonarr.tv/donate][Sonarr]]
+- [[https://radarr.video/donate][Radarr]]
+- [[https://opencollective.com/jellyfin][Jellyfin]]
+- [[https://emby.media/premiere.html][Emby Premier]]
+- [[https://www.plex.tv/plex-pass/][Plex Pass]]
+- [[https://www.qbittorrent.org/donate][qBittorrent]]
+- [[https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=XHHRWXT9YB7WE&source=url][Bazarr]]
+- [[https://www.paypal.me/qmcgaw][Gluetun]]
+- [[https://opencollective.com/Prowlarr#sponsor][Prowlarr]]
 
-Just let them know YAMS sent you there 😎
-
-* todo [4/17]
-:PROPERTIES:
-:ID:       eba4712e-fa8a-42c8-bc32-b593141c99a4
-:END:
-(in order)
-
-- [X] Support for multiple media servers (Jellyfin and Plex). [Done ✅]
-- [X] Add [[https://www.portainer.io/][Portainer]]. [Done ✅]
-- [X] Add updatE Functionality (~yams update~). [Done ✅]
-- [ ] Consider moving to Alpine images (might not be possible without a big change on the docker-compose file).
-- [ ] Add multiple download clients to choose from.
-- [ ] Add Jackett as an "yams extra".
-- [ ] Add [[https://github.com/Fallenbagel/jellyseerr][jellyseer]] or [[https://ombi.io/][Omby]].
-- [ ] Add a dashboard like [[https://docs.organizr.app/installation/installing-organizr][Organizr]].
-- [X] Consider adding [[https://lidarr.audio/][Lidarr]] and [[https://readarr.com/][Readarr]]. [Done ✅] Thanks to [[https://gitlab.com/jataggart][Jay Taggart]]!
-- [ ] Support for qBittorrent themes (VueTorrent).
-- [ ] Support for Wireguard.
-- [ ] Check [[https://filebrowser.org/][Filebrowser]].
-- [ ] Investigate [[https://github.com/FlareSolverr/FlareSolverr][FlareSolverr]].
-- [ ] Check [[https://github.com/Unpackerr/unpackerr][unpackerr]].
-- [ ] Check [[https://github.com/Flemmarr/Flemmarr][Flemarr]].
-- [ ] Check usenet.
-- [ ] Check [[https://github.com/hrfee/jfa-go][Jellyfin Accounts Go]].
-
-* Special thanks
+* Special Thanks
 :PROPERTIES:
 :ID:       b0a86edc-dc4f-4ac2-908c-fd08f1d2f99c
 :END:
-- [[https://info.linuxserver.io/][linuxserver.io]] for their amazing docker images
-- [[https://sonarr.tv/][Sonarr]]
-- [[https://radarr.video/][Radarr]]
-- [[https://jellyfin.org/][Jellyfin]]
-- [[https://emby.media/][Emby]]
-- [[https://www.plex.tv/][Plex]]
-- [[https://www.qbittorrent.org/][qBittorrent]]
-- [[https://www.bazarr.media/][Bazarr]]
-- [[https://github.com/Prowlarr/Prowlarr][Prowlarr]]
-- [[https://www.portainer.io/][Portainer]]
-- My friends:
+
+YAMS wouldn't be possible without:
+
+- [[https://info.linuxserver.io/][linuxserver.io]] for amazing Docker images
+- All the core applications listed above
+- Contributors:
   + [[https://github.com/xploshioOn][xploshioOn]]
   + [[https://github.com/norlis][norlis]]
   + [[https://github.com/isaac152][isaac152]]
-  For giving me ideas and helping me test the script
+  + [[https://gitlab.com/jataggart][Jay Taggart]]
+- The YAMS community for testing and feedback
 
-** And finally:
-:PROPERTIES:
-:ID:       126d4a9c-08a5-47f4-bffb-61b251ef394c
-:END:
-- You 🫵, for being such an amazing human being, checking out my repo and (hopefully!) using it on your
-  media server. Thank you! 🙇
+And most importantly: Thank you for using YAMS! 🙏
