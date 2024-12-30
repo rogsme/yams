@@ -157,6 +157,7 @@ services:
       - 8888:8888/tcp # HTTP proxy
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
+      - 8003:8000/tcp # Admin
       #- 8080:8080/tcp # gluetun
       #- 8081:8081/tcp # gluetun
     environment:
@@ -166,6 +167,7 @@ services:
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - OPENVPN_CIPHERS=AES-256-GCM
       - PORT_FORWARD_ONLY=on
+      - VPN_PORT_FORWARDING=on
     restart: unless-stopped
 
   # Portainer helps debugging and monitors the containers
