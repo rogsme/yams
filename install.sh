@@ -100,7 +100,6 @@ verify_user_permissions() {
 
 check_dependencies() {
     local missing_packages=()
-    local install_cmd=""
 
     # Check for required commands and collect missing ones
     for pkg in "${REQUIRED_COMMANDS[@]}"; do
