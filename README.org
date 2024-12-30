@@ -8,7 +8,7 @@ This is a highly opinionated media server that simplifies the setup and manageme
 - Website: [[https://yams.media][https://yams.media]]
 - Code documentation: [[https://gitlab.com/rogs/yams/-/blob/master/docs.org][docs.org]]
 - Discord: [[https://discord.gg/Gwae3tNMST]]
-- Matrix: [[https://matrix.to/#/#yams-space:chat.rogs.me]]
+- Matrix: [[https://matrix.to/#/#yams-space:rogs.me]]
 
 * Description
 :PROPERTIES:
@@ -108,11 +108,9 @@ Prepare the following:
 
 4. *VPN Service* (Optional but Recommended)
    - Supported providers listed at [[https://yams.media/advanced/vpn#official-supported-vpns][yams.media/advanced/vpn]]
-   - [[https://mullvad.net/en/][Mullvad]] recommended for:
-     + No email required
+   - [[https://protonvpn.com/][ProtonVPN]] recommended for:
      + Simple configuration
-     + Flexible payment options
-     + Monthly subscription model
+     + Port forwarding
 
 * Installation
 :PROPERTIES:
