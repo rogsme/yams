@@ -270,6 +270,8 @@ configure_vpn() {
     log_info "Please check $vpn_service's documentation for specific configuration:"
     log_info "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
 
+    log_warning "If you are using ProtonVPN, remember to suffix '+pmp' to your username"
+    echo
     read -p "VPN username (without spaces): " vpn_user
     [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
