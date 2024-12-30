@@ -72,7 +72,7 @@ readonly YELLOW='\033[1;33m'
 readonly NC='\033[0m' # No Color
 
 # Dependencies
-readonly REQUIRED_COMMANDS=("curl" "docker" "docker" "sed" "awk")
+readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
 #+end_src
 
 * Functions
@@ -159,14 +159,36 @@ verify_user_permissions() {
 
 #+begin_src bash
 check_dependencies() {
-    # Check for required commands
-    for cmd in "${REQUIRED_COMMANDS[@]}"; do
-        if ! command -v "$cmd" &> /dev/null; then
-            log_error "Required command '$cmd' not found!"
+    local missing_packages=()
+    local install_cmd=""
+
+    # Check for required commands and collect missing ones
+    for pkg in "${REQUIRED_PACKAGES[@]}"; do
+        if ! command -v "$pkg" &> /dev/null; then
+            missing_packages+=("$pkg")
+        else
+            log_success "$pkg exists ✅"
         fi
     done
 
-    # Check Docker
+    # If there are missing packages, offer to install them
+    if [ ${#missing_packages[@]} -gt 0 ]; then
+        log_warning "Missing required packages: ${missing_packages[*]}"
+        read -p "Would you like to install the missing packages? (y/N) [Default = n]: " install_deps
+        install_deps=${install_deps:-"n"}
+
+        if [ "${install_deps,,}" = "y" ]; then
+            echo "Installing missing packages..."
+            if ! sudo apt install -y "${missing_packages[@]}"; then
+                log_error "Failed to install missing packages. Please install them manually: ${missing_packages[*]}"
+            fi
+            log_success "Successfully installed missing packages ✅"
+        else
+            log_error "Please install the required packages manually: ${missing_packages[*]}"
+        fi
+    fi
+
+    # Check Docker and Docker Compose
     if command -v docker &> /dev/null; then
         log_success "docker exists ✅"
         if docker compose version &> /dev/null; then
