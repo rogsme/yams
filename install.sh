@@ -202,36 +202,47 @@ configure_vpn() {
     log_info "Please check $vpn_service's documentation for specific configuration:"
     log_info "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
 
-    log_warning "If you are using ProtonVPN, remember to suffix '+pmp' to your username"
     echo
     read -p "VPN username (without spaces): " vpn_user
     [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
-    # Use hidden input for password
-    unset vpn_password
-    charcount=0
-    prompt="VPN password (if using mullvad, enter username again): "
-    while IFS= read -p "$prompt" -r -s -n 1 char; do
-        if [[ $char == $'\0' ]]; then
-            break
-        fi
-        if [[ $char == $'\177' ]]; then
-            if [ $charcount -gt 0 ]; then
-                charcount=$((charcount-1))
-                prompt=$'\b \b'
-                vpn_password="${vpn_password%?}"
-            else
-                prompt=''
-            fi
-        else
-            charcount=$((charcount+1))
-            prompt='*'
-            vpn_password+="$char"
-        fi
-    done
-    echo
+    # Handle special cases for VPN providers
+    if [ "$vpn_service" = "protonvpn" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
+        vpn_user="${vpn_user}+pmp"
+        log_info "Added +pmp suffix to username for ProtonVPN port forwarding"
+    fi
 
-    [ -z "$vpn_password" ] && log_error "VPN password cannot be empty"
+    # Handle password input based on VPN service
+    if [ "$vpn_service" = "mullvad" ]; then
+        vpn_password="$vpn_user"
+        log_info "Using Mullvad username as password"
+    else
+        # Use hidden input for password
+        unset vpn_password
+        charcount=0
+        prompt="VPN password: "
+        while IFS= read -p "$prompt" -r -s -n 1 char; do
+            if [[ $char == $'\0' ]]; then
+                break
+            fi
+            if [[ $char == $'\177' ]]; then
+                if [ $charcount -gt 0 ]; then
+                    charcount=$((charcount-1))
+                    prompt=$'\b \b'
+                    vpn_password="${vpn_password%?}"
+                else
+                    prompt=''
+                fi
+            else
+                charcount=$((charcount+1))
+                prompt='*'
+                vpn_password+="$char"
+            fi
+        done
+        echo
+
+        [ -z "$vpn_password" ] && log_error "VPN password cannot be empty"
+    fi
 
     # Export for use in other functions
     export vpn_service vpn_user vpn_password setup_vpn
