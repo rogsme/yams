@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   # <media_service> is used to serve your media to the client devices
   <media_service>:
@@ -11,8 +9,8 @@ services:
       - PGID=${PGID}
       - VERSION=docker
     volumes:
-      - ${MEDIA_DIRECTORY}/movies:/data/movies
-      - ${MEDIA_DIRECTORY}/tvshows:/data/tvshows
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/${MEDIA_SERVICE}:/config
     ports: # plex
       - 8096:8096 # plex
@@ -20,18 +18,36 @@ services:
 
   # qBitorrent is used to download torrents
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:4.6.0
+    image: lscr.io/linuxserver/qbittorrent
     container_name: qbittorrent
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
-      - WEBUI_PORT=8080
+      - WEBUI_PORT=8081
     volumes:
-      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
     restart: unless-stopped
     ports: # qbittorrent
-      - 8080:8080 # qbittorrent
+      - 8081:8081 # qbittorrent
+    #network_mode: "service:gluetun"
+
+  # SABnzbd is used to download from usenet
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=America/Montevideo
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
+      - ${INSTALL_DIRECTORY}/config/sabnzbd:/config
+    ports: # sabnzbd
+      - 8080:8080 # sabnzbd
+    restart: unless-stopped
     #network_mode: "service:gluetun"
 
   # Sonarr is used to query, add downloads to the download queue and index TV shows
@@ -43,8 +59,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_DIRECTORY}/tvshows:/tv
-      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/sonarr:/config
     ports:
       - 8989:8989
@@ -59,8 +75,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_DIRECTORY}/movies:/movies
-      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/radarr:/config
     ports:
       - 7878:7878
@@ -75,8 +91,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_DIRECTORY}/music:/music
-      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/lidarr:/config
     ports:
       - 8686:8686
@@ -91,8 +107,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_DIRECTORY}/books:/books
-      - ${MEDIA_DIRECTORY}/downloads:/downloads
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/readarr:/config
     ports:
       - 8787:8787
@@ -107,8 +123,8 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
-      - ${MEDIA_DIRECTORY}/movies:/movies
-      - ${MEDIA_DIRECTORY}/tvshows:/tv
+      - /etc/localtime:/etc/localtime:ro
+      - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/bazarr:/config
     ports:
       - 6767:6767
@@ -123,6 +139,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ${INSTALL_DIRECTORY}/config/prowlarr:/config
     ports:
       - 9696:9696
@@ -140,15 +157,17 @@ services:
       - 8888:8888/tcp # HTTP proxy
       - 8388:8388/tcp # Shadowsocks
       - 8388:8388/udp # Shadowsocks
+      - 8003:8000/tcp # Admin
       #- 8080:8080/tcp # gluetun
-    volumes:
-      - ${INSTALL_DIRECTORY}/config/gluetun:/config
+      #- 8081:8081/tcp # gluetun
     environment:
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE}
       - VPN_TYPE=openvpn
       - OPENVPN_USER=${VPN_USER}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - OPENVPN_CIPHERS=AES-256-GCM
+      - PORT_FORWARD_ONLY=on
+      - VPN_PORT_FORWARDING=on
     restart: unless-stopped
 
   # Portainer helps debugging and monitors the containers

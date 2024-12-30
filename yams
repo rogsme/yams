@@ -1,142 +1,231 @@
 #!/bin/bash
 set -euo pipefail
 
-dc="docker compose -f <filename> -f <custom_file_filename>"
-install_directory="<install_directory>"
+# Constants
+readonly DC="docker compose -f <filename> -f <custom_file_filename>"
+readonly INSTALL_DIRECTORY="<install_directory>"
+readonly TIMEOUT_SECONDS=60
+readonly IP_ENDPOINTS=(
+    "https://ipinfo.io/ip"
+    "https://api.ipify.org"
+    "https://checkip.amazonaws.com"
+    "https://tnedi.me"
+    "https://api.myip.la"
+    "https://wtfismyip.com/text"
+)
 
-option=${1:-"--help"}
+# Color codes for better readability
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly NC='\033[0m' # No Color
 
-help() {
-   echo "yams - Yet Another Media Server"
-   echo
-   echo "Usage: yams [--help|restart|stop|start|destroy|check-vpn|update]"
-   echo "options:"
-   echo "--help     displays this help message"
-   echo "restart    restarts yams services"
-   echo "stop       stops all yams services"
-   echo "start      starts yams services"
-   echo "destroy    destroy yams services so you can start from scratch"
-   echo "check-vpn  checks if the VPN is working as expected"
-   echo "update     updates YAMS"
+# Available commands
+declare -A COMMANDS=(
+    ["--help"]="displays this help message"
+    ["restart"]="restarts yams services"
+    ["stop"]="stops all yams services"
+    ["start"]="starts yams services"
+    ["destroy"]="destroy yams services so you can start from scratch"
+    ["check-vpn"]="checks if the VPN is working as expected"
+    ["backup"]="backs up yams to the destination location"
+)
+
+# Functions
+log_success() {
+    echo -e "${GREEN}$1${NC}"
 }
 
-send_success_message() {
-    echo -e "$(printf "\e[32m$1\e[0m")"
+log_error() {
+    echo -e "${RED}$1${NC}" >&2
+    exit 1
 }
 
-send_error_message() {
-    echo -e "$(printf "\e[31m$1\e[0m")"
-    exit 255
+log_warning() {
+    echo -e "${YELLOW}$1${NC}"
+}
+
+show_help() {
+    echo "yams - Yet Another Media Server"
+    echo
+    echo "Usage: yams [command] [options]"
+    echo
+    echo "Commands:"
+    for cmd in "${!COMMANDS[@]}"; do
+        printf "%-25s %s\n" "$cmd" "${COMMANDS[$cmd]}"
+    done
+    echo
+    echo "Examples:"
+    echo "  yams start              # Start all YAMS services"
+    echo "  yams backup /path/to/backup  # Backup YAMS to specified directory"
+}
+
+wait_for_services() {
+    local wait_time=0
+    echo -n "Waiting for services to start"
+
+    while [ $wait_time -lt $TIMEOUT_SECONDS ]; do
+        # Get the total number of services and number of running services
+        local total_services
+        local running_services
+
+        total_services=$($DC ps --format '{{.Name}}' | wc -l)
+        running_services=$($DC ps --format '{{.Status}}' | grep -c "Up")
+
+        if [ "$total_services" -eq "$running_services" ]; then
+            echo
+            log_success "All $total_services services are up and running!"
+            return 0
+        fi
+
+        # Show progress with count
+        echo -n "."
+        sleep 1
+        ((wait_time++))
+
+        # Every 10 seconds, show status
+        if [ $((wait_time % 10)) -eq 0 ]; then
+            echo
+            echo -n "$running_services/$total_services services running"
+        fi
+    done
+
+    echo
+    log_error "Not all services started within ${TIMEOUT_SECONDS} seconds ($running_services/$total_services running)"
 }
 
 find_available_ip_endpoint() {
-    ip_endpoints=(
-        "https://ipinfo.io/ip"
-        "https://api.ipify.org"
-        "https://checkip.amazonaws.com"
-        "https://tnedi.me"
-        "https://api.myip.la"
-        "https://wtfismyip.com/text"
-    )
-
-    for ip in ${ip_endpoints[@]}; do
-        endpoint=$(curl -s "$ip")
-        if [ "$endpoint" != "" ]; then
-            echo $ip
-            break
+    for endpoint in "${IP_ENDPOINTS[@]}"; do
+        if curl -s --connect-timeout 5 "$endpoint" > /dev/null; then
+            echo "$endpoint"
+            return 0
         fi
     done
+    return 1
 }
 
-if [ "$option" == "--help" ]; then
-    help
-    exit 0
-fi
+get_ip_with_retries() {
+    local context=$1  # "local" or "qbittorrent"
+    local cmd_prefix=""
 
-if [ "$option" == "restart" ]; then
-    $dc stop && $dc up -d
-    echo "YAMS is starting. Wait 1 min until all the services are up and running..."
-    exit 0
-fi
-
-if [ "$option" == "stop" ]; then
-    $dc stop
-    exit 0
-fi
-
-if [ "$option" == "start" ]; then
-    $dc up -d
-    echo "YAMS is starting. Wait 1 min until all the services are up and running..."
-    exit 0
-fi
-
-if [ "$option" == "check-vpn" ]; then
-    echo "Getting your IP..."
-    ip_endpoint=$(find_available_ip_endpoint)
-    if [ "$ip_endpoint" == "" ]; then
-        send_error_message "No available endpoint to get IP address!"
+    if [ "$context" = "qbittorrent" ]; then
+        cmd_prefix="docker exec qbittorrent"
     fi
-    your_ip=$(curl -s $ip_endpoint)
-    echo "$your_ip"
-    echo "Your local IP country is $(curl -s https://am.i.mullvad.net/country)"
-    echo
-    echo
-    echo "Getting your qBittorrent IP..."
 
-    qbittorrent_ip=$(docker exec qbittorrent sh -c "curl -s $ip_endpoint");
-    if [ -n "$qbittorrent_ip" ]; then
-        echo "$qbittorrent_ip"
-        echo "Your country in qBittorrent is $(docker exec -it qbittorrent sh -c 'curl -s https://am.i.mullvad.net/country')"
-        if [ "$qbittorrent_ip" == "$your_ip" ]; then
-            send_error_message "Your IPs are the same! qBittorrent is exposing your IP! ⚠️"
+    for endpoint in "${IP_ENDPOINTS[@]}"; do
+        local ip
+        if [ "$context" = "local" ]; then
+            ip=$(curl -s --connect-timeout 5 "$endpoint")
         else
-            send_success_message "Your IPs are different. qBittorrent is masking your IP! ✅ "
+            ip=$($cmd_prefix curl -s --connect-timeout 5 "$endpoint")
         fi
+
+        if [ -n "$ip" ] && [[ "$ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "$ip"
+            return 0
+        fi
+    done
+    return 1
+}
+
+check_vpn() {
+    echo "Getting your IP..."
+    local your_ip
+    your_ip=$(get_ip_with_retries "local") || log_error "Failed to get your IP address from any endpoint"
+    echo "Your IP: $your_ip"
+
+    local country
+    country=$(curl -s --connect-timeout 5 "https://am.i.mullvad.net/country") || log_warning "Couldn't determine your country"
+    [ -n "$country" ] && echo "Your local IP country is $country"
+
+    echo -e "\nGetting your qBittorrent IP..."
+    local qbit_ip
+    qbit_ip=$(get_ip_with_retries "qbittorrent") || log_error "Failed to get qBittorrent IP from any endpoint"
+    echo "qBittorrent IP: $qbit_ip"
+
+    local qbit_country
+    qbit_country=$(docker exec qbittorrent curl -s --connect-timeout 5 "https://am.i.mullvad.net/country") || log_warning "Couldn't determine qBittorrent country"
+    [ -n "$qbit_country" ] && echo "qBittorrent country is $qbit_country"
+
+    if [ "$qbit_ip" == "$your_ip" ]; then
+        log_error "⚠️  WARNING: Your IPs are the same! qBittorrent is exposing your IP!"
     else
-        send_error_message "Failed to retrieve qBittorrent IP. Please check your setup. ⚠️"
+        log_success "✅ Success: Your IPs are different. qBittorrent is masking your IP!"
     fi
-fi
+}
 
-if [ "$option" == "destroy" ]; then
-    echo
-    echo
-    read -p "Are you sure you want to destroy all your yams services? THIS IS NOT RECOVERABLE! ⚠️ ️🚨 [y/N]: " destroy_now
-    destroy_now=${destroy_now:-"n"}
-    if [ "$destroy_now" == "y" ]; then
-        $dc down
-        echo
-        echo
-        echo "yams services were destroyed. To restart, run: "
-        echo "\$ yams start"
+backup_yams() {
+    local destination=$1
+    local backup_date
+    backup_date=$(date '+%Y-%m-%d-%s')
+    local backup_file="$destination/yams-backup-$backup_date.tar.gz"
+
+    echo "Stopping YAMS services..."
+    $DC stop > /dev/null 2>&1 || log_error "Failed to stop services"
+
+    echo -e "\nBacking up YAMS to $destination..."
+    echo "This may take a while depending on the size of your installation."
+    echo "Please wait... ⌛"
+
+    # Copy current yams script and create backup
+    cp "$(which yams)" "$INSTALL_DIRECTORY" || log_warning "Failed to backup yams script"
+    tar --exclude='transcoding-temp' -czf "$backup_file" -C "$INSTALL_DIRECTORY" . ||
+        log_error "Failed to create backup archive"
+
+    echo -e "\nStarting YAMS services..."
+    $DC start > /dev/null 2>&1 || log_warning "Failed to restart services"
+
+    log_success "Backup completed successfully! 🎉"
+    echo "Backup file: $backup_file"
+}
+
+destroy_yams() {
+    echo -e "\nWARNING: This will destroy all your YAMS services!"
+    read -p "Are you sure you want to continue? This is not recoverable! ⚠️ 🚨 [y/N]: " -r
+    if [[ ${REPLY,,} =~ ^y$ ]]; then
+        $DC down || log_error "Failed to destroy services"
+        echo -e "\nYAMS services were destroyed. To restart, run: yams start"
     fi
-fi
+}
 
-if [ "$option" == "update" ]; then
-    echo "Updating YAMS..."
-    $dc stop
-    rm -rf /tmp/yams && mkdir /tmp/yams
-    wget https://gitlab.com/rogs/yams/-/raw/master/docker-compose.example.yaml -O /tmp/yams/docker-compose.example.yml > /dev/null 2>&1
-    source $install_directory/.env
+main() {
+    local command=${1:-"--help"}
+    local destination=${2:-.}
 
-    filename="$install_directory/docker-compose.yaml"
-
-    cp /tmp/yams/docker-compose.example.yml $filename
-
-
-    sed -i -e "s;<media_service>;$MEDIA_SERVICE;g" "$filename"
-    if [ "$MEDIA_SERVICE" == "plex" ]; then
-        sed -i -e "s|#network_mode: host # plex|network_mode: host # plex|g" "$filename" \
-            -e "s|ports: # plex|#ports: # plex|g" $filename \
-            -e "s|- 8096:8096 # plex|#- 8096:8096 # plex|g" $filename
+    # Validate and normalize destination path if provided
+    if [ "$command" = "backup" ]; then
+        destination=$(realpath "$destination") || log_error "Invalid backup destination path"
     fi
 
-    if [ "$VPN_ENABLED" == "y" ]; then
-        sed -i -e "s;#network_mode: \"service:gluetun\";network_mode: \"service:gluetun\";g" "$filename" \
-            -e "s;ports: # qbittorrent;#port: # qbittorrent;g" "$filename" \
-            -e "s;- 8080:8080 # qbittorrent;#- 8080:8080 # qbittorrent;g" "$filename" \
-            -e "s;#- 8080:8080/tcp # gluetun;- 8080:8080/tcp # gluetun;g" "$filename"
-    fi
+    case "$command" in
+        --help)
+            show_help
+            ;;
+        restart)
+            $DC stop && $DC up -d
+            wait_for_services
+            ;;
+        stop)
+            $DC stop || log_error "Failed to stop services"
+            log_success "Services stopped successfully"
+            ;;
+        start)
+            $DC up -d || log_error "Failed to start services"
+            wait_for_services
+            ;;
+        check-vpn)
+            check_vpn
+            ;;
+        destroy)
+            destroy_yams
+            ;;
+        backup)
+            backup_yams "$destination"
+            ;;
+        *)
+            log_error "Unknown command: $command\nRun 'yams --help' for usage information"
+            ;;
+    esac
+}
 
-    $dc up -d
-    echo "YAMS was updated and it is starting. Wait 1 min until all the services are up and running..."
-fi
+main "$@"

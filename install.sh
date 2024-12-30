@@ -23,175 +23,199 @@ echo "To finish the installation of the CLI"
 echo "===================================================="
 echo ""
 
-send_success_message() {
-    echo -e $(printf "\e[32m$1\e[0m")
+# Constants
+readonly DEFAULT_INSTALL_DIR="/opt/yams"
+readonly DEFAULT_MEDIA_DIR="/srv/media"
+readonly SUPPORTED_MEDIA_SERVICES=("jellyfin" "emby" "plex")
+readonly DEFAULT_MEDIA_SERVICE="jellyfin"
+readonly DEFAULT_VPN_SERVICE="protonvpn"
+readonly MEDIA_SUBDIRS=("tvshows" "movies" "music" "books" "downloads" "blackhole")
+
+# Color codes
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly NC='\033[0m' # No Color
+
+# Dependencies
+readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
+
+log_success() {
+    echo -e "${GREEN}$1${NC}"
 }
 
-send_error_message() {
-    echo -e $(printf "\e[31m$1\e[0m")
-    exit 255
+log_error() {
+    echo -e "${RED}$1${NC}" >&2
+    exit 1
 }
 
-check_dependencies() {
-    if command -v docker &> /dev/null; then
-        send_success_message "docker exists ✅ "
-        if docker compose version &> /dev/null; then
-            send_success_message "docker compose exists ✅ "
-        else
-            echo -e $(printf "\e[31m ⚠️ docker compose not found! ⚠️\e[0m")
-            read -p "Do you want YAMS to install Docker Compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! (y/N) [Default = n]: " install_docker
-            install_docker=${install_docker:-"n"}
+log_warning() {
+    echo -e "${YELLOW}$1${NC}"
+}
 
-            if [ "$install_docker" == "y" ]; then
-                bash ./docker.sh
-            else
-                send_error_message "Install Docker Compose and come back later!"
-            fi
-        fi
-    else
-        echo -e $(printf "\e[31m ⚠️ docker not found! ⚠️\e[0m")
-        read -p "Do you want YAMS to install Docker and Docker Compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! (y/N) [Default = n]: " install_docker
-        install_docker=${install_docker:-"n"}
+log_info() {
+    echo "$1"
+}
 
-        if [ "$install_docker" == "y" ]; then
-            bash ./docker.sh
+create_and_verify_directory() {
+    local dir="$1"
+    local dir_type="$2"
+
+    if [ ! -d "$dir" ]; then
+        echo "The directory \"$dir\" does not exist. Attempting to create..."
+        if mkdir -p "$dir"; then
+            log_success "Directory $dir created ✅"
         else
-            send_error_message "Install Docker and Docker Compose and come back later!"
+            log_error "Failed to create $dir_type directory at \"$dir\". Check permissions ❌"
         fi
+    fi
+
+    if [ ! -w "$dir" ] || [ ! -r "$dir" ]; then
+        log_error "Directory \"$dir\" is not writable or readable. Check permissions ❌"
     fi
 }
 
-running_services_location() {
-    host_ip=$(hostname -I | awk '{ print $1 }')
+setup_directory_structure() {
+    local media_dir="$1"
 
-    services=(
-        "qBittorrent:8080"
-        "Radarr:7878"
-        "Sonarr:8989"
-        "Lidarr:8686"
-        "Readarr:8787"
-        "Prowlarr:9696"
-        "Bazarr:6767"
-        "$media_service:$media_service_port"
-        "Portainer:9000"
-    )
+    create_and_verify_directory "$media_dir" "media"
 
-    echo -e "Service URLs:"
-    for service in "${services[@]}"; do
-        service_name="${service%%:*}"
-        service_port="${service##*:}"
-        echo "$service_name: http://$host_ip:$service_port/"
+    for subdir in "${MEDIA_SUBDIRS[@]}"; do
+        create_and_verify_directory "$media_dir/$subdir" "media subdirectory"
     done
 }
 
-echo "Checking prerequisites..."
+verify_user_permissions() {
+    local username="$1"
+    local directory="$2"
 
-
-check_dependencies
-
-if [[ "$EUID" = 0 ]]; then
-    send_error_message "YAMS has to run without sudo! Please, run it again with regular permissions"
-fi
-
-default_install_directory="/opt/yams"
-
-read -p "Where do you want to install the docker-compose file? [$default_install_directory]: " install_directory
-install_directory=${install_directory:-$default_install_directory}
-
-if [ ! -d "$install_directory" ]; then
-    echo "The directory \"$install_directory\" does not exists. Attempting to create..."
-    if mkdir -p "$install_directory"; then
-        send_success_message "Directory $install_directory created ✅"
-    else
-        send_error_message "There was an error creating the installation directory at \"$install_directory\". Make sure you have the necessary permissions ❌"
+    if ! id -u "$username" &>/dev/null; then
+        log_error "User \"$username\" doesn't exist!"
     fi
-fi
 
-if [ ! -w "$install_directory" ] || [ ! -r "$install_directory" ]; then
-    send_error_message "The directory \"$install_directory\" is not writable or readable by the current user. Set the correct permissions or try a different directory" ❌
-fi
-
-filename="$install_directory/docker-compose.yaml"
-custom_file_filename="$install_directory/docker-compose.custom.yaml"
-env_file="$install_directory/.env"
-
-read -p "What's the user that is going to own the media server files? [$USER]: " username
-username=${username:-$USER}
-
-if id -u "$username" &>/dev/null; then
-    puid=$(id -u "$username");
-    pgid=$(id -g "$username");
-else
-    send_error_message "The user \"$username\" doesn't exist!"
-fi
-
-read -p "Please, input your media directory [/srv/media]: " media_directory
-media_directory=${media_directory:-"/srv/media"}
-
-read -p "Are you sure your media directory is \"$media_directory\"? (y/N) [Default = n]: " media_directory_correct
-media_directory_correct=${media_directory_correct:-"n"}
-
-if [ ! -d "$media_directory" ]; then
-    echo "The directory \"$media_directory\" does not exists. Attempting to create..."
-    if mkdir -p "$media_directory"; then
-        send_success_message "Directory $media_directory created ✅"
-    else
-        send_error_message "There was an error creating the installation directory at \"$media_directory\". Make sure you have the necessary permissions ❌"
+    if ! sudo -u "$username" test -w "$directory"; then
+        log_error "User \"$username\" doesn't have write permissions to \"$directory\""
     fi
-fi
+}
 
-if [ "$media_directory_correct" == "n" ]; then
-    send_error_message "Media directory is not correct. Please fix it and run the script again ❌"
-fi
+check_dependencies() {
+    local missing_packages=()
+    local install_cmd=""
 
-echo -e "\n\n\nTime to choose your media service."
-echo "Your media service is responsible for serving your files to your network."
-echo "By default, YAMS supports 3 media services:"
-echo "- jellyfin (recommended, easier)"
-echo "- emby"
-echo "- plex (advanced, always online)"
+    # Check for required commands and collect missing ones
+    for pkg in "${REQUIRED_COMMANDS[@]}"; do
+        if ! command -v "$pkg" &> /dev/null; then
+            missing_packages+=("$pkg")
+        else
+            log_success "$pkg exists ✅"
+        fi
+    done
 
-read -p "Choose your media service [jellyfin]: " media_service
-media_service=${media_service:-"jellyfin"}
-media_service=$(echo "$media_service" | awk '{print tolower($0)}')
+    # If there are missing packages, offer to install them
+    if [ ${#missing_packages[@]} -gt 0 ]; then
+        log_warning "Missing required packages: ${missing_packages[*]}"
+        read -p "Would you like to install the missing packages? (y/N) [Default = n]: " install_deps
+        install_deps=${install_deps:-"n"}
 
-media_service_port=8096
-if [ "$media_service" == "plex" ]; then
-    media_service_port=32400
-fi
+        if [ "${install_deps,,}" = "y" ]; then
+            echo "Installing missing packages..."
+            if ! sudo apt update && sudo apt install -y "${missing_packages[@]}"; then
+                log_error "Failed to install missing packages. Please install them manually: ${missing_packages[*]}"
+            fi
+            log_success "Successfully installed missing packages ✅"
+        else
+            log_error "Please install the required packages manually: ${missing_packages[*]}"
+        fi
+    fi
 
-if echo "emby plex jellyfin" | grep -qw "$media_service"; then
-    echo -e "\nYAMS is going to install \"$media_service\" on port \"$media_service_port\""
-else
-    send_error_message "\"$media_service\" is not supported by YAMS. Are you sure you chose the correct service?"
-fi
+    # Check Docker and Docker Compose
+    if command -v docker &> /dev/null; then
+        log_success "docker exists ✅"
+        if docker compose version &> /dev/null; then
+            log_success "docker compose exists ✅"
+            return 0
+        fi
+    fi
 
-echo -e "\nTime to set up the VPN."
-echo "You can check the supported VPN list here: https://yams.media/advanced/vpn."
+    log_warning "⚠️  Docker/Docker Compose not found! ⚠️"
+    read -p "Install Docker and Docker Compose? Only works on Debian/Ubuntu (y/N) [Default = n]: " install_docker
+    install_docker=${install_docker:-"n"}
 
-read -p "Do you want to configure a VPN? (Y/n) [Default = y]: " setup_vpn
-setup_vpn=${setup_vpn:-"y"}
+    if [ "${install_docker,,}" = "y" ]; then
+        bash ./docker.sh
+    else
+        log_error "Please install Docker and Docker Compose first"
+    fi
+}
 
-if [ "$setup_vpn" == "y" ]; then
-    read -p "What's your VPN service? (with spaces) [mullvad]: " vpn_service
-    vpn_service=${vpn_service:-"mullvad"}
+configure_media_service() {
+    echo
+    echo
+    echo
+    log_info "Time to choose your media service."
+    log_info "Your media service is responsible for serving your files to your network."
+    log_info "Supported media services:"
+    log_info "- jellyfin (recommended, easier)"
+    log_info "- emby"
+    log_info "- plex (advanced, always online)"
 
-    echo -e "\nYou should read $vpn_service's documentation in case it has different configurations for username and password."
-    echo "The documentation for $vpn_service is here: https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
+    read -p "Choose your media service [$DEFAULT_MEDIA_SERVICE]: " media_service
+    media_service=${media_service:-$DEFAULT_MEDIA_SERVICE}
+    media_service=$(echo "$media_service" | awk '{print tolower($0)}')
 
-    read -p "What's your VPN username? (without spaces): " vpn_user
+    if [[ ! " ${SUPPORTED_MEDIA_SERVICES[@]} " =~ " ${media_service} " ]]; then
+        log_error "\"$media_service\" is not supported by YAMS"
+    fi
 
+    # Set media service port
+    if [ "$media_service" == "plex" ]; then
+        media_service_port=32400
+    else
+        media_service_port=8096
+    fi
+
+    echo
+    log_success "YAMS will install \"$media_service\" on port \"$media_service_port\""
+
+    # Export for use in other functions
+    export media_service media_service_port
+}
+
+configure_vpn() {
+    echo
+    echo
+    echo
+    log_info "Time to set up the VPN."
+    log_info "Supported VPN providers: https://yams.media/advanced/vpn"
+
+    read -p "Configure VPN? (Y/n) [Default = y]: " setup_vpn
+    setup_vpn=${setup_vpn:-"y"}
+
+    if [ "${setup_vpn,,}" != "y" ]; then
+        export setup_vpn="n"
+        return 0
+    fi
+
+    read -p "VPN service? (with spaces) [$DEFAULT_VPN_SERVICE]: " vpn_service
+    vpn_service=${vpn_service:-$DEFAULT_VPN_SERVICE}
+
+    echo
+    log_info "Please check $vpn_service's documentation for specific configuration:"
+    log_info "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
+
+    read -p "VPN username (without spaces): " vpn_user
+    [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
+
+    # Use hidden input for password
     unset vpn_password
     charcount=0
-    prompt="What's your VPN password? (if you are using mullvad, just enter your username again): "
-    while IFS= read -p "$prompt" -r -s -n 1 char
-    do
-        if [[ $char == $'\0' ]]
-        then
+    prompt="VPN password (if using mullvad, enter username again): "
+    while IFS= read -p "$prompt" -r -s -n 1 char; do
+        if [[ $char == $'\0' ]]; then
             break
         fi
-        if [[ $char == $'\177' ]] ; then
-            if [ $charcount -gt 0 ] ; then
+        if [[ $char == $'\177' ]]; then
+            if [ $charcount -gt 0 ]; then
                 charcount=$((charcount-1))
                 prompt=$'\b \b'
                 vpn_password="${vpn_password%?}"
@@ -205,131 +229,261 @@ if [ "$setup_vpn" == "y" ]; then
         fi
     done
     echo
-fi
 
-echo "Configuring the docker-compose file for the user \"$username\" on \"$install_directory\"..."
+    [ -z "$vpn_password" ] && log_error "VPN password cannot be empty"
 
-copy_files=(
-    "docker-compose.example.yaml:$filename"
-    ".env.example:$env_file"
-    "docker-compose.custom.yaml:$custom_file_filename"
-)
+    # Export for use in other functions
+    export vpn_service vpn_user vpn_password setup_vpn
+}
 
-for file_mapping in "${copy_files[@]}"; do
-    source_file="${file_mapping%%:*}"
-    destination_file="${file_mapping##*:}"
+running_services_location() {
+    local host_ip
+    host_ip=$(hostname -I | awk '{ print $1 }')
 
-    echo -e "\nCopying $source_file to $destination_file..."
-    if cp "$source_file" "$destination_file"; then
-        send_success_message "$source_file was copied successfuly! ✅"
+    local -A services=(
+        ["qBittorrent"]="8081"
+        ["SABnzbd"]="8080"
+        ["Radarr"]="7878"
+        ["Sonarr"]="8989"
+        ["Lidarr"]="8686"
+        ["Readarr"]="8787"
+        ["Prowlarr"]="9696"
+        ["Bazarr"]="6767"
+        ["$media_service"]="$media_service_port"
+        ["Portainer"]="9000"
+    )
+
+    echo -e "Service URLs:"
+    for service in "${!services[@]}"; do
+        echo "$service: http://$host_ip:${services[$service]}/"
+    done
+}
+
+get_user_info() {
+    read -p "User to own the media server files? [$USER]: " username
+    username=${username:-$USER}
+
+    if id -u "$username" &>/dev/null; then
+        puid=$(id -u "$username")
+        pgid=$(id -g "$username")
     else
-        send_error_message "Failed to copy $source_file to $destination_file. Ensure your user ($USER) has the necessary permissions ❌"
+        log_error "User \"$username\" doesn't exist!"
     fi
-done
 
-sed -i -e "s|<your_PUID>|$puid|g" "$env_file" \
- -e "s|<your_PGID>|$pgid|g" "$env_file" \
- -e "s|<media_directory>|$media_directory|g" "$env_file" \
- -e "s|<media_service>|$media_service|g" "$env_file" \
- -e "s|<media_service>|$media_service|g" "$filename"
+    export username puid pgid
+}
 
-if [ "$media_service" == "plex" ]; then
-    sed -i -e "s|#network_mode: host # plex|network_mode: host # plex|g" "$filename" \
-     -e "s|ports: # plex|#ports: # plex|g" "$filename" \
-     -e "s|- 8096:8096 # plex|#- 8096:8096 # plex|g" "$filename"
-fi
+get_installation_paths() {
+    read -p "Installation directory? [$DEFAULT_INSTALL_DIR]: " install_directory
+    install_directory=${install_directory:-$DEFAULT_INSTALL_DIR}
+    create_and_verify_directory "$install_directory" "installation"
 
-sed -i -e "s|<install_directory>|$install_directory|g" "$env_file" \
- -e "s|vpn_enabled|$setup_vpn|g" "$env_file" \
+    read -p "Media directory? [$DEFAULT_MEDIA_DIR]: " media_directory
+    media_directory=${media_directory:-$DEFAULT_MEDIA_DIR}
 
-if [ "$setup_vpn" == "y" ]; then
-    sed -i -e "s|vpn_service|$vpn_service|g" "$env_file" \
-     -e "s|vpn_user|$vpn_user|g" "$env_file" \
-     -e "s|vpn_password|$vpn_password|g" "$env_file" \
-     -e "s|#network_mode: \"service:gluetun\"|network_mode: \"service:gluetun\"|g" "$filename" \
-     -e "s|ports: # qbittorrent|#ports: # qbittorrent|g" "$filename" \
-     -e "s|- 8080:8080 # qbittorrent|#- 8080:8080 # qbittorrent|g" "$filename" \
-     -e "s|#- 8080:8080/tcp # gluetun|- 8080:8080/tcp # gluetun|g" "$filename"
-fi
+    read -p "Are you sure your media directory is \"$media_directory\"? (y/N) [Default = n]: " media_directory_correct
+    media_directory_correct=${media_directory_correct:-"n"}
 
-sed -i -e "s|<filename>|$filename|g" yams \
- -e "s|<custom_file_filename>|$custom_file_filename|g" yams \
- -e "s|<install_directory>|$install_directory|g" yams
+    if [ "${media_directory_correct,,}" != "y" ]; then
+        log_error "Media directory is not correct. Please fix it and run the script again ❌"
+    fi
 
-send_success_message "Everything installed correctly! 🎉"
+    setup_directory_structure "$media_directory"
+    verify_user_permissions "$username" "$media_directory"
 
-echo "Running the server..."
-echo "This is going to take a while..."
+    export install_directory media_directory
+}
 
-docker compose -f "$filename" up -d
+copy_configuration_files() {
+    local -A files=(
+        ["docker-compose.example.yaml"]="docker-compose.yaml"
+        [".env.example"]=".env"
+        ["docker-compose.custom.yaml"]="docker-compose.custom.yaml"
+    )
 
-echo -e "\nWe need your sudo password to install the YAMS CLI and configure permissions..."
+    for src in "${!files[@]}"; do
+        local dest="$install_directory/${files[$src]}"
+        echo
+        log_info "Copying $src to $dest..."
 
-if sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
-    send_success_message "YAMS CLI installed successfully ✅"
+        if cp "$src" "$dest"; then
+            log_success "$src copied successfully ✅"
+        else
+            log_error "Failed to copy $src to $dest. Check permissions ❌"
+        fi
+    done
+}
+
+update_configuration_files() {
+    local filename="$install_directory/docker-compose.yaml"
+    local env_file="$install_directory/.env"
+    local yams_script="yams"
+
+    # Update .env file
+    log_info "Updating environment configuration..."
+    sed -i -e "s|<your_PUID>|$puid|g" \
+           -e "s|<your_PGID>|$pgid|g" \
+           -e "s|<media_directory>|$media_directory|g" \
+           -e "s|<media_service>|$media_service|g" \
+           -e "s|<install_directory>|$install_directory|g" \
+           -e "s|vpn_enabled|$setup_vpn|g" "$env_file" || \
+        log_error "Failed to update .env file"
+
+    # Update VPN configuration in .env file
+if [ "${setup_vpn,,}" == "y" ]; then
+sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=y|" \
+        -e "s|^VPN_SERVICE=.*|VPN_SERVICE=$vpn_service|" \
+        -e "s|^VPN_USER=.*|VPN_USER=$vpn_user|" \
+        -e "s|^VPN_PASSWORD=.*|VPN_PASSWORD=$vpn_password|" "$env_file" || \
+        log_error "Failed to update VPN configuration in .env"
 else
-    send_error_message "Failed to install YAMS CLI. Make sure you have the necessary permissions ❌"
+sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=n|" "$env_file" || \
+        log_error "Failed to update VPN configuration in .env"
 fi
 
-if sudo chown -R "$puid":"$pgid" "$media_directory"; then
-    send_success_message "Media directory ownership and permissions set successfully ✅"
-else
-    send_error_message "Failed to set ownership and permissions for the media directory. Check permissions ❌"
-fi
+    # Update docker-compose.yaml
+    log_info "Updating docker-compose configuration..."
+    sed -i "s|<media_service>|$media_service|g" "$filename" || \
+        log_error "Failed to update docker-compose.yaml"
 
-if sudo chown -R "$puid":"$pgid" "$install_directory"; then
-    send_success_message "Install directory ownership and permissions set successfully ✅"
-else
-    send_error_message "Failed to set ownership and permissions for the install directory. Check permissions ❌"
-fi
+    # Configure Plex-specific settings
+    if [ "$media_service" == "plex" ]; then
+        log_info "Configuring Plex-specific settings..."
+        sed -i -e 's|#network_mode: host # plex|network_mode: host # plex|g' \
+               -e 's|ports: # plex|#ports: # plex|g' \
+               -e 's|- 8096:8096 # plex|#- 8096:8096 # plex|g' "$filename" || \
+            log_error "Failed to configure Plex settings"
+    fi
 
-if [[ -d "$install_directory/config" ]]; then
-    send_success_message "Configuration folder \"$install_directory/config\" exists ✅"
-else
-    if sudo mkdir -p "$install_directory/config"; then
-        send_success_message "Configuration folder \"$install_directory/config\" created ✅"
+    # Configure VPN settings if enabled
+    if [ "${setup_vpn,,}" == "y" ]; then
+        log_info "Configuring VPN settings..."
+        sed -i -e "s|vpn_service|$vpn_service|g" \
+               -e "s|vpn_user|$vpn_user|g" \
+               -e "s|vpn_password|$vpn_password|g" \
+               -e 's|#network_mode: "service:gluetun"|network_mode: "service:gluetun"|g' \
+               -e 's|ports: # qbittorrent|#ports: # qbittorrent|g' \
+               -e 's|ports: # sabnzbd|#ports: # sabnzbd|g' \
+               -e 's|- 8081:8081 # qbittorrent|#- 8081:8081 # qbittorrent|g' \
+               -e 's|- 8080:8080 # sabnzbd|#- 8080:8080 # sabnzbd|g' \
+               -e 's|#- 8080:8080/tcp # gluetun|- 8080:8080/tcp # gluetun|g' \
+               -e 's|#- 8081:8081/tcp # gluetun|- 8081:8081/tcp # gluetun|g' "$filename" || \
+            log_error "Failed to configure VPN settings"
+    fi
+
+    # Update YAMS CLI script
+    log_info "Updating YAMS CLI configuration..."
+    sed -i -e "s|<filename>|$filename|g" \
+           -e "s|<custom_file_filename>|$install_directory/docker-compose.custom.yaml|g" \
+           -e "s|<install_directory>|$install_directory|g" "$yams_script" || \
+        log_error "Failed to update YAMS CLI script"
+}
+
+install_cli() {
+    echo
+    log_info "Installing YAMS CLI..."
+    if sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
+        log_success "YAMS CLI installed successfully ✅"
     else
-        send_error_message "Failed to create or access the configuration folder. Check permissions ❌"
+        log_error "Failed to install YAMS CLI. Check permissions ❌"
     fi
+}
+
+set_permissions() {
+    local dirs=("$media_directory" "$install_directory" "$install_directory/config")
+
+    for dir in "${dirs[@]}"; do
+        log_info "Setting permissions for $dir..."
+        if [ ! -d "$dir" ]; then
+            mkdir -p "$dir" || log_error "Failed to create directory $dir"
+        fi
+
+        if sudo chown -R "$puid:$pgid" "$dir"; then
+            log_success "Permissions set successfully for $dir ✅"
+        else
+            log_error "Failed to set permissions for $dir ❌"
+        fi
+    done
+}
+
+# Prevent running as root
+if [[ "$EUID" = 0 ]]; then
+    log_error "YAMS must run without sudo! Please run with regular permissions"
 fi
 
-if sudo chown -R "$puid":"$pgid" "$install_directory/config"; then
-    send_success_message "Configuration folder ownership and permissions set successfully ✅"
-else
-    send_error_message "Failed to set ownership and permissions for the configuration folder. Check permissions ❌"
+# Check all dependencies
+log_info "Checking prerequisites..."
+check_dependencies
+
+# Get user information
+get_user_info
+
+# Get installation paths
+get_installation_paths
+
+# Configure services
+configure_media_service
+configure_vpn
+
+log_info "Configuring the docker-compose file for user \"$username\" in \"$install_directory\"..."
+
+# Copy and update configuration files
+copy_configuration_files
+update_configuration_files
+
+log_success "Everything installed correctly! 🎉"
+
+# Start services
+log_info "Starting YAMS services..."
+log_info "This may take a while..."
+
+if ! docker compose -f "$install_directory/docker-compose.yaml" up -d; then
+    log_error "Failed to start YAMS services"
 fi
+
+# Install CLI and set permissions
+echo
+log_info "We need your sudo password to install the YAMS CLI and configure permissions..."
+install_cli
+set_permissions
 
 printf "\033c"
 
-echo "========================================================"
-echo "     _____          ___           ___           ___     "
-echo "    /  /::\        /  /\         /__/\         /  /\    "
-echo "   /  /:/\:\      /  /::\        \  \:\       /  /:/_   "
-echo "  /  /:/  \:\    /  /:/\:\        \  \:\     /  /:/ /\  "
-echo " /__/:/ \__\:|  /  /:/  \:\   _____\__\:\   /  /:/ /:/_ "
-echo " \  \:\ /  /:/ /__/:/ \__\:\ /__/::::::::\ /__/:/ /:/ /\\"
-echo "  \  \:\  /:/  \  \:\ /  /:/ \  \:\~~\~~\/ \  \:\/:/ /:/"
-echo "   \  \:\/:/    \  \:\  /:/   \  \:\  ~~~   \  \::/ /:/ "
-echo "    \  \::/      \  \:\/:/     \  \:\        \  \:\/:/  "
-echo "     \__\/        \  \::/       \  \:\        \  \::/   "
-echo "                   \__\/         \__\/         \__\/    "
-echo "========================================================"
-send_success_message "All done!✅  Enjoy YAMS!"
-echo "You can check the installation on $install_directory"
-echo "========================================================"
-echo "Everything should be running now! To check everything running, go to:"
+cat << "EOF"
+========================================================
+     _____          ___           ___           ___
+    /  /::\        /  /\         /__/\         /  /\
+   /  /:/\:\      /  /::\        \  \:\       /  /:/_
+  /  /:/  \:\    /  /:/\:\        \  \:\     /  /:/ /\
+ /__/:/ \__\:|  /  /:/  \:\   _____\__\:\   /  /:/ /:/_
+ \  \:\ /  /:/ /__/:/ \__\:\ /__/::::::::\ /__/:/ /:/ /\\
+  \  \:\  /:/  \  \:\ /  /:/ \  \:\~~\~~\/ \  \:\/:/ /:/
+   \  \:\/:/    \  \:\  /:/   \  \:\  ~~~   \  \::/ /:/
+    \  \::/      \  \:\/:/     \  \:\        \  \:\/:/
+     \__\/        \  \::/       \  \:\        \  \::/
+                   \__\/         \__\/         \__\/
+========================================================
+EOF
+
+log_success "All done!✅  Enjoy YAMS!"
+log_info "You can check the installation in $install_directory"
+log_info "========================================================"
+log_info "Everything should be running now! To check everything running, go to:"
 echo
+
 running_services_location
+
 echo
+log_info "You might need to wait for a couple of minutes while everything gets up and running"
 echo
-echo "You might need to wait for a couple of minutes while everything gets up and running"
-echo
-echo "All the services location are also saved in ~/yams_services.txt"
+log_info "All the service locations are also saved in ~/yams_services.txt"
 running_services_location > ~/yams_services.txt
-echo "========================================================"
+
+log_info "========================================================"
 echo
-echo "To configure YAMS, check the documentation at"
-echo "https://yams.media/config"
+log_info "To configure YAMS, check the documentation at"
+log_info "https://yams.media/config"
 echo
-echo "========================================================"
+log_info "========================================================"
+
 exit 0
