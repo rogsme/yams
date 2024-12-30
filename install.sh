@@ -103,7 +103,7 @@ check_dependencies() {
     local install_cmd=""
 
     # Check for required commands and collect missing ones
-    for pkg in "${REQUIRED_PACKAGES[@]}"; do
+    for pkg in "${REQUIRED_COMMANDS[@]}"; do
         if ! command -v "$pkg" &> /dev/null; then
             missing_packages+=("$pkg")
         else
