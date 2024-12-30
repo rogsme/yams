@@ -119,7 +119,7 @@ check_dependencies() {
 
         if [ "${install_deps,,}" = "y" ]; then
             echo "Installing missing packages..."
-            if ! sudo apt install -y "${missing_packages[@]}"; then
+            if ! sudo apt update && sudo apt install -y "${missing_packages[@]}"; then
                 log_error "Failed to install missing packages. Please install them manually: ${missing_packages[*]}"
             fi
             log_success "Successfully installed missing packages ✅"
