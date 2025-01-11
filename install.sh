@@ -203,7 +203,7 @@ configure_vpn() {
     log_info "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
 
     if [ "$vpn_service" = "protonvpn" ]; then
-       log_info "DON'T USE YOUR PROTON USERNAME AND PASSWORD. READ THE DOCS ABOVE TO GET THE CORRECT VPN USERNAME AND PASSWORD"
+       log_info "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
     fi
 
     echo
