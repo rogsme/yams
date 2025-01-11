@@ -206,8 +206,16 @@ configure_vpn() {
     read -p "VPN username (without spaces): " vpn_user
     [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
+    # Port forwarding configuration
+    echo
+    log_info "Port forwarding allows for better connectivity in certain applications."
+    log_info "However, not all VPN providers support this feature."
+    log_info "Please check your VPN provider's documentation to see if they support port forwarding."
+    read -p "Enable port forwarding? (y/N) [Default = n]: " enable_port_forwarding
+    enable_port_forwarding=${enable_port_forwarding:-"n"}
+
     # Handle special cases for VPN providers
-    if [ "$vpn_service" = "protonvpn" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
+    if [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
         vpn_user="${vpn_user}+pmp"
         log_info "Added +pmp suffix to username for ProtonVPN port forwarding"
     fi
@@ -245,7 +253,7 @@ configure_vpn() {
     fi
 
     # Export for use in other functions
-    export vpn_service vpn_user vpn_password setup_vpn
+    export vpn_service vpn_user vpn_password setup_vpn enable_port_forwarding
 }
 
 running_services_location() {
@@ -370,9 +378,15 @@ fi
     # Configure VPN settings if enabled
     if [ "${setup_vpn,,}" == "y" ]; then
         log_info "Configuring VPN settings..."
+
+        local port_forward_settings="off"
+        [ "${enable_port_forwarding,,}" = "y" ] && port_forward_settings="on"
+
         sed -i -e "s|vpn_service|$vpn_service|g" \
                -e "s|vpn_user|$vpn_user|g" \
                -e "s|vpn_password|$vpn_password|g" \
+               -e "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=$port_forward_settings|g" \
+               -e "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=$port_forward_settings|g" \
                -e 's|#network_mode: "service:gluetun"|network_mode: "service:gluetun"|g' \
                -e 's|ports: # qbittorrent|#ports: # qbittorrent|g' \
                -e 's|ports: # sabnzbd|#ports: # sabnzbd|g' \
