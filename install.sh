@@ -129,11 +129,16 @@ check_dependencies() {
 
     # Check Docker and Docker Compose
     if command -v docker &> /dev/null; then
-        log_success "docker exists ✅"
-        if docker compose version &> /dev/null; then
-            log_success "docker compose exists ✅"
-            return 0
+        # Check if Docker is installed via snap
+        if [[ $(which docker) == "/snap/bin/docker" ]]; then
+            log_error "Docker is installed via snap. YAMS requires the official Docker installation from docker.com. Please remove snap Docker and install Docker from https://docs.docker.com/engine/install/ or install docker using YAMS"
         fi
+        log_success "docker exists ✅"
+    fi
+
+    if docker compose version &> /dev/null; then
+        log_success "docker compose exists ✅"
+        return 0
     fi
 
     log_warning "⚠️  Docker/Docker Compose not found! ⚠️"
