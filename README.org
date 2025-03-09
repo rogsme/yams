@@ -3,6 +3,8 @@
 @@html:<img src="https://visitor-badge.laobi.icu/badge?page_id=rogs.yams" alt="visitor badge"/>@@
 @@html:<img alt="Discord" src="https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord">@@
 
+This is a change
+
 This is a highly opinionated media server that simplifies the setup and management of your home media collection.
 
 - Website: [[https://yams.media][https://yams.media]]
