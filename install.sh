@@ -207,15 +207,19 @@ configure_vpn() {
     printf "\033c"
 
     cat << "EOF"
-⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-⚠️                                                      ⚠️
-⚠️             READ THIS EXTREMELY CAREFULLY            ⚠️
-⚠️                                                      ⚠️
-⚠️        YOU MUST READ YOUR VPN DOCUMENTATION!        ⚠️
-⚠️                                                      ⚠️
-⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
-EOF
 
+
+██╗    ██╗ █████╗ ██████╗ ███╗   ██╗██╗███╗   ██╗ ██████╗
+██║    ██║██╔══██╗██╔══██╗████╗  ██║██║████╗  ██║██╔════╝
+██║ █╗ ██║███████║██████╔╝██╔██╗ ██║██║██╔██╗ ██║██║  ███╗
+██║███╗██║██╔══██║██╔══██╗██║╚██╗██║██║██║╚██╗██║██║   ██║
+╚███╔███╔╝██║  ██║██║  ██║██║ ╚████║██║██║ ╚████║╚██████╔╝
+ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+
+
+EOF
+    log_warning "READ THIS EXTREMELY CAREFULLY"
+    log_warning "YOU MUST READ YOUR VPN DOCUMENTATION!"
     echo
     log_info "Most VPN setup failures happen because users don't read the documentation"
     log_info "for their specific VPN provider. Each VPN has different requirements!"
@@ -225,7 +229,7 @@ EOF
     echo
 
     if [ "$vpn_service" = "protonvpn" ]; then
-       log_error "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
+       log_warning "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
        echo
     fi
 
