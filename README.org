@@ -219,5 +219,6 @@ YAMS wouldn't be possible without:
   + [[https://github.com/isaac152][isaac152]]
   + [[https://gitlab.com/jataggart][Jay Taggart]]
 - The YAMS community for testing and feedback
+- https://patorjk.com/software/taag/ for the ascii art!
 
 And most importantly: Thank you for using YAMS! 🙏
