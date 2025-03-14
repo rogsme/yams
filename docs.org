@@ -270,13 +270,34 @@ configure_vpn() {
     read -p "VPN service? (with spaces) [$DEFAULT_VPN_SERVICE]: " vpn_service
     vpn_service=${vpn_service:-$DEFAULT_VPN_SERVICE}
 
+# Clear screen and show dramatic warning
+    printf "\033c"
+
+    cat << "EOF"
+⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+⚠️                                                      ⚠️
+⚠️             READ THIS EXTREMELY CAREFULLY            ⚠️
+⚠️                                                      ⚠️
+⚠️        YOU MUST READ YOUR VPN DOCUMENTATION!        ⚠️
+⚠️                                                      ⚠️
+⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+EOF
+
     echo
-    log_info "Please check $vpn_service's documentation for specific configuration:"
-    log_info "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
+    log_info "Most VPN setup failures happen because users don't read the documentation"
+    log_info "for their specific VPN provider. Each VPN has different requirements!"
+    echo
+    log_warning "YOUR VPN DOCUMENTATION IS HERE:"
+    echo "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
+    echo
 
     if [ "$vpn_service" = "protonvpn" ]; then
-       log_info "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
+       log_error "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
+       echo
     fi
+
+    log_info "The next steps WILL FAIL if you don't follow the documentation correctly."
+    read -p "Press ENTER after you've READ the VPN documentation to continue..." -r
 
     echo
     read -p "VPN username (without spaces): " vpn_user
