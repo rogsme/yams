@@ -309,7 +309,11 @@ running_services_location() {
 
     echo -e "Service URLs:"
     for service in "${!services[@]}"; do
-        echo "$service: http://$host_ip:${services[$service]}/"
+        if [ "$service" = "plex" ]; then
+            echo "$service: http://$host_ip:${services[$service]}/web"
+        else
+            echo "$service: http://$host_ip:${services[$service]}/"
+        fi
     done
 }
 
