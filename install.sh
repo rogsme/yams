@@ -300,7 +300,6 @@ running_services_location() {
         ["Radarr"]="7878"
         ["Sonarr"]="8989"
         ["Lidarr"]="8686"
-        ["Readarr"]="8787"
         ["Prowlarr"]="9696"
         ["Bazarr"]="6767"
         ["$media_service"]="$media_service_port"

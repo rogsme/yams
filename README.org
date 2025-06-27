@@ -26,7 +26,6 @@ Media Management:
 - [[https://sonarr.tv/][Sonarr]] - TV show management and automation
 - [[https://radarr.video/][Radarr]] - Movie management and automation
 - [[https://lidarr.audio][Lidarr]] - Music management and automation
-- [[https://readarr.com/][Readarr]] - Books and audiobooks management
 - [[https://www.bazarr.media/][Bazarr]] - Automatic subtitle management
 - [[https://prowlarr.com/][Prowlarr]] - Indexer management for your \*arr apps
 

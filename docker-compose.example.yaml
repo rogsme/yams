@@ -98,22 +98,6 @@ services:
       - 8686:8686
     restart: unless-stopped
 
-  # Readarr is used to query, add downloads to the download queue and index Audio and Ebooks
-  # https://readarr.com/
-  readarr:
-    image: lscr.io/linuxserver/readarr:develop
-    container_name: readarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${MEDIA_DIRECTORY}:/data
-      - ${INSTALL_DIRECTORY}/config/readarr:/config
-    ports:
-      - 8787:8787
-    restart: unless-stopped
-
   # Bazarr is used to download and categorize subtitles
   # https://www.bazarr.media/
   bazarr:
