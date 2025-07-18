@@ -35,9 +35,6 @@ services:
     ports: # qbittorrent
       - 8081:8081 # qbittorrent
     #network_mode: "service:gluetun"
-    networks:
-      yams_network:
-        ipv4_address: 172.18.0.11
 
   # SABnzbd is used to download from usenet
   sabnzbd:
@@ -55,9 +52,6 @@ services:
       - 8080:8080 # sabnzbd
     restart: unless-stopped
     #network_mode: "service:gluetun"
-    networks:
-      yams_network:
-        ipv4_address: 172.18.0.12
 
   # Sonarr is used to query, add downloads to the download queue and index TV shows
   # https://sonarr.tv/
