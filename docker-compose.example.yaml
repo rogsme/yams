@@ -65,6 +65,9 @@ services:
     ports:
       - 8989:8989
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.20.0.10
 
   # Radarr is used to query, add downloads to the download queue and index Movies
   # https://radarr.video/
@@ -81,6 +84,9 @@ services:
     ports:
       - 7878:7878
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.20.0.11
 
   # Lidarr is used to query, add downloads to the download queue and index Music
   # https://lidarr.audio/
@@ -97,6 +103,9 @@ services:
     ports:
       - 8686:8686
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.20.0.12
 
   # Bazarr is used to download and categorize subtitles
   # https://www.bazarr.media/
@@ -175,3 +184,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+
+networks:
+  yams_network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
