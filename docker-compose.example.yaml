@@ -15,9 +15,6 @@ services:
     ports: # plex
       - 8096:8096 # plex
     restart: unless-stopped
-    networks:
-      yams_network:
-        ipv4_address: 172.18.0.10
 
   # qBitorrent is used to download torrents
   qbittorrent:
