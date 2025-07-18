@@ -15,6 +15,9 @@ services:
     ports: # plex
       - 8096:8096 # plex
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.18.0.10
 
   # qBitorrent is used to download torrents
   qbittorrent:
@@ -65,6 +68,9 @@ services:
     ports:
       - 8989:8989
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.18.0.13
 
   # Radarr is used to query, add downloads to the download queue and index Movies
   # https://radarr.video/
@@ -81,6 +87,9 @@ services:
     ports:
       - 7878:7878
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.18.0.14
 
   # Lidarr is used to query, add downloads to the download queue and index Music
   # https://lidarr.audio/
@@ -97,6 +106,9 @@ services:
     ports:
       - 8686:8686
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.18.0.15
 
   # Bazarr is used to download and categorize subtitles
   # https://www.bazarr.media/
@@ -113,6 +125,9 @@ services:
     ports:
       - 6767:6767
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.18.0.16
 
   # Prowlarr is our torrent indexer/searcher. Sonarr/Radarr use Prowlarr as a source
   # https://prowlarr.com/
@@ -152,7 +167,11 @@ services:
       - OPENVPN_CIPHERS=AES-256-GCM
       - PORT_FORWARD_ONLY=on
       - VPN_PORT_FORWARDING=on
+      - FIREWALL_OUTBOUND_SUBNETS=172.18.0.0/24
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.18.0.18
 
   # Portainer helps debugging and monitors the containers
   portainer:
@@ -165,6 +184,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${INSTALL_DIRECTORY}/config/portainer:/data
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.18.0.19
 
   # Watchtower is going to keep our instances updated
   watchtower:
@@ -175,3 +197,12 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.18.0.20
+
+networks:
+  yams_network:
+    ipam:
+      config:
+        - subnet: 172.18.0.0/24
