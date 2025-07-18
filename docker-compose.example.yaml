@@ -161,6 +161,7 @@ services:
       - OPENVPN_CIPHERS=AES-256-GCM
       - PORT_FORWARD_ONLY=on
       - VPN_PORT_FORWARDING=on
+      - FIREWALL_OUTBOUND_SUBNETS=172.20.0.0/24
     restart: unless-stopped
 
   # Portainer helps debugging and monitors the containers
