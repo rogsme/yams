@@ -217,6 +217,10 @@ YAMS wouldn't be possible without:
   + [[https://github.com/norlis][norlis]]
   + [[https://github.com/isaac152][isaac152]]
   + [[https://gitlab.com/jataggart][Jay Taggart]]
+  + [[https://gitlab.com/MasonStooksbury][Mason Stooksbury]]
+  + [[https://gitlab.com/gloof11][gloof]]
+  + [[https://github.com/methbkts][Metin Bektas]]
+  + [[https://gitlab.com/austin.eschweiler][Austin]]
 - The YAMS community for testing and feedback
 - https://patorjk.com/software/taag/ for the ascii art!
 
