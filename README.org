@@ -176,14 +176,14 @@ Planned features and improvements:
 - [X] Lidarr and Readarr integration
 - [X] Enhanced Usenet support
 - [ ] Alpine-based images for reduced footprint
-- [ ] Additional download clients
-- [ ] Jackett integration
-- [ ] Request management (Jellyseerr/Overseerr)
-- [ ] Dashboard integration (Organizr/Heimdall)
+- [X] Additional download clients
+- [X] Jackett integration (https://yams.media/advanced/add-your-own-containers/)
+- [X] Request management (Jellyseerr/Overseerr) (https://yams.media/advanced/add-your-own-containers/)
+- [X] Dashboard integration (Organizr/Heimdall) (https://yams.media/advanced/add-your-own-containers/)
 - [ ] Enhanced themes and customization
-- [ ] WireGuard VPN support
-- [ ] Filebrowser integration
-- [ ] Jellyfin account management
+- [X] WireGuard VPN support (https://yams.media/advanced/wireguard/)
+- [X] Filebrowser integration (https://yams.media/advanced/add-your-own-containers/)
+- [X] Jellyfin account management (https://yams.media/advanced/add-your-own-containers/)
 
 * Donations
 :PROPERTIES:
