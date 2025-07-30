@@ -212,7 +212,7 @@ YAMS wouldn't be possible without:
 
 - [[https://info.linuxserver.io/][linuxserver.io]] for amazing Docker images
 - All the core applications listed above
-- Contributors:
+- Contributors (in no particular order!):
   + [[https://github.com/xploshioOn][xploshioOn]]
   + [[https://github.com/norlis][norlis]]
   + [[https://github.com/isaac152][isaac152]]
@@ -221,6 +221,7 @@ YAMS wouldn't be possible without:
   + [[https://gitlab.com/gloof11][gloof]]
   + [[https://github.com/methbkts][Metin Bektas]]
   + [[https://gitlab.com/austin.eschweiler][Austin]]
+  + [[https://gitlab.com/Loriage][Loriage]] (Thank you for the french translation! 🇫🇷)
 - The YAMS community for testing and feedback
 - https://patorjk.com/software/taag/ for the ascii art!
 
