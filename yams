@@ -180,10 +180,12 @@ backup_yams() {
 }
 
 destroy_yams() {
-    echo -e "\nWARNING: This will destroy all your YAMS services!"
-    read -p "Are you sure you want to continue? This is not recoverable! ⚠️ 🚨 [y/N]: " -r
+    echo -e "\nWARNING: This will destroy all your YAMS services, containers, volumes, and the custom network!"
+    echo "This is not recoverable! ⚠️ 🚨"
+    read -p "Are you sure you want to continue? [y/N]: " -r
     if [[ ${REPLY,,} =~ ^y$ ]]; then
         $DC down || log_error "Failed to destroy services"
+        docker network rm yams_network || log_warning "Failed to remove yams_network. It might not exist or was already removed."
         echo -e "\nYAMS services were destroyed. To restart, run: yams start"
     fi
 }
