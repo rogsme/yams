@@ -227,6 +227,11 @@ YAMS wouldn't be possible without:
 
 And most importantly: Thank you for using YAMS! 🙏
 
+** Contributors
+:PROPERTIES:
+:ID:       4e3b45a2-565b-4b41-8d90-d58e52be9ac8
+:END:
+
 #+HTML: <a href="https://github.com/rogsme/yams/graphs/contributors">
 #+HTML:   <img src="https://contrib.rocks/image?repo=rogsme/yams" />
 #+HTML: </a>
