@@ -63,7 +63,7 @@ readonly DEFAULT_MEDIA_DIR="/srv/media"
 readonly SUPPORTED_MEDIA_SERVICES=("jellyfin" "emby" "plex")
 readonly DEFAULT_MEDIA_SERVICE="jellyfin"
 readonly DEFAULT_VPN_SERVICE="protonvpn"
-readonly MEDIA_SUBDIRS=("tvshows" "movies" "music" "books" "downloads" "blackhole")
+readonly MEDIA_SUBDIRS=("tvshows" "movies" "music" "books" "downloads/usenet/complete" "downloads/usenet/incomplete" "downloads/torrents" "blackhole")
 
 # Color codes
 readonly RED='\033[0;31m'
