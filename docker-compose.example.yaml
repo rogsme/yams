@@ -140,6 +140,9 @@ services:
     ports:
       - 9696:9696
     restart: unless-stopped
+    networks:
+      yams_network:
+        ipv4_address: 172.60.0.17
 
   # Gluetun is our VPN, so you can download torrents safely
   gluetun:
