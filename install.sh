@@ -237,6 +237,14 @@ EOF
     read -p "Press ENTER after you've READ the VPN documentation to continue..." -r
 
     echo
+    if [ "$vpn_service" = "mullvad" ]; then
+       log_warning "Mullvad is removing OpenVPN support on January 15, 2026."
+       log_warning "If you plan to use Mullvad, you MUST migrate to WireGuard after installation."
+       log_warning "Read more: https://mullvad.net/en/blog/removing-openvpn-15th-january-2026"
+       log_warning "WireGuard setup instructions: https://yams.media/advanced/wireguard/"
+       echo
+    fi
+
     read -p "VPN username (without spaces): " vpn_user
     [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
