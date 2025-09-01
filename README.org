@@ -196,12 +196,24 @@ If you'd like to support YAMS, please consider donating to the underlying projec
 - [[https://sonarr.tv/donate][Sonarr]]
 - [[https://radarr.video/donate][Radarr]]
 - [[https://opencollective.com/jellyfin][Jellyfin]]
-- [[https://emby.media/premiere.html][Emby Premier]]
-- [[https://www.plex.tv/plex-pass/][Plex Pass]]
 - [[https://www.qbittorrent.org/donate][qBittorrent]]
+- [[https://sabnzbd.org/donate/][SABnzbd]]
+- [[https://opencollective.com/Prowlarr#sponsor][Prowlarr]]
 - [[https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=XHHRWXT9YB7WE&source=url][Bazarr]]
 - [[https://www.paypal.me/qmcgaw][Gluetun]]
-- [[https://opencollective.com/Prowlarr#sponsor][Prowlarr]]
+
+** YAMS Donations: The Very Last Priority 🏆
+:PROPERTIES:
+:ID:       c260d256-8a19-48d0-91bf-f91f02847ed2
+:END:
+
+Okay, so you REALLY want to support YAMS? First, thank you! But honestly, I'm not doing this for money. YAMS is a passion project I created for myself and my friends. If you've already supported the projects above and still want to chip in, here are some options:
+
+*Donation Methods* 💸
+
+- Paypal: https://paypal.me/rogsme21
+- BTC: [[https://yams.media/pics/btc.webp][bc1qn092rw6q5nwha093qau6xryk6u3g9uwvy4tgdu]]
+- XMR: [[https://yams.media/pics/xmr.webp][8B2QC3RPEqEhbUKKL96CGzZBqoDq8kjzd5uUVCTHvyG8fACh5up3Svz4iNKiGEoZTqUXt4cJHqC4EeaTmrbVVHXfRrrRcBq]]
 
 * Special Thanks
 :PROPERTIES:
