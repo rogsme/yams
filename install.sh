@@ -195,8 +195,13 @@ configure_vpn() {
     read -p "Configure VPN? (Y/n) [Default = y]: " setup_vpn
     setup_vpn=${setup_vpn:-"y"}
 
+    is_protonvpn_free_tier="n"
+    enable_port_forwarding="n"
+
     if [ "${setup_vpn,,}" != "y" ]; then
         export setup_vpn="n"
+        export enable_port_forwarding="n"
+        export is_protonvpn_free_tier="n"
         return 0
     fi
 
@@ -231,7 +236,18 @@ EOF
     if [ "$vpn_service" = "protonvpn" ]; then
        log_warning "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
        echo
+
+       read -p "Are you using a free ProtonVPN account? (y/N) [Default = n]: " is_protonvpn_free_tier_input
+       is_protonvpn_free_tier_input=${is_protonvpn_free_tier_input:-"n"}
+       is_protonvpn_free_tier=${is_protonvpn_free_tier_input,,}
+
+       if [ "$is_protonvpn_free_tier" = "y" ]; then
+           log_warning "⚠️ ProtonVPN Free Tier Users: If you plan to use a free ProtonVPN account, please be aware that port forwarding is not supported. See our ProtonVPN Free Tier guide here: https://yams.media/advanced/vpn/#protonvpn-free-tier for more details."
+           echo
+       fi
     fi
+
+    export is_protonvpn_free_tier
 
     log_info "The next steps WILL FAIL if you don't follow the documentation correctly."
     read -p "Press ENTER after you've READ the VPN documentation to continue..." -r
@@ -249,15 +265,20 @@ EOF
     [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
     # Port forwarding configuration
-    echo
-    log_info "Port forwarding allows for better connectivity in certain applications."
-    log_info "However, not all VPN providers support this feature."
-    log_info "Please check your VPN provider's documentation to see if they support port forwarding."
-    read -p "Enable port forwarding? (y/N) [Default = n]: " enable_port_forwarding
-    enable_port_forwarding=${enable_port_forwarding:-"n"}
+    if [ "$is_protonvpn_free_tier" = "y" ]; then
+        log_warning "Port forwarding is automatically disabled for ProtonVPN Free Tier accounts"
+        enable_port_forwarding="n"
+    else
+        echo
+        log_info "Port forwarding allows for better connectivity in certain applications."
+        log_info "However, not all VPN providers support this feature."
+        log_info "Please check your VPN provider's documentation to see if they support port forwarding."
+        read -p "Enable port forwarding? (y/N) [Default = n]: " user_enable_port_forwarding
+        enable_port_forwarding=${user_enable_port_forwarding:-"n"}
+    fi
 
     # Handle special cases for VPN providers
-    if [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
+    if [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [ "$is_protonvpn_free_tier" != "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
         vpn_user="${vpn_user}+pmp"
         log_info "Added +pmp suffix to username for ProtonVPN port forwarding"
     fi
@@ -425,13 +446,16 @@ fi
         log_info "Configuring VPN settings..."
 
         local port_forward_settings="off"
-        [ "${enable_port_forwarding,,}" = "y" ] && port_forward_settings="on"
+        if [ "${enable_port_forwarding,,}" = "y" ] && [ "${is_protonvpn_free_tier,,}" != "y" ]; then
+            port_forward_settings="on"
+        fi
 
         sed -i -e "s|vpn_service|$vpn_service|g" \
                -e "s|vpn_user|$vpn_user|g" \
                -e "s|vpn_password|$vpn_password|g" \
-               -e "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=$port_forward_settings|g" \
-               -e "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=$port_forward_settings|g" \
+               -e "/PORT_FORWARD_ONLY=/s/=on/=$port_forward_settings/" \
+               -e "/VPN_PORT_FORWARDING=/s/=on/=$port_forward_settings/" \
+               -e "/VPN_PORT_FORWARDING=/ { s/^ *VPN_PORT_FORWARDING=.*/$( [ "${is_protonvpn_free_tier,,}" = "y" ] && echo "#" )VPN_PORT_FORWARDING=$port_forward_settings # ProtonVPN Free Tier does not support port forwarding/ }" \
                -e 's|#network_mode: "service:gluetun"|network_mode: "service:gluetun"|g' \
                -e 's|ports: # qbittorrent|#ports: # qbittorrent|g' \
                -e 's|ports: # sabnzbd|#ports: # sabnzbd|g' \
