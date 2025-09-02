@@ -242,7 +242,7 @@ EOF
        is_protonvpn_free_tier=${is_protonvpn_free_tier_input,,}
 
        if [ "$is_protonvpn_free_tier" = "y" ]; then
-           log_warning "⚠️ ProtonVPN Free Tier Users: If you plan to use a free ProtonVPN account, please be aware that port forwarding is not supported. You will also need to manually adjust your gluetun configuration after installation. See our ProtonVPN Free Tier guide here: https://yams.media/advanced/vpn/#protonvpn-free-tier for more details."
+           log_warning "⚠️ ProtonVPN Free Tier Users: If you plan to use a free ProtonVPN account, please be aware that port forwarding is not supported. See our ProtonVPN Free Tier guide here: https://yams.media/advanced/vpn/#protonvpn-free-tier for more details."
            echo
        fi
     fi
