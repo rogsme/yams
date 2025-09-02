@@ -265,6 +265,8 @@ configure_vpn() {
 
     if [ "${setup_vpn,,}" != "y" ]; then
         export setup_vpn="n"
+        export enable_port_forwarding="n"
+        export is_protonvpn_free_tier="n"
         return 0
     fi
 
@@ -296,8 +298,8 @@ EOF
     echo "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
     echo
 
-    local is_protonvpn_free_tier="n"
-    local enable_port_forwarding="n"
+    is_protonvpn_free_tier="n"
+    enable_port_forwarding="n"
 
     if [ "$vpn_service" = "protonvpn" ]; then
        log_warning "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
@@ -379,7 +381,7 @@ EOF
     fi
 
     # Export for use in other functions
-    export vpn_service vpn_user vpn_password setup_vpn enable_port_forwarding
+    export vpn_service vpn_user vpn_password setup_vpn enable_port_forwarding is_protonvpn_free_tier
 }
 
 running_services_location() {
