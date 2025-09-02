@@ -296,19 +296,21 @@ EOF
     echo "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
     echo
 
+    local is_protonvpn_free_tier="n"
+    local enable_port_forwarding="n"
+
     if [ "$vpn_service" = "protonvpn" ]; then
        log_warning "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
        echo
 
-       read -p "Are you using a free ProtonVPN account? (y/N) [Default = n]: " is_protonvpn_free_tier
-       is_protonvpn_free_tier=${is_protonvpn_free_tier:-"n"}
+       read -p "Are you using a free ProtonVPN account? (y/N) [Default = n]: " is_protonvpn_free_tier_input
+       is_protonvpn_free_tier_input=${is_protonvpn_free_tier_input:-"n"}
+       is_protonvpn_free_tier=${is_protonvpn_free_tier_input,,}
 
-       if [ "${is_protonvpn_free_tier,,}" = "y" ]; then
+       if [ "$is_protonvpn_free_tier" = "y" ]; then
            log_warning "⚠️ ProtonVPN Free Tier Users: If you plan to use a free ProtonVPN account, please be aware that port forwarding is not supported. You will also need to manually adjust your gluetun configuration after installation. See our ProtonVPN Free Tier guide here: https://yams.media/advanced/vpn/#protonvpn-free-tier for more details."
            echo
        fi
-    else
-        is_protonvpn_free_tier="n"
     fi
 
     export is_protonvpn_free_tier
@@ -328,10 +330,8 @@ EOF
     read -p "VPN username (without spaces): " vpn_user
     [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
-    local enable_port_forwarding="n"
-
     # Port forwarding configuration
-    if [ "${is_protonvpn_free_tier,,}" != "y" ]; then
+    if [ "$is_protonvpn_free_tier" != "y" ]; then
         echo
         log_info "Port forwarding allows for better connectivity in certain applications."
         log_info "However, not all VPN providers support this feature."
@@ -341,7 +341,7 @@ EOF
     fi
 
     # Handle special cases for VPN providers
-    if [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [ "${is_protonvpn_free_tier,,}" != "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
+    if [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [ "$is_protonvpn_free_tier" != "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
         vpn_user="${vpn_user}+pmp"
         log_info "Added +pmp suffix to username for ProtonVPN port forwarding"
     fi
