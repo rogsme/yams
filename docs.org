@@ -263,6 +263,9 @@ configure_vpn() {
     read -p "Configure VPN? (Y/n) [Default = y]: " setup_vpn
     setup_vpn=${setup_vpn:-"y"}
 
+    is_protonvpn_free_tier="n"
+    enable_port_forwarding="n"
+
     if [ "${setup_vpn,,}" != "y" ]; then
         export setup_vpn="n"
         export enable_port_forwarding="n"
@@ -298,9 +301,6 @@ EOF
     echo "https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/${vpn_service// /-}.md"
     echo
 
-    is_protonvpn_free_tier="n"
-    enable_port_forwarding="n"
-
     if [ "$vpn_service" = "protonvpn" ]; then
        log_warning "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
        echo
@@ -333,7 +333,10 @@ EOF
     [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
     # Port forwarding configuration
-    if [ "$is_protonvpn_free_tier" != "y" ]; then
+    if [ "$is_protonvpn_free_tier" = "y" ]; then
+        log_warning "Port forwarding is automatically disabled for ProtonVPN Free Tier accounts"
+        enable_port_forwarding="n"
+    else
         echo
         log_info "Port forwarding allows for better connectivity in certain applications."
         log_info "However, not all VPN providers support this feature."
@@ -381,7 +384,7 @@ EOF
     fi
 
     # Export for use in other functions
-    export vpn_service vpn_user vpn_password setup_vpn enable_port_forwarding is_protonvpn_free_tier
+    export vpn_service vpn_user vpn_password setup_vpn enable_port_forwarding
 }
 
 running_services_location() {
