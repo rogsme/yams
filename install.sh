@@ -261,12 +261,14 @@ EOF
     [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
     # Port forwarding configuration
-    echo
-    log_info "Port forwarding allows for better connectivity in certain applications."
-    log_info "However, not all VPN providers support this feature."
-    log_info "Please check your VPN provider's documentation to see if they support port forwarding."
-    read -p "Enable port forwarding? (y/N) [Default = n]: " enable_port_forwarding
-    enable_port_forwarding=${enable_port_forwarding:-"n"}
+    if [ "${is_protonvpn_free_tier,,}" != "y" ]; then
+        echo
+        log_info "Port forwarding allows for better connectivity in certain applications."
+        log_info "However, not all VPN providers support this feature."
+        log_info "Please check your VPN provider's documentation to see if they support port forwarding."
+        read -p "Enable port forwarding? (y/N) [Default = n]: " enable_port_forwarding
+        enable_port_forwarding=${enable_port_forwarding:-"n"}
+    fi
 
     # Handle special cases for VPN providers
     if [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [ "${is_protonvpn_free_tier,,}" != "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
