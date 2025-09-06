@@ -211,6 +211,7 @@ Okay, so you REALLY want to support YAMS? First, thank you! But honestly, I'm no
 
 *Donation Methods* 💸
 
+- BuyMeACoffee: https://buymeacoffee.com/rogs
 - Paypal: https://paypal.me/rogsme21
 - BTC: [[https://yams.media/pics/btc.webp][bc1qn092rw6q5nwha093qau6xryk6u3g9uwvy4tgdu]]
 - XMR: [[https://yams.media/pics/xmr.webp][8B2QC3RPEqEhbUKKL96CGzZBqoDq8kjzd5uUVCTHvyG8fACh5up3Svz4iNKiGEoZTqUXt4cJHqC4EeaTmrbVVHXfRrrRcBq]]
