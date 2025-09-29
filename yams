@@ -204,7 +204,7 @@ destroy_yams() {
     fi
 }
 
-start_services() {
+start_yams() {
     # Start all services or specific ones
     if [ "$#" -eq 0 ]; then
         $DC up -d || log_error "Failed to start services"
@@ -215,7 +215,7 @@ start_services() {
     
 }
 
-restart_services() {
+restart_yams() {
     # Restart all services or specific ones
     if [ "$#" -eq 0 ]; then
         $DC stop && $DC up -d
@@ -226,7 +226,7 @@ restart_services() {
     
 }
 
-stop_services() {
+stop_yams() {
     # Stop all services or specific ones
     if [ $# -eq 0 ]; then
         $DC stop || log_error "Failed to stop services"
@@ -250,13 +250,13 @@ main() {
             show_help
             ;;
         restart)
-            restart_services "${@:2}"
+            restart_yams "${@:2}"
             ;;
         stop)
-            stop_services "${@:2}"
+            stop_yams "${@:2}"
             ;;
         start)
-            start_services "${@:2}"
+            start_yams "${@:2}"
             ;;
         check-vpn)
             check_vpn
