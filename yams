@@ -193,7 +193,7 @@ destroy_yams() {
     else
         local services=("$@")
         local target_label=$(printf '%s ' "${services[@]}")
-        echo -e "\nWARNING: This will destroy the following services ${target_label}and their associated containers and volumes!"
+        echo -e "\nWARNING: This will destroy the following service(s) ${target_label}and their associated containers and volumes!"
         echo "This is not recoverable! ⚠️ 🚨"
         read -p "Are you sure you want to continue? [y/N]: " -r
         if [[ ${REPLY,,} =~ ^y$ ]]; then
