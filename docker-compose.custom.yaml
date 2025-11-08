@@ -1,2 +1,7 @@
+networks:
+  default:
+    external: true
+    name: yams_network
+
 # services:  -> When you uncomment, remember to remove the space too! "services:" must be left without any spaces around it
   # Add your custom services here!
