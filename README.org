@@ -236,6 +236,7 @@ YAMS wouldn't be possible without:
   + [[https://gitlab.com/austin.eschweiler][Austin]]
   + [[https://gitlab.com/Loriage][Loriage]] (Thank you for the french translation! 🇫🇷)
   + [[https://github.com/MoMoiin][MoMoiin]]
+  + [[https://github.com/ak4zh][ak4zh]]
 - The YAMS community for testing and feedback
 - https://patorjk.com/software/taag/ for the ascii art!
 
