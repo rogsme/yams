@@ -237,6 +237,7 @@ YAMS wouldn't be possible without:
   + [[https://gitlab.com/Loriage][Loriage]] (Thank you for the french translation! 🇫🇷)
   + [[https://github.com/MoMoiin][MoMoiin]]
   + [[https://github.com/ak4zh][ak4zh]]
+  + [[https://gitlab.com/zavan][zavan]] (Thank you for the MacOS port! https://gitlab.com/zavan/yams)
 - The YAMS community for testing and feedback
 - https://patorjk.com/software/taag/ for the ascii art!
 
