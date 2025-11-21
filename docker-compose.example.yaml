@@ -190,7 +190,7 @@ services:
 
   # Watchtower is going to keep our instances updated
   watchtower:
-    image: containrrr/watchtower
+    image: nickfedor/watchtower
     container_name: watchtower
     environment:
       - WATCHTOWER_CLEANUP=true
