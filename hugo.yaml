@@ -1,5 +1,5 @@
-baseURL: http://0.0.0.0:1313/
-title: Documentation
+baseURL: http://localhost:1313/
+title: YAMS
 theme: hugo-book
 
 copyright: "This is a copyright placeholder"
@@ -67,11 +67,11 @@ params:
 
   # (Optional, default favicon.png) Set the path to a favicon file.
   # If the favicon is /static/favicon.png then the path would be favicon.png
-  # BookFavicon: "favicon.png"
+  BookFavicon: "favicon.ico"
 
   # (Optional, default none) Set the path to a logo for the book.
   # If the logo is /static/logo.png then the path would be logo.png
-  # BookLogo: /logo.png
+  BookLogo: /logo.png
 
   # (Optional, default docs) Specify root page to render child pages as menu.
   # Page is resoled by .GetPage function: https://gohugo.io/functions/getpage/
@@ -110,12 +110,12 @@ params:
   # Portable links meant to work with text editors and let you write markdown without {{< relref >}} shortcode
   # Theme will print warning or error if page referenced in markdown does not exists.
   # Possible values are false | 'warning' | 'error'
-  BookPortableLinks: 'warning'
+  BookPortableLinks: "warning"
 
   # /!\ This is an experimental feature, might be removed or changed at any time
   # (Optional, experimental, default false) Enables service worker that caches visited pages and resources for offline use.
   # can be false, true or 'precache', precache will try to download all content pages on install.
-  BookServiceWorker: 'precache'
+  BookServiceWorker: "precache"
 
   # /!\ This is an experimental feature, might be removed or changed at any time
   # (Optional, experimental, default false) Enables a drop-down menu for translations only if a translation is present.
