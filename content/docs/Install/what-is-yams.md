@@ -9,7 +9,7 @@ It consists of 4 major parts:
 
 {{% steps %}}
 1. ## Install Script
-   A handy bash install script you run on your machine, handling all the initial complexity. It wrangles permissions, files structures and initial docker compose content in the background and surfaces a simple interface in your terminal.
+   A simple bash setup script you run on your machine, handling all the initial complexity. It wrangles permissions, files structures and initial docker compose content in the background and surfaces a simple interface in your terminal.
 
 2. ## Setup Guide
    A handwritten guide with step-by-step instructions (including screenshots!) on how to connect all the applications within your stack together. Don't worry if you don't know what they are yet, you'll learn more about each one as you go!
@@ -18,7 +18,7 @@ It consists of 4 major parts:
    A bash CLI installed on your machine that simplifies the operation of your media server. Stop, start and backup your server with simple terminal commands.
 
 4. ## Community
-   A welcoming community across the YAMS forum and discord, ready to help or chat!
+   A welcoming community across the YAMS forum and Discord, ready to help or chat!
 {{% /steps %}}
 
 And don't worry: its super customizable. Since its just a kick-starter template and not a separate application, all users are free tweak docker compose files and add new containers at any time. In fact, its recommended!
@@ -27,7 +27,7 @@ And don't worry: its super customizable. Since its just a kick-starter template 
 # The Story Behind YAMS
 Back in 2019, I had a mission: Create a media server that my non-tech-savvy girlfriend could use without calling me for help every five minutes. So I dove in, combining some awesome open-source projects and wrapping them up in a Docker compose.
 
-Fast forward to today, and guess what? Mission accomplished! 🎉 Not only does my girlfriend use it without any issues, but I've even got my mom (who lives 5000km away!) streaming her favorite shows with zero problems.
+Fast forward to today, and guess what? Mission accomplished! 🎉 Not only does my girlfriend use it without any issues, but I've even got my mom (who lives 5000km away) streaming her favorite shows with zero problems!
 
 When my friends saw how well it worked, they all wanted one too. But explaining how to set everything up was like trying to teach a cat to swim - technically possible, but way more complicated than it needed to be.
 
@@ -43,7 +43,7 @@ YAMS is the easiest way to get started up with your own streaming service replac
   - Hardlinking to prevent duplicating data, saving tons of storage space
 
 
-YAMS utilises Docker as its main backing technology: it provides a docker compose with all the major open source tools, ready to go. You'll learn about the roles of these applications as we go along, but here are a few of the basics:
+YAMS utilises Docker as its foundation: it provides a docker compose with all the major open source tools, ready to go. You'll learn about the roles of these applications as we go along, but here are a few of the basics:
 
 {{% columns ratio="1:1" %}}
 - ### Radarr + Sonarr + Prowlarr
