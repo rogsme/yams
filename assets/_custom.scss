@@ -2,3 +2,75 @@
 
 // @import "plugins/numbered";
 // @import "plugins/scrollbars";
+
+a[target="_blank"]::after {
+  content: "↗";
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+}
+
+.sidebar-custom-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  margin-top: auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+  }
+}
+
+.book-brand {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 1rem 0.5rem 1rem;
+
+  img {
+    max-width: 160px;
+    max-height: none !important;
+    height: auto !important;
+    width: auto;
+  }
+}
+
+// Native look alignment for downloaded asset icons in the left sidebar menu
+.book-menu nav ul li a {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5rem;
+
+  .brand-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+
+    // Automatically flips icon contrast if the user switches
+    // between light and dark mode variants built into Hugo Book
+    filter: var(--icon-filter);
+  }
+}
+
+// Forces all theme hints/admonitions to have completely sharp edges
+.book-hint {
+  border-radius: 0 !important;
+}
+
+details,
+summary {
+  border-radius: 0 !important;
+}
+
+// Global nuclear option: Remove border-radius from EVERYTHING site-wide
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}

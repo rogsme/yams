@@ -1,5 +1,5 @@
 baseURL: http://localhost:1313/
-title: YAMS
+title: ""
 theme: hugo-book
 
 copyright: "This is a copyright placeholder"
@@ -24,32 +24,18 @@ markup:
 # And https://gohugo.io/content-management/multilingual/#translation-by-content-directory
 # languages:
 #   en:
-#     languageName: English
+#     label: English
 #     contentDir: content
 #     weight: 1
-#   zh:
-#     languageName: Chinese
-#     contentDir: content.zh
+#   fr:
+#     label: French
+#     contentDir: content.fr
 #     weight: 2
-#   he:
-#     languageName: Hebrew
-#     contentDir: content.he
-#     languageDirection: rtl
-#     weight: 3
 
 menu:
   home:
     - name: "Documentation"
       pageRef: "/docs/"
-      weight: 10
-    - name: "Github"
-      url: "https://github.com/alex-shpak/hugo-book/"
-      weight: 20
-
-  # before: []
-  after:
-    - name: "Github"
-      url: "https://github.com/alex-shpak/hugo-book"
       weight: 10
 
 taxonomies:
