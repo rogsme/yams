@@ -57,6 +57,8 @@ Don't worry if you don't have docker set up already. The script can handle that 
 
 Before you get the script up and running, you'll have to do some thinking about how you want your system to operate. You'll need:
 
+- **Some free time**: This guide removes most of the complexity of getting set up with a media server, but it still takes time to follow though. Leave about 1-2 hours free to follow through the guide, and some extra time on the end for research and (hopefully no) debugging!
+
 - **A config location**: This is where the docker containers will store all their data. Config files, caching, stuff like that. _This is NOT where you shows are movies are stored._ The script defaults to `/opt/yams` but hey, you do you! Just make sure your user can write to wherever you choose.
 
 - **A media folder**: This is where all your media will be stored (and it can sure take up lots of storage space!). For example, if you pick `/srv/media`, the script will create:
@@ -104,20 +106,18 @@ sudo chown -R $USER:$USER {{< media-path >}}
 ```
 
 Important notes:
-
 - Make sure your user has full read/write permissions to this directory
 - If you’re using an external drive or NFS/SMB mount, mount it first, then set permissions
 - The installer will create subdirectories (tvshows, movies, music, etc.) automatically
-- Don’t use root as the owner, use your regular user account!
 
-### 3. If you already have docker installed…
+---
 
-Make sure you can run docker without sudo! Try this:
+> [!NOTE]
+> If you have **already installed** Docker, make sure you can run it without sudo! Try this:
 `docker run hello-world`
+>
+> If it fails, you might need to add your user to the docker group. Follow Docker’s [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user), and try the command again. Great!
 
-If it fails, you might need to add your user to the docker group. Follow Docker’s [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user), and try the command again. Great!
-
-Now let's get into the real installation.
 
 ---
 
