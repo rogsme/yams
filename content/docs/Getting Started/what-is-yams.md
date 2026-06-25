@@ -21,13 +21,13 @@ It consists of 4 major parts:
 
 3. ## CLI Tool
 
-   A bash CLI installed on your machine that simplifies the operation of your media server. Stop, start and backup your server with simple terminal commands.
+   A bash CLI installed on your machine that simplifies the operation of your media server. Stop, start and backup your applications with simple terminal commands.
 
 4. ## Community
    A welcoming community across the YAMS forum and Discord, ready to help or chat!
    {{% /steps %}}
 
-And don't worry: its super customizable. Since its just a kick-starter template and not a separate application, all users are free tweak docker compose files and add new containers at any time. In fact, its recommended!
+And don't worry: its super customizable. Since its just a kick-starting template and not a separate application, all users are free tweak docker compose files and add new containers at any time. In fact, its recommended!
 
 # The Story Behind YAMS
 
@@ -39,7 +39,7 @@ When my friends saw how well it worked, they all wanted one too. But explaining 
 
 That's when it hit me: Why not create a script that could do all the heavy lifting? And that's how YAMS was born! Now anyone can build their own kickass media server without needing a PhD in computer science. 😎
 
-# What Makes YAMS Special? ✨
+# What do you get with YAMS?
 
 YAMS is the easiest way to get started up with your own streaming service replacement. Here's what you get out of the box:
 
@@ -52,19 +52,40 @@ YAMS is the easiest way to get started up with your own streaming service replac
 
 YAMS utilises Docker as its foundation: it provides a docker compose with all the major open source tools, ready to go. You'll learn about the roles of these applications as we go along, but here are a few of the basics:
 
-{{% columns ratio="1:1" %}}
+<div class="card-row">
 
-- ### Radarr + Sonarr + Prowlarr
+  <div class="simple-card">
+    <div class="card-header">
+      <img src="/icons/logos/radarr.svg" class="card-icon" alt="" />
+      <h4 class="card-title">Radarr + Sonarr</h4>
+    </div>
+    <div class="card-content">
+      Track down your movies and shows, and organise them on your filesystem
+    </div>
+  </div>
 
-  Track down your movies and shows, and organise them on your filesystem
+  <div class="simple-card">
+    <div class="card-header">
+      <img src="/icons/logos/qbittorrent.svg" class="card-icon" alt="" />
+      <h4 class="card-title">qBitTorrent + Gluetun</h4>
+    </div>
+    <div class="card-content">
+      Download and seed your media (behind a VPN if needed)
+    </div>
+  </div>
 
-- ### qBitTorrent + (Gluetun)
+  <div class="simple-card">
+    <div class="card-header">
+      <img src="/icons/logos/jellyfin.svg" class="card-icon" alt="" />
+      <h4 class="card-title">Jellyfin/Emby/Plex</h4>
+    </div>
+    <div class="card-content">
+      Stream your media to any device
+    </div>
+  </div>
 
-  Download and seed your torrents (behind a VPN if needed)
+</div>
 
-- ### Jellyfin/Emby/Plex
-  Stream your media to any device
-  {{% /columns %}}
 
 Its that easy!
 

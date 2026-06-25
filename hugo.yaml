@@ -16,7 +16,11 @@ markup:
   tableOfContents:
     startLevel: 1
   highlight:
+    codeFences: true
+    guessSyntax: true
+    lineNos: false
     style: base16-snazzy
+    noClasses: true
 
 # Multi-lingual mode config
 # There are different options to translate files
@@ -37,7 +41,19 @@ menu:
     - name: "Documentation"
       pageRef: "/docs/"
       weight: 10
-
+  after:
+    - name: "Gitea"
+      url: "https://git.rogs.me/rogs/yams"
+      weight: 1
+    - name: "GitLab"
+      url: "https://gitlab.com/rogs/yams"
+      weight: 2
+    - name: "GitHub"
+      url: "https://github.com/rogsme/yams"
+      weight: 3
+    - name: Discord
+      url: "https://discord.gg/Gwae3tNMST"
+      weight: 4
 taxonomies:
   tag: tags
 

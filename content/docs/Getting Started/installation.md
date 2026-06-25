@@ -16,7 +16,7 @@ YAMS can be installed within an unprivileged Proxmox LXC container, but this req
 1. Log into your Proxmox server via SSH or use the web UI’s shell access for the node (not the LXC console).
 2. Open the configuration file specific to the LXC container where you intend to install YAMS. Replace <container-ID> with the actual numeric ID of your LXC container.
 
-```bash
+```sh
 nano /etc/pve/lxc/<container-ID>.conf
 ```
 
@@ -46,26 +46,20 @@ Your OS needs to be properly configured. That means:
 - You can run `sudo apt update` and `sudo apt upgrade` without errors
 - Having `git` installed, you'll need this to clone the YAMS repository. Check if it’s installed with `git --version`. If you don’t have it yet, it’s easy to install with `sudo apt update && sudo apt install git` on Debian/Ubuntu.
 
+
 Don't worry if you don't have docker set up already. The script can handle that for you. And if you already do, you are still good to go!
 
 > [!WARNING]
-> If you’re using Ubuntu, make sure you are **NOT** using the snap version of docker! The snap version runs in a sandbox and can’t access what it needs to run a proper media stack.. You can check by running the command `which docker` in your terminal.
-> If you see:
->
-> ```bash
-> $ which docker
-> /snap/bin/docker
-> ```
->
-> You won’t be able to install YAMS. ⚠️
+> If you’re using Ubuntu, make sure you are **NOT** using the snap version of docker! The snap version runs in a sandbox and can’t access what it needs to run a proper media stack. You can check by running the command `which docker` in your terminal. If you see `/snap/bin/docker` as the output, you won’t be able to install YAMS. ⚠️
+
 
 ## Prerequisites
 
-Before you get the script up and running, you have to do some thinking about how you want your system to operate. You'll need:
+Before you get the script up and running, you'll have to do some thinking about how you want your system to operate. You'll need:
 
-- **An installation location**: This is where the docker containers will store all their data. Config files, caching, you know it! _This is NOT where you shows are movies are stored._ The script defaults to /opt/yams but hey, you do you! Just make sure your user can write to wherever you choose.
+- **A config location**: This is where the docker containers will store all their data. Config files, caching, stuff like that. _This is NOT where you shows are movies are stored._ The script defaults to `/opt/yams` but hey, you do you! Just make sure your user can write to wherever you choose.
 
-- **A media folder**: This is where all your media will be stored. For example, if you pick /srv/media, the script will create:
+- **A media folder**: This is where all your media will be stored (and it can sure take up lots of storage space!). For example, if you pick `/srv/media`, the script will create:
 
 ```
 .
@@ -78,28 +72,35 @@ Before you get the script up and running, you have to do some thinking about how
     └── blackhole
 ```
 
-- **A regular user to run and own the media files**: Don’t use root (I mean, I can’t stop you, but come on! 😅)
+- **A regular user to run and own the media files**: Don’t use `root` (I mean, I can’t stop you, but come on! 😬). Make sure you are in a shell session owned by that user so you are ready to go.
 
-- **A VPN service (optional but STRONGLY recommended)**: First lesson! A VPN is a paid service that encrypts your server's traffic, and masks its public IP address whilst it's sailing the high seas. This hides your activity from cooperations such as your ISP or copyright providers. Although its not strictly necessary, be aware of the risks of choosing not to use one. Pick one from this list LINK HERE which YAMS officially supports.
+- **A VPN service (optional but *STRONGLY* recommended)**: First lesson! A VPN is a paid service that encrypts your server's traffic, and masks its public IP address whilst it's sailing the high seas. This hides your activity from cooperations such as your ISP or copyright providers.
+  - Note that most of these services are paid but don't worry, they aren't too expensive. (Cheaper than paying for 4 streaming services 😅)
+  - Although its not strictly necessary, be aware of the risks of choosing not to use one. Spend some time researching your country and ISP to see how harsh they can be.
+  - Pick one from this list LINK HERE which YAMS officially supports. For the best performance, make sure your provider supports port forwarding. *You'll learn what this means later.*
+
 
 ## Pre-Installation Setup
 
+{{< path-personaliser >}}
+
 #### 1. Setup your install location
 
-The `/opt/yams` location is recommended and used throughout the guide, but you can use whatever you like if your user has permissions:
+Remember from before? This is where all the config files and application storage goes! First, create the folder and set up your user permissions if it hasn't been done already.
 
 ```
-sudo mkdir -p /opt/yams
-sudo chown -R $USER:$USER /opt/yams
+sudo mkdir -p {{< config-path >}}
+sudo chown -R $USER:$USER {{< config-path >}}
 ```
 
 #### 2. Setup your media directory
 
-If your media directory doesn’t exist yet, you’ll need to create it and set the correct permissions. For example, if you’re using `/srv/media`:
+This is where your media files are stored (make sure it has tons of space)!
+If your media directory doesn’t exist yet, you’ll need to create it and set the correct permissions.
 
 ```
-sudo mkdir -p /srv/media
-sudo chown -R $USER:$USER /srv/media
+sudo mkdir -p {{< media-path >}}
+sudo chown -R $USER:$USER {{< media-path >}}
 ```
 
 Important notes:
@@ -123,21 +124,3 @@ Now let's get into the real installation.
 ## Installation
 
 COMPLETE THIS SECTION IN NEW INSTALLATION TEST
-
-{{% steps %}}
-
-1. ## Install Script
-
-   A simple bash setup script you run on your machine, handling all the initial complexity. It wrangles permissions, files structures and initial docker compose content in the background and surfaces a simple interface in your terminal.
-
-2. ## Setup Guide
-
-   A handwritten guide with step-by-step instructions (including screenshots!) on how to connect all the applications within your stack together. Don't worry if you don't know what they are yet, you'll learn more about each one as you go!
-
-3. ## CLI Tool
-
-   A bash CLI installed on your machine that simplifies the operation of your media server. Stop, start and backup your server with simple terminal commands.
-
-4. ## Community
-   A welcoming community across the YAMS forum and Discord, ready to help or chat!
-   {{% /steps %}}

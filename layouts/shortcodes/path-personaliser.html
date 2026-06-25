@@ -1,0 +1,43 @@
+<div class="interactive-path-panel">
+  <div class="panel-header">
+    <h3>Personalize This Installation Guide</h3>
+    <p>If you are using paths other than the defaults, enter them below to update the commands in this guide
+      automatically. If you are unsure or happy to stick with the defaults, leave the fields blank.</p>
+  </div>
+
+  <div class="panel-grid">
+    <div class="input-container">
+      <label for="config-input">Installation Directory:</label>
+      <input type="text" id="config-input" placeholder="/opt/yams" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="input-container">
+      <label for="media-input">Media Directory:</label>
+      <input type="text" id="media-input" placeholder="/srv/media" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const configIn = document.getElementById('config-input');
+    const mediaIn = document.getElementById('media-input');
+
+    if (!configIn || !mediaIn) return;
+
+    configIn.value = localStorage.getItem("CONFIG_PATH") || "";
+    mediaIn.value = localStorage.getItem("MEDIA_PATH") || "";
+
+    function handleTyping() {
+      localStorage.setItem("CONFIG_PATH", configIn.value.trim());
+      localStorage.setItem("MEDIA_PATH", mediaIn.value.trim());
+
+      if (typeof window.updatePagePaths === 'function') {
+        window.updatePagePaths();
+      }
+    }
+
+    configIn.addEventListener('input', handleTyping);
+    mediaIn.addEventListener('input', handleTyping);
+  })();
+</script>

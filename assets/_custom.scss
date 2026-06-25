@@ -7,6 +7,7 @@ a[target="_blank"]::after {
   content: "↗";
 }
 
+*,
 html {
   scrollbar-width: thin;
   scrollbar-color: gray transparent;
@@ -41,36 +42,152 @@ html {
   }
 }
 
-// Native look alignment for downloaded asset icons in the left sidebar menu
-.book-menu nav ul li a {
-  display: inline-flex !important;
-  align-items: center;
-  gap: 0.5rem;
-
-  .brand-icon {
-    width: 1.1rem;
-    height: 1.1rem;
-    flex-shrink: 0;
-
-    // Automatically flips icon contrast if the user switches
-    // between light and dark mode variants built into Hugo Book
-    filter: var(--icon-filter);
-  }
-}
-
 // Forces all theme hints/admonitions to have completely sharp edges
-.book-hint {
-  border-radius: 0 !important;
-}
+//.book-hint {
+//  border-radius: 0 !important;
+//}
 
-details,
-summary {
-  border-radius: 0 !important;
-}
+//details,
+//summary {
+//  border-radius: 0 !important;
+//}
 
-// Global nuclear option: Remove border-radius from EVERYTHING site-wide
+// Remove border-radius from EVERYTHING site-wide
 *,
 *::before,
 *::after {
   border-radius: 0 !important;
+}
+
+// Removes the container focus outline from code blocks
+pre,
+.highlight,
+.chroma {
+  &:focus,
+  &:focus-visible,
+  &:active {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+// Minimalist, Non-interactive Content Card
+.simple-card {
+  border: 1px solid var(--gray-200);
+  border-radius: 0 !important; // Stays sharp and boxy
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  background: transparent;
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+
+    .card-icon {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: var(--icon-filter); // Inverts cleanly for theme dark modes
+    }
+
+    .card-title {
+      margin: 0 !important;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+  }
+
+  .card-content {
+    font-size: 0.95rem;
+    opacity: 0.85;
+
+    // Forces inner markdown paragraphs to align nicely inside the block margins
+    p:first-child {
+      margin-top: 0 !important;
+    }
+    p:last-child {
+      margin-bottom: 0 !important;
+    }
+  }
+}
+
+// Controls the multi-column row wrapping container
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(
+    3,
+    minmax(0, 1fr)
+  ); // Creates 3 equal width columns
+  gap: 1rem; // Spacing between the columns
+  margin: 1.5rem 0;
+
+  // Overrides the margin on individual cards inside the row so they align evenly
+  .simple-card {
+    margin: 0 !important;
+  }
+
+  // Mobile responsiveness: Stacks the columns vertically on narrow tablet/phone viewports
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.interactive-path-panel {
+  border: 1px solid var(--gray-200);
+  background: transparent;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: 0 !important;
+
+  .panel-header {
+    margin-bottom: 1rem;
+    h3 {
+      margin: 0 0 0.25rem 0 !important;
+      font-size: 1.05rem;
+      font-weight: bold;
+    }
+    p {
+      margin: 0 !important;
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+  }
+
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    label {
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    input {
+      padding: 0.4rem 0.6rem;
+      border: 1px solid var(--gray-200);
+      background: var(--body-background);
+      color: inherit;
+      font-family: monospace;
+      font-size: 0.875rem;
+      border-radius: 0 !important;
+
+      &:focus {
+        outline: 1px solid var(--color-link) !important;
+      }
+    }
+  }
 }

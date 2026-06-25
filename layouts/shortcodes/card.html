@@ -1,0 +1,11 @@
+<div class="simple-card">
+  <div class="card-header">
+    {{ if .Get "icon" }}
+      <img src="{{ .Get "icon" | relURL }}" class="card-icon" alt="" />
+    {{ end }}
+    <h4 class="card-title">{{ .Get "title" }}</h4>
+  </div>
+  <div class="card-content">
+    {{ .Inner }}
+  </div>
+</div>

@@ -1,0 +1,41 @@
+<script>
+  (function () {
+    const pageContainer = document.querySelector('.book-page') || document.querySelector('article') || document.body;
+    if (!pageContainer) return;
+
+    const DEFAULTS = {
+      '__MEDIA_PATH_PLACEHOLDER__': '/srv/media',
+      '__CONFIG_PATH_PLACEHOLDER__': '/opt/yams'
+    };
+
+    let textNodes = [];
+    let initialized = false;
+
+    function init() {
+      const walker = document.createTreeWalker(pageContainer, NodeFilter.SHOW_TEXT, null, false);
+      let node;
+      while (node = walker.nextNode()) {
+        const originalText = node.nodeValue;
+        if (originalText.includes('__MEDIA_PATH_PLACEHOLDER__') || originalText.includes('__CONFIG_PATH_PLACEHOLDER__')) {
+          textNodes.push({ node, originalText });
+        }
+      }
+      initialized = true;
+    }
+
+    window.updatePagePaths = function () {
+      if (!initialized) init();
+
+      const mediaPath = localStorage.getItem("MEDIA_PATH") || DEFAULTS['__MEDIA_PATH_PLACEHOLDER__'];
+      const configPath = localStorage.getItem("CONFIG_PATH") || DEFAULTS['__CONFIG_PATH_PLACEHOLDER__'];
+
+      for (const { node, originalText } of textNodes) {
+        node.nodeValue = originalText
+          .replace(/__MEDIA_PATH_PLACEHOLDER__/g, mediaPath)
+          .replace(/__CONFIG_PATH_PLACEHOLDER__/g, configPath);
+      }
+    };
+
+    window.updatePagePaths();
+  })();
+</script>
