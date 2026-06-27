@@ -15,6 +15,8 @@ It consists of 4 major parts:
 
    A simple bash setup script you run on your machine, handling all the initial complexity. It wrangles permissions, files structures and initial docker compose content in the background and surfaces a simple interface in your terminal.
 
+   ASCII CINEMA HERE
+
 2. ## Setup Guide
 
    A handwritten guide with step-by-step instructions (including screenshots!) on how to connect all the applications within your stack together. Don't worry if you don't know what they are yet, you'll learn more about each one as you go!

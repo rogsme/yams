@@ -4,8 +4,8 @@
     if (!pageContainer) return;
 
     const DEFAULTS = {
-      '__MEDIA_PATH_PLACEHOLDER__': '/srv/media',
-      '__CONFIG_PATH_PLACEHOLDER__': '/opt/yams'
+      '{media_path}': '/srv/media',
+      '{config_path}': '/opt/yams'
     };
 
     let textNodes = [];
@@ -16,7 +16,7 @@
       let node;
       while (node = walker.nextNode()) {
         const originalText = node.nodeValue;
-        if (originalText.includes('__MEDIA_PATH_PLACEHOLDER__') || originalText.includes('__CONFIG_PATH_PLACEHOLDER__')) {
+        if (originalText.includes('{media_path}') || originalText.includes('{config_path}')) {
           textNodes.push({ node, originalText });
         }
       }
@@ -26,13 +26,13 @@
     window.updatePagePaths = function () {
       if (!initialized) init();
 
-      const mediaPath = localStorage.getItem("MEDIA_PATH") || DEFAULTS['__MEDIA_PATH_PLACEHOLDER__'];
-      const configPath = localStorage.getItem("CONFIG_PATH") || DEFAULTS['__CONFIG_PATH_PLACEHOLDER__'];
+      const mediaPath = localStorage.getItem("MEDIA_PATH") || DEFAULTS['{media_path}'];
+      const configPath = localStorage.getItem("CONFIG_PATH") || DEFAULTS['{config_path}'];
 
       for (const { node, originalText } of textNodes) {
         node.nodeValue = originalText
-          .replace(/__MEDIA_PATH_PLACEHOLDER__/g, mediaPath)
-          .replace(/__CONFIG_PATH_PLACEHOLDER__/g, configPath);
+          .replace(/{media_path}/g, mediaPath)
+          .replace(/{config_path}/g, configPath);
       }
     };
 

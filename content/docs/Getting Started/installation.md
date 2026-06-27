@@ -57,7 +57,7 @@ Don't worry if you don't have docker set up already. The script can handle that 
 
 Before you get the script up and running, you'll have to do some thinking about how you want your system to operate. You'll need:
 
-- **Some free time**: This guide removes most of the complexity of getting set up with a media server, but it still takes time to follow though. Leave about 1-2 hours free to follow through the guide, and some extra time on the end for research and (hopefully no) debugging!
+- **Some free time**: This guide removes most of the complexity of getting set up with a media server, but it still takes time to follow though. Leave about 1 hour free to follow through the guide, possibly conduct research and (hopefully no) debugging!
 
 - **A config location**: This is where the docker containers will store all their data. Config files, caching, stuff like that. _This is NOT where you shows are movies are stored._ The script defaults to `/opt/yams` but hey, you do you! Just make sure your user can write to wherever you choose.
 
@@ -91,8 +91,8 @@ Before you get the script up and running, you'll have to do some thinking about 
 Remember from before? This is where all the config files and application storage goes! First, create the folder and set up your user permissions if it hasn't been done already.
 
 ```
-sudo mkdir -p {{< config-path >}}
-sudo chown -R $USER:$USER {{< config-path >}}
+sudo mkdir -p {config_path}
+sudo chown -R $USER:$USER {config_path}
 ```
 
 #### 2. Setup your media directory
@@ -101,8 +101,8 @@ This is where your media files are stored (make sure it has tons of space)!
 If your media directory doesn’t exist yet, you’ll need to create it and set the correct permissions.
 
 ```
-sudo mkdir -p {{< media-path >}}
-sudo chown -R $USER:$USER {{< media-path >}}
+sudo mkdir -p {media_path}
+sudo chown -R $USER:$USER {media_path}
 ```
 
 Important notes:
