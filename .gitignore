@@ -6,3 +6,10 @@ tmp/
 docker-compose.yaml
 *.aider*
 CLAUDE.md
+
+public/
+resources/
+site/
+.hugo_build.lock
+.vscode
+
