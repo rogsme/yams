@@ -58,7 +58,7 @@ YAMS utilises Docker as its foundation: it provides a docker compose with all th
 
   <div class="simple-card">
     <div class="card-header">
-      <img src="/icons/logos/radarr.svg" class="card-icon" alt="" />
+      {{< image src="/icons/logos/radarr.svg" alt="" title="" loading="auto" >}}
       <h4 class="card-title">Radarr + Sonarr</h4>
     </div>
     <div class="card-content">
@@ -68,7 +68,7 @@ YAMS utilises Docker as its foundation: it provides a docker compose with all th
 
   <div class="simple-card">
     <div class="card-header">
-      <img src="/icons/logos/qbittorrent.svg" class="card-icon" alt="" />
+      {{< image src="/icons/logos/qbittorrent.svg" alt="" title="" loading="auto" >}}
       <h4 class="card-title">qBitTorrent + Gluetun</h4>
     </div>
     <div class="card-content">
@@ -78,7 +78,7 @@ YAMS utilises Docker as its foundation: it provides a docker compose with all th
 
   <div class="simple-card">
     <div class="card-header">
-      <img src="/icons/logos/jellyfin.svg" class="card-icon" alt="" />
+      {{< image src="/icons/logos/jellyfin.svg" alt="" title="" loading="auto" >}}
       <h4 class="card-title">Jellyfin/Emby/Plex</h4>
     </div>
     <div class="card-content">
