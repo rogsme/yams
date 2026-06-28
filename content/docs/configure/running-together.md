@@ -61,7 +61,7 @@ Emby:
 Plex:
 {{< image src="/pics/running-everything-together/running-everything-together-11.png" alt="" title="" loading="auto" >}}
 
-Open up a movie and look - subtitles are already there! That's [Bazarr](/config/bazarr) doing its thing! 🎯
+Open up a movie and look - subtitles are already there! That's [Bazarr](/docs/configure/bazarr) doing its thing! 🎯
 
 {{< image src="/pics/running-everything-together/running-everything-together-8.png" alt="" title="" loading="auto" >}}
 
@@ -93,12 +93,12 @@ roger@debian:/srv/media/movies$ tree .
 3 directories, 9 files
 ```
 
-Not a fan of how things are named? No problem! You can always change the naming format in [Radarr's media management page](/config/radarr#media-management) or [Sonarr's settings](/config/sonarr#media-management).
+Not a fan of how things are named? No problem! You can always change the naming format in [Radarr's media management page](/docs/configure/radarr#media-management) or [Sonarr's settings](/docs/configure/sonarr#media-management).
 
 # Final step and conclusions
 
 You did it! 🎉 You've got your very own media server up and running! That's a huge step toward breaking free from subscription services like Netflix or Amazon Prime.
 
-And guess what? There's still so much more you can do to make your setup even better! Head over to the [Recommendations](/config/recommendations) page for some cool ideas on what to try next.
+And guess what? There's still so much more you can do to make your setup even better! Head over to the [Recommendations](/docs/configure/recomendations) page for some cool ideas on what to try next.
 
  🙌 Thanks for following along with the tutorial! Hope you enjoy your awesome new media server - you've earned it! 😎

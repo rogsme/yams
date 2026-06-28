@@ -8,7 +8,7 @@ In general, it is good practice to seed any torrents you download. Seeding is th
 
 Many private trackers also require maintenance of a 'ratio'. This ratio is calculating by the amount seeded over the amount downloaded, and must be maintained above a limit to ensure you are contributing to a tracker community.
 
-Within a default YAMS setup, [seeding is not enabled](https://yams.media/config/qbittorrent/#is-this-a-dick-move) once you have downloaded the file. However, if you already have the file downloaded you might as well seed it to others, right?
+Within a default YAMS setup, [seeding is not enabled](https://yams.media/docs/configure/qbittorrent/#is-this-a-dick-move) once you have downloaded the file. However, if you already have the file downloaded you might as well seed it to others, right?
 
 This is a guide on how to automate a flexible seeding setup within your media server:
 - Once movies and shows are downloaded, they will be automatically seeded whilst the media remains within your server
@@ -92,7 +92,7 @@ Then, run `yams start qui` in your terminal to get it up and running! Access the
 
 First, open up the Qui web UI, and create an new account. Make sure to save your login details!
 
-> Now, before we get started, lets make qBitTorrent allow connections from Qui by ***optionally*** bypassing authentication within the YAMS network. Jump over the this section from the [YAMS docs](/config/qbittorrent/#configuring-web-ui-settings) and ensure *in addition* to your local IP, you also add a new line with the YAMS subnet: `172.60.0.0/24`. Make sure to save, and then say goodbye to the qBitTorrent web UI - you might not need it again!
+> Now, before we get started, lets make qBitTorrent allow connections from Qui by ***optionally*** bypassing authentication within the YAMS network. Jump over the this section from the [YAMS docs](/docs/configure/qbittorrent/#configuring-web-ui-settings) and ensure *in addition* to your local IP, you also add a new line with the YAMS subnet: `172.60.0.0/24`. Make sure to save, and then say goodbye to the qBitTorrent web UI - you might not need it again!
 
 > This bypass is safe only because qBitTorrent is running in your home server and not directly exposed to the internet. Do not use this if you expose qBitTorrent's port externally. If you do, simply use your qBitTorrent username and password when connecting Qui to qBitTorrent in the next steps.
 
@@ -104,7 +104,7 @@ Enter the following details:
 - Turn on 'Local Filesystem Access' - this is required for hardlink detection to work.
 - If you added the YAMS subnet to qBitTorrent's web UI settings, you can turn off authentication by toggling 'Bypass Authentication'. If not, enter your qBitTorrent username and password.
 
-{{< image src="/pics/qui-1.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/qui/qui-1.png" alt="" title="" loading="auto" >}}
 
 Then, hit 'Add Instance'! In the sidebar, you should now see your qBitTorrent instance listed. Click on it to connect, and you should see your torrents load up.
 
@@ -114,7 +114,7 @@ This is your main Qui interface, equivalent to the qBitTorrent web UI. Save this
 
 Radarr and Sonarr both have built in features that can automatically remove stopped torrents they have imported. We DO NOT want this enabled, as it will unexpectedly and silently interfere with any workflows we may create.
 
-{{< image src="/pics/qui-8.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/qui/qui-8.png" alt="" title="" loading="auto" >}}
 
 Navigate to Radarr and Sonarr's settings > 'Download Clients' section > qBitTorrent > ensure the 'Remove Completed' checkbox at the bottom is disabled. Do this in both Radarr and Sonarr.
 
@@ -123,7 +123,7 @@ Navigate to Radarr and Sonarr's settings > 'Download Clients' section > qBitTorr
 
 Now, navigate to the 'Automations' tab in the sidebar.
 
-{{< image src="/pics/qui-2.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/qui/qui-2.png" alt="" title="" loading="auto" >}}
 
 ### Understanding the Workflow Builder
 
@@ -157,7 +157,7 @@ It can be smart to set a seeding limit slightly longer than the actual seeding r
 
  > Optional manual import link [here](https://gist.githubusercontent.com/not-first/874d6186a77b9057fe290ee2a1884817/raw/d796a3133880c155ad9b56b676624a86f5a9dd69/tag-noHL.json).
 
-{{< image src="/pics/qui-3.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/qui/qui-3.png" alt="" title="" loading="auto" >}}
 
 Create a new rule, and name the workflow 'Tag noHL Torrents'.
 
@@ -174,7 +174,7 @@ Finally, add an action to tag the torrent with `noHL`, and save.
 
  > Optional manual import link [here](https://gist.githubusercontent.com/not-first/874d6186a77b9057fe290ee2a1884817/raw/86e1360be2fd5d5a2e40014e8ff4c27a91b15715/enforce-requirements-EXAMPLE.json).
 
-{{< image src="/pics/qui-4.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/qui/qui-4.png" alt="" title="" loading="auto" >}}
 
 Create a new rule, and name the workflow 'Enforce Seeding Requirements (TRACKER NAME)'. This is the workflow that will enforce seeding requirements for torrents from a specific tracker, so make sure to specify the tracker in the name.
 
@@ -195,7 +195,7 @@ One of these should be added for each tracker you download from with different s
 
 > Optional manual import link [here](https://gist.githubusercontent.com/not-first/874d6186a77b9057fe290ee2a1884817/raw/d54a84d62a7271e2b85fca536df3eec0c22c920a/tag-ready-to-delete.json).
 
-{{< image src="/pics/qui-6.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/qui/qui-6.png" alt="" title="" loading="auto" >}}
 
 Create a new rule, apply it to all trackers, and name the workflow 'Tag Ready to Delete'.
 
@@ -208,7 +208,7 @@ Add an action to tag the torrent with `toBeDeleted`, and save.
 
 > Optional manual import link [here](https://gist.githubusercontent.com/not-first/874d6186a77b9057fe290ee2a1884817/raw/4183b34922eca4009f772e8d9d0a377e0ea3cc02/delete-torrents.json).
 
-{{< image src="/pics/qui-7.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/qui/qui-7.png" alt="" title="" loading="auto" >}}
 
 Create a new rule, apply it to all trackers, and name the workflow 'Delete Torrents'.
 

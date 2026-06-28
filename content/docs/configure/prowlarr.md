@@ -10,7 +10,7 @@ From their [Github repo](https://github.com/Prowlarr/Prowlarr/):
 
 > Prowlarr is an indexer manager/proxy built on the popular *arr .net/reactjs base stack to integrate with your various PVR apps. Prowlarr supports management of both Torrent Trackers and Usenet Indexers. It integrates seamlessly with Lidarr, Mylar3, Radarr, and Sonarr offering complete management of your indexers with no per app Indexer setup required (we do it all).
 
-So basically, we're going to use Prowlarr to **search for torrents**, and then it will pass those on to [qBittorrent](/config/qbittorrent) or [SABnzbd](/config/sabnzbd) to download. Think of it as your personal search engine! 🔍
+So basically, we're going to use Prowlarr to **search for torrents**, and then it will pass those on to [qBittorrent](/docs/configure/qbittorrent) or [SABnzbd](/docs/configure/sabnzbd) to download. Think of it as your personal search engine! 🔍
 
 ## Initial configuration
 
@@ -29,7 +29,7 @@ Most good Usenet indexers are paid services, but they're usually pretty affordab
 - [DrunkenSlug](https://drunkenslug.com) (invite only!)
 - [NZBGeek](https://nzbgeek.info)
 
-Remember, if you want to use Usenet indexers, you'll also need a Usenet provider configured in [SABnzbd](/config/sabnzbd)!
+Remember, if you want to use Usenet indexers, you'll also need a Usenet provider configured in [SABnzbd](/docs/configure/sabnzbd)!
 
 #### Torrent Indexers 🧲
 For this tutorial, we'll focus on free torrent indexers since they're easier to get started with. Just remember to always use a VPN when torrenting!
@@ -142,7 +142,7 @@ Want to see something cool? Go check Sonarr and Radarr's "Indexer" settings - yo
 
 ## Moving forward! 🚀
 
-Now we can move on to [Bazarr](/config/bazarr) - it's going to handle all your subtitle needs!
+Now we can move on to [Bazarr](/docs/configure/bazarr) - it's going to handle all your subtitle needs!
 
 ## Want to become a Prowlarr pro?
 

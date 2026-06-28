@@ -56,7 +56,7 @@ Finally, click on "Save Changes".
 
 ### Download Clients
 
-Time to connect Sonarr to our download tools! We'll link up with [qBittorrent](/config/qbittorrent) and [SABnzbd](/config/sabnzbd).
+Time to connect Sonarr to our download tools! We'll link up with [qBittorrent](/docs/configure/qbittorrent) and [SABnzbd](/docs/configure/sabnzbd).
 
 #### qBittorrent Setup
 
@@ -101,7 +101,7 @@ Fill in these details:
 - Port: 8080
 - API Key: your SABnzbd API key
 
-Need to find your SABnzbd API key? No problem! Check here: [Getting your API key for Sonarr and Radarr](/config/sabnzbd/#getting-your-api-key-for-sonarr-and-radarr)
+Need to find your SABnzbd API key? No problem! Check here: [Getting your API key for Sonarr and Radarr](/docs/configure/sabnzbd/#getting-your-api-key-for-sonarr-and-radarr)
 
 {{< image src="/pics/sonarr/sonarr-20.png" alt="" title="" loading="auto" >}}
 
@@ -115,7 +115,7 @@ If the test passed, hit "Save". You should now see both download clients ready t
 
 ## Moving forward! 🚀
 
-That's it! Now we can move on to [Prowlarr](/config/prowlarr). We're getting close to having your own personal streaming service!
+That's it! Now we can move on to [Prowlarr](/docs/configure/prowlarr). We're getting close to having your own personal streaming service!
 
 ## Want to become a Sonarr power user?
 

@@ -11,10 +11,10 @@ Everything is working now! Yay! 🎉
 Here are some cool ways to make your YAMS experience even better:
 
 ### Add more indexers! 🔍
-Check out the [Prowlarr indexers guide](/config/prowlarr/#indexers). The more indexers you have, the easier it'll be to find those hard-to-get movies and TV shows that your friends keep talking about!
+Check out the [Prowlarr indexers guide](/docs/configure/prowlarr/#indexers). The more indexers you have, the easier it'll be to find those hard-to-get movies and TV shows that your friends keep talking about!
 
 ### Expand your subtitle collection! 🗣️
-Head to the [Bazarr providers guide](/config/bazarr/#providers) and add more subtitle sources. The more providers you have, the better chance Bazarr has of finding perfect subtitles for everything in your library.
+Head to the [Bazarr providers guide](/docs/configure/bazarr/#providers) and add more subtitle sources. The more providers you have, the better chance Bazarr has of finding perfect subtitles for everything in your library.
 
 ### Get those apps! 📱
 Install your media service apps (Emby/Jellyfin/Plex) on all your devices! They're available for:

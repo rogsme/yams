@@ -111,4 +111,4 @@ And there it is! Your very own streaming service homepage! 🌟
 
 ## That's all folks! 🎬
 
-YAMS is now fully up and running! Ready to add some content? Move on to [Running everything together](/config/running-everything-together) to see how all these pieces work together!
+YAMS is now fully up and running! Ready to add some content? Move on to [Running everything together](/docs/configure/running-together) to see how all these pieces work together!

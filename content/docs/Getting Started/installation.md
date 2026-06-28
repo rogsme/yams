@@ -61,7 +61,7 @@ Before you get the script up and running, you'll have to do some thinking about 
 
 - **A config location**: This is where the docker containers will store all their data. Config files, caching, stuff like that. _This is NOT where you shows are movies are stored._ The script defaults to `/opt/yams` but hey, you do you! Just make sure your user can write to wherever you choose.
 
-- **A media folder**: This is where all your media will be stored (and it can sure take up lots of storage space!). For example, if you pick `/srv/media`, the script will create:
+- **A media folder**: This is where all your media will be stored (and it can sure take up lots of storage space). For example, if you pick `/srv/media`, the script will create:
 
 ```
 .
@@ -245,7 +245,7 @@ Each service has its strengths:
 
 ```bash
 Time to set up the VPN.
-Supported VPN providers: https://yams.media/advanced/vpn
+Supported VPN providers: https://yams.media/docs/advanced/concept-explanations/vpn
 
 Configure VPN? (Y/n) [Default = y]:
 ```
@@ -278,7 +278,7 @@ If you want to use a VPN (strongly recommended):
    ```
    - If you type `y` and press Enter:
      ```bash
-     ⚠️ ProtonVPN Free Tier Users: If you plan to use a free ProtonVPN account, please be aware that port forwarding is not supported. See our ProtonVPN Free Tier guide here: https://yams.media/advanced/vpn/#protonvpn-free-tier for more details.
+     ⚠️ ProtonVPN Free Tier Users: If you plan to use a free ProtonVPN account, please be aware that port forwarding is not supported. See our ProtonVPN Free Tier guide here: https://yams.media/docs/advanced/concept-explanations/vpn/#protonvpn-free-tier for more details.
      ```
      The installer will automatically configure Gluetun for the free tier (setting `FREE_ONLY=on` and disabling port forwarding). You will **not** need to make manual changes to `docker-compose.yaml` or `.env` for this.
    - If you type `n` or press Enter (for a paid account):
@@ -289,7 +289,7 @@ If you want to use a VPN (strongly recommended):
    Mullvad is removing OpenVPN support on January 15, 2026.
    If you plan to use Mullvad, you MUST migrate to WireGuard after installation.
    Read more: https://mullvad.net/en/blog/removing-openvpn-15th-january-2026
-   WireGuard setup instructions: https://yams.media/advanced/wireguard/
+   WireGuard setup instructions: https://yams.media/docs/advanced/community-guides/gluetun-wireguard/
    ```
 
    Make sure you configure Wireguard **after** finishing the installation.
@@ -409,19 +409,19 @@ Don't worry about memorizing these - they're saved in `~/yams_services.txt` for 
 
 ## What's Next?
 
-Time to configure your new media server! Head over to [Configuration](/config) and follow these guides in order:
-1. [qBittorrent](/config/qbittorrent)
-2. [SABnzbd](/config/sabnzbd)
-3. [Radarr](/config/radarr)
-4. [Sonarr](/config/sonarr)
-5. [Prowlarr](/config/prowlarr)
-6. [Bazarr](/config/bazarr)
+Time to configure your new media server! Head over to [Configuration](/docs/configure/) and follow these guides in order:
+1. [qBittorrent](/docs/configure/qbittorrent)
+2. [SABnzbd](/docs/configure/sabnzbd)
+3. [Radarr](/docs/configure/radarr)
+4. [Sonarr](/docs/configure/sonarr)
+5. [Prowlarr](/docs/configure/prowlarr)
+6. [Bazarr](/docs/configure/bazarr)
 7. Your chosen media service:
-   - [Jellyfin](/config/jellyfin)
-   - [Emby](/config/emby)
-   - [Plex](/config/plex)
+   - [Jellyfin](/docs/configure/jellyfin)
+   - [Emby](/docs/configure/emby)
+   - [Plex](/docs/configure/plex)
 
 Need help? We've got your back!
-- Check our [Common Issues](/faqs/common-errors/) page
+- Check our [Common Issues](/docs/faqs/) page
 - Visit the [YAMS Forum](https://forum.yams.media)
 - Join our [Discord](https://discord.gg/Gwae3tNMST) chat

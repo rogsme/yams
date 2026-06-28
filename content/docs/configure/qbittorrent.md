@@ -46,7 +46,7 @@ Your local IP country is North Korea
 Your IPs are the same! qBittorrent is NOT working! ⚠️
 ```
 
-If your VPN check failed, head over to [VPN Configuration](/advanced/vpn/#manual-configuration) to fix it. **You should always use a VPN when downloading torrents!**
+If your VPN check failed, head over to [VPN Configuration](/docs/advanced/concept-explanations/vpn/#manual-configuration) to fix it. **You should always use a VPN when downloading torrents!**
 
 ### Setting up qBittorrent
 
@@ -91,7 +91,7 @@ Then, go to the "BitTorrent" tab and check the "When ratio reaches" checkbox. Se
 
 Yes. 😅
 
-The BitTorrent protocol works by sharing (seeding) files across the network. Setting the seeding limit to zero means "Share the torrent **until** I've finished downloading." You'll still share while downloading, but once complete, the torrent stops and waits for [Sonarr](/config/sonarr)/[Radarr](/config/radarr) to pick it up.
+The BitTorrent protocol works by sharing (seeding) files across the network. Setting the seeding limit to zero means "Share the torrent **until** I've finished downloading." You'll still share while downloading, but once complete, the torrent stops and waits for [Sonarr](/docs/configure/sonarr)/[Radarr](/docs/configure/radarr) to pick it up.
 
 For this tutorial we'll leave it at 0, but feel free to be less selfish later! **Some torrent services monitor the ratio to prevent abuse, and restrict accounts with low ratios. Make sure you respect these constraints to keep your access to these platforms.**
 
@@ -119,7 +119,7 @@ Finally, scroll to the bottom and click "Save".
 
 ### Port Forwarding 🚀
 
-Want faster downloads? YAMS supports automatic port forwarding! Check out our [Port Forwarding Guide](/advanced/port-forwarding/) to supercharge your download speeds.
+Want faster downloads? YAMS supports automatic port forwarding! Check out our [Port Forwarding Guide](/docs/advanced/concept-explanations/vpn/) to supercharge your download speeds.
 
 {{< image src="/pics/qbittorrent/advanced-port-forwarding-1.png" alt="" title="" loading="auto" >}}
 
@@ -131,8 +131,8 @@ Let's do one last VPN check to make sure everything's working:
 $ yams check-vpn
 ```
 
-You should see your qBittorrent IP is different from your local IP. If not, head over to [VPN Configuration](/advanced/vpn/#manual-configuration) to fix it.
+You should see your qBittorrent IP is different from your local IP. If not, head over to [VPN Configuration](/docs/advanced/concept-explanations/vpn/#manual-configuration) to fix it.
 
 ## That's done! 🎉
 
-Looking good! Now we can move forward with [SABnzbd](/config/sabnzbd).
+Looking good! Now we can move forward with [SABnzbd](/docs/configure/sabnzbd).

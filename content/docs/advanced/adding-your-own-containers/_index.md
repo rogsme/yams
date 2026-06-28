@@ -128,7 +128,7 @@ Keep in mind the torrent automations have the ability to delete downloads and ma
       - ${MEDIA_DIRECTORY}/downloads/torrents:/data/downloads/torrents
 ```
 
-*If you want to jump straight into a guided setup, check out *[Seeding with Qui](/advanced/seeding-with-qui)* for a setup where all torrents are seeded whilst the media remains in your server, and then smoothly removed after the item is watched in your streaming application.*
+*If you want to jump straight into a guided setup, check out *[Seeding with Qui](/docs/advanced/community-guides/seeding-with-qui)* for a setup where all torrents are seeded whilst the media remains in your server, and then smoothly removed after the item is watched in your streaming application.*
 
 
 ### Shelfmark 📚
@@ -192,7 +192,7 @@ It is more intuitive to use as it is configured through a handy Web UI!
       - ${INSTALL_DIRECTORY}/config/autobrr:/config
 ```
 
-Done! To fully connect Autobrr to your media server's downloads, continue with the full guide [here](/advanced/autobrr).
+Done! To fully connect Autobrr to your media server's downloads, continue with the full guide [here](/docs/advanced/adding-your-own-containers/autobrr).
 
 ### Recyclarr 🗑️
 
@@ -309,7 +309,7 @@ Want your custom container to use YAMS's VPN? Add this to your container config:
     network_mode: "service:gluetun"
 ```
 
-Check out [Running Prowlarr behind the VPN](/advanced/prowlarr-behind-vpn) for a detailed example!
+Check out [Running Prowlarr behind the VPN](/docs/advanced/prowlarr-vpn) for a detailed example!
 
 ### 4. Static IP Address 📍
 For some advanced setups, you might want to assign a static IP address to your custom container within the YAMS network. This can be useful for consistent access or firewall rules.
@@ -352,7 +352,7 @@ Here are some popular containers that work great with YAMS:
 ## Need Help? 🆘
 
 If you run into any issues:
-1. Check our [Common Issues](/faqs/common-errors/) page
+1. Check our [Common Issues](/docs/faqs/) page
 2. Visit the [YAMS Forum](https://forum.yams.media)
 3. Join our [Discord](https://discord.gg/Gwae3tNMST) chat
 

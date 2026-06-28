@@ -6,7 +6,7 @@ title: Torrenting
 
 # Advanced Torrenting with YAMS 🌊
 
-While [Sonarr](/config/sonarr) and [Radarr](/config/radarr) handle most of your downloads automatically, sometimes you might want to download something manually. Let's explore how to do that safely!
+While [Sonarr](/docs/configure/sonarr) and [Radarr](/docs/configure/radarr) handle most of your downloads automatically, sometimes you might want to download something manually. Let's explore how to do that safely!
 
 ## Manual Downloads 📥
 
@@ -81,7 +81,7 @@ For proper privacy protection, check that:
    - Remove completed torrents regularly
 
 5. **Enable Port Forwarding**
-   - Check our [Port Forwarding Guide](/advanced/port-forwarding/)
+   - Check our [Port Forwarding Guide](/docs/advanced/concept-explanations/vpn/)
    - Significantly improves download speeds
    - Works automatically with ProtonVPN
 
@@ -169,7 +169,7 @@ For these cases, temporarily disable the filter, but **always scan downloads wit
 ## Need Help? 🆘
 
 Having issues with torrenting? We've got you covered:
-1. Check the [Common Issues](/faqs/common-errors/) page
+1. Check the [Common Issues](/docs/faqs/) page
 2. Visit the [YAMS Forum](https://forum.yams.media)
 3. Join our [Discord](https://discord.gg/Gwae3tNMST) chat
 

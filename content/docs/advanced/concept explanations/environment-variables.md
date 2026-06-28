@@ -5,7 +5,7 @@ title: Environment Variables
 
 ## Your Environment File (`.env`) - The YAMS Settings Hub!
 
-Let's talk about the `.env` file. Don't let the technical name scare you; it's actually your best friend for customizing YAMS! Think of it as the central control panel for some of YAMS's key settings. It's a simple text file living right where you installed YAMS (remember specifying that location during the [install steps](/install/steps)? The default spot is `/opt/yams`).
+Let's talk about the `.env` file. Don't let the technical name scare you; it's actually your best friend for customizing YAMS! Think of it as the central control panel for some of YAMS's key settings. It's a simple text file living right where you installed YAMS (remember specifying that location during the [install steps](/docs/getting-started/installation/)? The default spot is `/opt/yams`).
 
 You might notice that you don't immediately see this file when you list the contents of your YAMS directory. That's because files starting with a dot (`.`) are typically hidden on Linux/Unix systems. But don't worry, it's easy to find! To view it, just use the command `ls -a` in your terminal (the `-a` stands for "all", showing you all files, even the hidden ones).
 
@@ -61,7 +61,7 @@ When you first set up YAMS, your `.env` file comes pre-filled with a few essenti
 
 ### What About VPN Stuff?
 
-Good question! Some VPN setups also rely on settings you might put in your `.env` file. For the specifics on that, head over to the [Torrenting with VPN guide]({{< relref "/advanced/torrenting" >}}).
+Good question! Some VPN setups also rely on settings you might put in your `.env` file. For the specifics on that, head over to the [Torrenting with VPN guide](LINK BROKEN).
 
 ---
 

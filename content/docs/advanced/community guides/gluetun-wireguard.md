@@ -50,7 +50,7 @@ VPN_PASSWORD=your-password
 
 You can also remove `VPN_SERVICE=protonvpn` if you want to hardcode it in the compose file (see below), or leave it — both work.
 
-> 💡 Not sure how the `.env` file works? Check out our [Environment File Guide](/advanced/env-file/) to learn how to manage variables like `WIREGUARD_PRIVATE_KEY` securely.
+> 💡 Not sure how the `.env` file works? Check out our [Environment File Guide](/docs/advanced/concept-explanations/environment-variables/) to learn how to manage variables like `WIREGUARD_PRIVATE_KEY` securely.
 
 ---
 
@@ -68,7 +68,7 @@ environment:
   - PORT_FORWARD_ONLY=on
 ```
 
-> 🧠 **Tip:** You can still use `${VARIABLE}` syntax if you prefer to keep the private key in your `.env` file. See the [Environment File Guide](/advanced/env-file/) for more info.
+> 🧠 **Tip:** You can still use `${VARIABLE}` syntax if you prefer to keep the private key in your `.env` file. See the [Environment File Guide](/docs/advanced/concept-explanations/environment-variables/) for more info.
 
 ---
 
@@ -136,6 +136,6 @@ WireGuard support varies by provider. Here’s what to do:
 ## Need Help? 🆘
 
 If you're stuck:
-- Visit our [Common Issues](/faqs/common-errors/) page
+- Visit our [Common Issues](/docs/faqs/) page
 - Join our [Discord](https://discord.gg/Gwae3tNMST) chat
 - Or ask in the [YAMS Forum](https://forum.yams.media)

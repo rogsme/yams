@@ -15,7 +15,8 @@ It consists of 4 major parts:
 
    A simple bash setup script you run on your machine, handling all the initial complexity. It wrangles permissions, files structures and initial docker compose content in the background and surfaces a simple interface in your terminal.
 
-   ASCII CINEMA HERE
+   {{< image src="/pics/install-yams.gif" alt="" title="" loading="auto" >}}
+
 
 2. ## Setup Guide
 
@@ -33,6 +34,8 @@ And don't worry: its super customizable. Since its just a kick-starting template
 
 # The Story Behind YAMS
 
+*A message from the YAMS creator Roger:*
+
 Back in 2019, I had a mission: Create a media server that my non-tech-savvy girlfriend could use without calling me for help every five minutes. So I dove in, combining some awesome open-source projects and wrapping them up in a Docker compose.
 
 Fast forward to today, and guess what? Mission accomplished! 🎉 Not only does my girlfriend use it without any issues, but I've even got my mom (who lives 5000km away) streaming her favorite shows with zero problems!
@@ -46,46 +49,56 @@ That's when it hit me: Why not create a script that could do all the heavy lifti
 YAMS is the easiest way to get started up with your own streaming service replacement. Here's what you get out of the box:
 
 - Smart Downloads: Just tell it what movie or show you want, your stack handles the rest
-- Streaming: Using Jellyfin/Plex/Emby, you can stream your media anywhere. And I mean anywhere. Phones, computers, browsers, TVs, game consoles and more!
+- Streaming: Using Jellyfin/Emby/Plex, you can stream your media anywhere. And I mean anywhere. Phones, computers, browsers, TVs, game consoles and more!
 - And on the side you don't see:
   - Perfect Organisation: Media is kept neatly organised on your personal filesystem
-  - Port forwarding to speed up your downloads
+  - Port forwarding to speed up your downloads and increase seeding capabilities
   - Hardlinking to prevent duplicating data, saving tons of storage space
 
 YAMS utilises Docker as its foundation: it provides a docker compose with all the major open source tools, ready to go. You'll learn about the roles of these applications as we go along, but here are a few of the basics:
 
 <div class="card-row">
 
+  <!-- Card 1 -->
   <div class="simple-card">
     <div class="card-header">
-      {{< image src="/icons/logos/radarr.svg" alt="" title="" loading="auto" >}}
+      <img src="/icons/logos/radarr.svg" class="card-icon" alt="Radarr" />
       <h4 class="card-title">Radarr + Sonarr</h4>
     </div>
     <div class="card-content">
-      Track down your movies and shows, and organise them on your filesystem
+      Track down your movies and shows, and organise them on your filesystem.
     </div>
   </div>
 
+  <!-- Card 2 -->
   <div class="simple-card">
     <div class="card-header">
-      {{< image src="/icons/logos/qbittorrent.svg" alt="" title="" loading="auto" >}}
+      <img src="/icons/logos/qbittorrent.svg" class="card-icon" alt="qBitTorrent" />
       <h4 class="card-title">qBitTorrent + Gluetun</h4>
     </div>
     <div class="card-content">
-      Download and seed your media (behind a VPN if needed)
+      Download and seed your media (behind a VPN if needed).
     </div>
   </div>
 
+  <!-- Card 3 -->
   <div class="simple-card">
     <div class="card-header">
-      {{< image src="/icons/logos/jellyfin.svg" alt="" title="" loading="auto" >}}
+      <img src="/icons/logos/jellyfin.svg" class="card-icon" alt="Jellyfin" />
       <h4 class="card-title">Jellyfin/Emby/Plex</h4>
     </div>
     <div class="card-content">
-      Stream your media to any device
+      Stream your media to any device.
     </div>
   </div>
 
+</div>
+
+<!-- Compact Supporting Services Card -->
+<div class="simple-card" style="padding: 0.75rem 1.25rem; margin-top: 1rem;">
+  <div class="card-content" style="font-size: 0.9rem; line-height: 1.4; opacity: 0.95;">
+    Also includes <strong>SABnzbd</strong> (Usenet), <strong>Bazarr</strong> (Subtitles), <strong>Prowlarr</strong> (Indexers), <strong>Dozzle</strong> (Logs), and <strong>Watchtower</strong> (Auto-updates).
+  </div>
 </div>
 
 

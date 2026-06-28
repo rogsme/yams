@@ -83,7 +83,7 @@ Because Prowlarr is now routing its traffic through the VPN (Gluetun), it won't 
 1. **Access Prowlarr**: Go to `http://your-ip:9696`
 2. **Navigate to Settings > Apps**: Click on the "Apps" tab.
 
-{{< image src="/pics/prowlarr-behind-vpn-1.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/prowlarr-behind-vpn/prowlarr-behind-vpn-1.png" alt="" title="" loading="auto" >}}
 
 3. **Edit Each Application**: For Radarr, Sonarr, and Lidarr, click on their respective entries to edit them.
 
@@ -92,14 +92,14 @@ Because Prowlarr is now routing its traffic through the VPN (Gluetun), it won't 
   * Ensure "Prowlarr Server" is set to `http://your-host-ip:9696` (replace `your-host-ip` with the actual IP address of your YAMS host, e.g., `192.168.0.190`).
   * Click "Test" and then "Save".
 
-{{< image src="/pics/prowlarr-behind-vpn-2.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/prowlarr-behind-vpn/prowlarr-behind-vpn-2.png" alt="" title="" loading="auto" >}}
 
 **For Radarr**:
   * Change the "Radarr Server" URL from `http://radarr:7878` to `http://172.60.0.14:7878`.
   * Ensure "Prowlarr Server" is set to `http://your-host-ip:9696` (replace `your-host-ip` with the actual IP address of your YAMS host, e.g., `192.168.0.190`).
   * Click "Test" and then "Save".
 
-{{< image src="/pics/prowlarr-behind-vpn-3.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/prowlarr-behind-vpn/prowlarr-behind-vpn-3.png" alt="" title="" loading="auto" >}}
 
 **For Lidarr (Optional, if you want to use Lidarr)**:
   * If you haven't added Lidarr yet, click the `+` button, select "Lidarr".
@@ -108,7 +108,7 @@ Because Prowlarr is now routing its traffic through the VPN (Gluetun), it won't 
   * Paste your Lidarr API Key.
   * Click "Test" and then "Save".
 
-{{< image src="/pics/prowlarr-behind-vpn-4.png" alt="" title="" loading="auto" >}}
+{{< image src="/pics/prowlarr-behind-vpn/prowlarr-behind-vpn-4.png" alt="" title="" loading="auto" >}}
 
 After updating all applications, click "Sync App Indexers" on the main Apps page.
 
@@ -151,7 +151,7 @@ yams check-vpn
 ## Need Help? 🆘
 
 If you're stuck:
-1. Check the [Common Issues](/faqs/common-errors/) page
+1. Check the [Common Issues](/docs/faqs/) page
 2. Visit the [YAMS Forum](https://forum.yams.media)
 3. Join our [Discord](https://discord.gg/Gwae3tNMST) chat
 

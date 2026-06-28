@@ -135,9 +135,9 @@ By default, YAMS uses **OpenVPN** for Gluetun. But if your VPN provider supports
 
 We recommend ProtonVPN for this, and we’ve written a full guide to help you switch:
 
-👉 [Switching Gluetun to WireGuard](/advanced/wireguard/)
+👉 [Switching Gluetun to WireGuard](/docs/advanced/community-guides/gluetun-wireguard/)
 
-> 💡 If you store your WireGuard private key in the `.env` file, make sure to read the [Environment File Guide](/advanced/env-file/) to learn how to manage secrets securely.
+> 💡 If you store your WireGuard private key in the `.env` file, make sure to read the [Environment File Guide](/docs/advanced/concept-explanations/environment-variables/) to learn how to manage secrets securely.
 
 ## ProtonVPN Free Tier 🆓
 
@@ -204,12 +204,12 @@ For more details on ProtonVPN's free tier and Gluetun, refer to the [gluetun Pro
 
 ## Need Extra Security? 🛡️
 
-Want to double-check that your torrent client is really using the VPN? Head over to [Double-checking your torrent client IP address](/advanced/torrenting/#double-checking-your-torrent-client-ip-address) for a detailed guide!
+Want to double-check that your torrent client is really using the VPN? Head over to [Double-checking your torrent client IP address](/docs/advanced/concept-explanations/torrenting/#double-checking-your-torrent-client-ip-address) for a detailed guide!
 
 ## Still Need Help? 🆘
 
 If you're stuck:
-1. Check our [Common Issues](/faqs/common-errors/#gluetun-does-not-connect) page
+1. Check our [Common Issues](/docs/faqs/#gluetun-does-not-connect) page
 2. Visit the [YAMS Forum](https://forum.yams.media)
 3. Join our [Discord](https://discord.gg/Gwae3tNMST) chat
 
@@ -223,7 +223,7 @@ Port forwarding helps you get better download speeds by allowing incoming connec
 ## ProtonVPN Users 🚀
 ProtonVPN makes port forwarding easy! Just follow these steps:
 
-> 🆕 ProtonVPN now supports **WireGuard with port forwarding**! If you want faster VPN performance, check out our [Switching Gluetun to WireGuard](/advanced/wireguard/) guide.
+> 🆕 ProtonVPN now supports **WireGuard with port forwarding**! If you want faster VPN performance, check out our [Switching Gluetun to WireGuard](/docs/advanced/community-guides/gluetun-wireguard/) guide.
 
 ### Setup from zero
 
@@ -299,7 +299,7 @@ environment:
 - VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}" http://127.0.0.1:8081/api/v2/app/setPreferences 2>&1'
 ```
 
-For this to work, the qBittorrent web UI server must be enabled and listening on port 8081 and the Web UI "Bypass authentication for clients on localhost" must be ticked (json key bypass_local_auth) so Gluetun can reach qBittorrent without authentication. Both of these should already be correctly configured if you set up your qBitTorrent instance as per the [YAMS config guide](/config/qbittorrent).
+For this to work, the qBittorrent web UI server must be enabled and listening on port 8081 and the Web UI "Bypass authentication for clients on localhost" must be ticked (json key bypass_local_auth) so Gluetun can reach qBittorrent without authentication. Both of these should already be correctly configured if you set up your qBitTorrent instance as per the [YAMS config guide](/docs/configure/qbittorrent).
 
 Then, restart Gluetun, and you are done! When port forwarding is established, the Gluetun container will contact your qBitTorrent instance, automatically updating the port number.
 
@@ -308,7 +308,7 @@ Then, restart Gluetun, and you are done! When port forwarding is established, th
 ## Other VPN Providers 🌐
 For other VPN providers, port forwarding configuration varies.
 
-> 💡 Some providers support WireGuard too! See [Switching Gluetun to WireGuard](/advanced/wireguard/) for details.
+> 💡 Some providers support WireGuard too! See [Switching Gluetun to WireGuard](/docs/advanced/community-guides/gluetun-wireguard/) for details.
 
 Gluetun natively supports port forwarding for these providers:
 - Private Internet Access
@@ -318,7 +318,7 @@ Gluetun natively supports port forwarding for these providers:
 
 For detailed provider-specific instructions, check the [Gluetun Port Forwarding Documentation](https://github.com/qdm12/gluetun-wiki/blob/main/setup/advanced/vpn-port-forwarding.md).
 
-> ⚠️ Remember, if your provider needs custom environment variables, they must be provided in the containers `environment:` section. Variables defined within the YAMS `.env` file can be acessed by the `docker-compose.yml` file, but not within the containers themselves! Check out [Your Environment File (.env)](/advanced/content/advanced/env-file) for more info.
+> ⚠️ Remember, if your provider needs custom environment variables, they must be provided in the containers `environment:` section. Variables defined within the YAMS `.env` file can be acessed by the `docker-compose.yml` file, but not within the containers themselves! Check out [Your Environment File (.env)](/docs/advanced/concept-explanations/environment-variables/) for more info.
 
 ## Verifying Port Forwarding ✅
 To check if port forwarding is working:
@@ -335,4 +335,4 @@ Look for port forwarding logs in the Gluetun container to diagnose issues:
    docker logs gluetun | grep "\[port forwarding\]"
 ```
 
-Need help? Visit our [Common Issues](/faqs/common-errors/) page or join our [Discord](https://discord.gg/Gwae3tNMST) chat!
+Need help? Visit our [Common Issues](/docs/faqs/) page or join our [Discord](https://discord.gg/Gwae3tNMST) chat!

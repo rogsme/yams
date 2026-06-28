@@ -125,7 +125,7 @@ yams destroy radarr      # Destroys only the 'radarr' service (its container and
 
 ---
 
-## Updating the CLI 🔧
+## Updating the CLI
 
 Every now and then the YAMS CLI gets new features and improvements. To update it without repeating the install process:
 
@@ -137,4 +137,4 @@ Every now and then the YAMS CLI gets new features and improvements. To update it
 
 ---
 
-Perfect. You are now ready to tackle the main setup. I believe in you!
+Perfect. You are now ready to tackle the [main setup](../configure/qbittorrent). I believe in you!

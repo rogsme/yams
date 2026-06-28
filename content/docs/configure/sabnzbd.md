@@ -6,7 +6,7 @@ title: SABnzbd
 
 ## Note - SABnzbd is optional
 
-SABnzbd is an optional component. If you prefer to use torrents exclusively, you can skip this section and proceed to the [Radarr configuration](/config/radarr). To use SABnzbd, you will need a Usenet server and indexers, which are typically paid services.
+SABnzbd is an optional component. If you prefer to use torrents exclusively, you can skip this section and proceed to the [Radarr configuration](/docs/configure/radarr). To use SABnzbd, you will need a Usenet server and indexers, which are typically paid services.
 
 ## What is SABnzbd?
 
@@ -67,4 +67,4 @@ Then, go to "General" and scroll down to "Security". You'll find your API Key ri
 
 ## That's done! 🎉
 
-Excellent! Now we can move forward with [Radarr](/config/radarr). Get ready - this is where things start getting really fun! 😄
+Excellent! Now we can move forward with [Radarr](/docs/configure/radarr). Get ready - this is where things start getting really fun! 😄

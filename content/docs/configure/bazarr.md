@@ -108,7 +108,7 @@ Happy with your settings? Hit "Save" at the top!
 
 ### Connecting to Sonarr
 
-Time to link Bazarr with [Sonarr](/config/sonarr)! First, we need Sonarr's API key.
+Time to link Bazarr with [Sonarr](/docs/configure/sonarr)! First, we need Sonarr's API key.
 
 Head to [http://{your-ip-address}:8989/settings/general]() and find the API Key under "Security".
 
@@ -138,7 +138,7 @@ Magic time! The "Series" section should appear in your left menu! ✨
 
 ### Connecting to Radarr
 
-Now let's connect to [Radarr](/config/radarr)! First step: get that API key.
+Now let's connect to [Radarr](/docs/configure/radarr)! First step: get that API key.
 
 Go to [http://{your-ip-address}:7878/settings/general]() and find the API Key under "Security".
 
@@ -168,9 +168,9 @@ More magic! The "Movies" section appears in your left menu! ✨
 ### Almost there! 🏃‍♂️
 
 Just one last step! Time to set up your media service. Pick your path:
-- [Jellyfin](/config/jellyfin)
-- [Emby](/config/emby)
-- [Plex](/config/plex)
+- [Jellyfin](/docs/configure/jellyfin)
+- [Emby](/docs/configure/emby)
+- [Plex](/docs/configure/plex)
 
 ## Want to become a subtitle master? 🎓
 

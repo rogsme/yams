@@ -119,7 +119,7 @@ And there it is! Your very own streaming service, ready to go! 🌟
 
 ## That's all folks! 🎬
 
-YAMS is fully up and running! Want to see how everything works together? Head over to [Running everything together](/config/running-everything-together).
+YAMS is fully up and running! Want to see how everything works together? Head over to [Running everything together](/docs/configure/running-together).
 
 ## Pro Tip! 💡
 
