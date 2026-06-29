@@ -19,7 +19,7 @@ echo "Welcome to YAMS (Yet Another Media Server)"
 echo "Installation process should be really quick"
 echo "We just need you to answer some questions"
 echo "We are going to ask for your sudo password in the end"
-echo "To finish the installation of the CLI"
+echo "to finish the installation of the CLI"
 echo "===================================================="
 echo ""
 
@@ -180,7 +180,7 @@ configure_media_service() {
     log_info "Supported media services:"
     log_info "- jellyfin (recommended, easier)"
     log_info "- emby"
-    log_info "- plex (advanced, always online)"
+    log_info "- plex (advanced, always online, paid)"
 
     read -p "Choose your media service [$DEFAULT_MEDIA_SERVICE]: " media_service
     media_service=${media_service:-$DEFAULT_MEDIA_SERVICE}
@@ -209,7 +209,7 @@ configure_vpn() {
     echo
     echo
     log_info "Time to set up the VPN."
-    log_info "Supported VPN providers: https://yams.media/advanced/vpn"
+    log_info "Supported VPN providers: https://yams.media/advanced/vpn ENSURE THIS LINK IS CORRECT"
 
     read -p "Configure VPN? (Y/n) [Default = y]: " setup_vpn
     setup_vpn=${setup_vpn:-"y"}
@@ -358,14 +358,13 @@ running_services_location() {
 
     local -A services=(
         ["qBittorrent"]="8081"
-        ["SABnzbd"]="8080"
+        ["SABnzbd"]="8090"
         ["Radarr"]="7878"
         ["Sonarr"]="8989"
-        ["Lidarr"]="8686"
         ["Prowlarr"]="9696"
         ["Bazarr"]="6767"
         ["$media_service"]="$media_service_port"
-        ["Portainer"]="9000"
+        ["Dozzle"]="8777"
     )
 
     echo -e "Service URLs:"
@@ -617,16 +616,17 @@ echo
 running_services_location
 
 echo
-log_info "You might need to wait for a couple of minutes while everything gets up and running"
+log_info "You might need to wait for a couple of minutes while everything gets initialized"
 echo
 log_info "All the service locations are also saved in ~/yams_services.txt"
 running_services_location > ~/yams_services.txt
 
 log_info "========================================================"
 echo
-log_info "To configure YAMS, check the documentation at"
-log_info "https://yams.media/config"
+log_info "To configure YAMS, check out the documentation at"
+log_info "https://yams.media/config ENSURE THIS LINK IS CORRECT"
 echo
+log_info "Make sure to enter your server's local IP, config and media directories into the documentation for the best experience"
 log_info "========================================================"
 
 exit 0

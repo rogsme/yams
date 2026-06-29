@@ -71,7 +71,7 @@ services:
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/sabnzbd:/config
     ports: # commnented out by default, as sabnzbd is routed through the VPN
-      - 8080:8080 # sabnzbd
+      - 8090:8080 # sabnzbd
     restart: unless-stopped
 
   # Sonarr is used to query, add downloads to the download queue and index TV shows
@@ -143,7 +143,7 @@ services:
       - DOZZLE_ENABLE_ACTIONS=true
       - DOZZLE_ENABLE_SHELL=true
     ports:
-      - 8771:8080
+      - 8777:8080
     restart: unless-stopped
 
   # Watchtower is going to keep our instances updated
