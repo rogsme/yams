@@ -2,8 +2,22 @@
 weight: 5
 title: Backups
 ---
+# Backing up YAMS
 
- handy backup command that takes care of everything:
+Backups are always important. You never know when something might break, and you are forced to recreate your server. If you have a backup of all your config folder ready to go, this is **much easier** (it saves DAYS).
+
+The key item your should backup from your media server is your config folder (`{config_path}`). This contains:
+- All your container data
+- Your YAMS settings
+- Important environment variables
+
+> Note that this does **not** contain your media. Backing up your media is less important and will not be covered in this guide.
+
+Backups can either be conducted using the `yams` command, or by a third party. If you run other applications on your server in differing folders or want a more comprehensive backup method, you might look for a more capable backup handler. Some options might be the popular [restic](https://restic.net/) or [borg](https://borgbackup.readthedocs.io/en/stable/) which are command line utilities (don't worry, there are projects out there that wrap them and make them easier to digest) that store backup snapshots in a de-duplicating repository that can easily be stored on local as well asn third party storage.
+
+The `yams backup` command is a simple utility that simple creates a compressed archive of all your YAMS data at that point in time! You are responsible for storing and managing this file.
+
+## Backing up with `yams backup`
 
 ```bash
 yams backup [destination]
@@ -20,7 +34,7 @@ You'll see something like this:
 ```bash
 Stopping YAMS services...
 
-Backing up YAMS to /home/roger...
+Backing up YAMS to /home/user/backups...
 This may take a while depending on the size of your installation.
 Please wait... ⌛
 
@@ -28,24 +42,16 @@ Backup completed! 🎉
 Starting YAMS services...
 
 Backup completed successfully! 🎉
-Backup file: /home/roger/yams-backup-2024-12-23-1734966570.tar.gz
+Backup file: /home/user/backups/yams-backup-2024-12-23-1734966570.tar.gz
 ```
 
-### What Gets Backed Up? 🤔
 
-The backup includes:
-- All your container configurations
-- Your YAMS settings
-- Your service preferences
-- Custom container configurations
-- Important environment variables
-
-### Pro Backup Tips 💡
-
-1. **Regular Backups**: Schedule them weekly or monthly
-2. **Multiple Locations**: Keep copies in different places
+### Pro Backup Tips
+No matter what backup method you use, here are some important factors to keep in mind:
+1. **Regular Backups**: Schedule them daily, weekly or monthly. Store more than one too!
+2. **Multiple Locations**: Keep copies in different places so you can't lose all at once
 3. **Before Updates**: Always backup before running `yams update-containers` to update your containers
-4. **Version Control**: Keep a few recent backups around
+4. **Version Control**: Keep a few recent backups around for easy access in case a quick rollback is needed
 5. **Test Restores**: Occasionally verify your backups work
 
 ## Restoring from Backup 🔄
@@ -61,8 +67,12 @@ cd /your/new/location
 ### Step 2: Update YAMS Configuration
 Edit the YAMS binary with your favorite text editor (we'll use `nano` here, but use whatever you prefer):
 ```bash
-nano yams
+nano /usr/local/bin/yams
 ```
+
+> [!INFO]
+> If YAMS binary isn't installed yet and you **don't** want to repeat the installation process, check out the instructions on how to [update the CLI](../../getting%20started/cli/#updating-the-cli), and loosely follow them to instead paste the `/usr/local/bin/yams` content from GitLab
+
 
 Find and update these lines:
 ```bash
@@ -74,17 +84,13 @@ readonly DC="docker compose -f your/new/location/docker-compose.yaml -f your/new
 readonly INSTALL_DIRECTORY="your/new/location"  # Update this!
 ```
 
-### Step 3: Install YAMS Binary
-```bash
-sudo cp yams /usr/local/bin/
-```
 
-### Step 4: Start YAMS
+### Step 3: Start YAMS
 ```bash
 yams start
 ```
 
-## Best Practices 📚
+## Best Practices
 
 1. **Regular Schedule**
    ```bash
@@ -100,7 +106,7 @@ yams start
    yams update-containers
    ```
 
-## Troubleshooting 🔧
+## Troubleshooting
 
 ### Backup Failed?
 1. Check disk space:
@@ -141,6 +147,7 @@ You can automate backups using cron. Here's an example:
    0 2 * * 0 /usr/local/bin/yams backup /path/to/backups/
    ```
 
+
 ### Backup Rotation
 
 Keep your backups manageable with rotation:
@@ -158,11 +165,7 @@ yams backup $BACKUP_DIR
 ls -t $BACKUP_DIR/yams-backup-* | tail -n +$((MAX_BACKUPS + 1)) | xargs rm -f
 ```
 
-## Need Help? 🆘
-
-If you run into backup or restore issues:
-1. Check our [Common Issues](/docs/faqs/) page
-2. Visit the [YAMS Forum](https://forum.yams.media)
-3. Join our [Discord](https://discord.gg/Gwae3tNMST) chat
+> [!INFO]
+> If you are looking to expand to your backup practices, take a look at a backup manager instead of relying on YAMS' quick utility
 
 Remember: The best time to make a backup is BEFORE you need it! 🎯
