@@ -4,16 +4,15 @@
 
 <img alt="Discord" src="https://img.shields.io/discord/1168025418243256391?logo=discord&label=Discord">
 
-This is a highly opinionated media server that simplifies the setup and management of your home media collection.
+This is a highly opinionated media server script and guide that simplifies the setup and management of your home media collection, targeted towards beginners.
 
 - Website: https://yams.media
-- Code documentation: https://gitlab.com/rogs/yams/-/blob/master/docs.org
 - Discord: https://discord.gg/Gwae3tNMST
 - Matrix: https://matrix.to/#/#yams-space:rogs.me
 
 ## Description
 
-YAMS installs and configures a complete media server stack using Docker containers:
+YAMS installs a docker compose file and has handwritten guides on constructing a complete media server stack using Docker containers:
 
 ### Download Management
 
@@ -37,7 +36,7 @@ YAMS installs and configures a complete media server stack using Docker containe
 
 ### Management & Monitoring
 
-- [Portainer](https://www.portainer.io/) - Container management UI
+- [Dozzle](https://dozzle.dev/) - Container log management UI
 - [Watchtower](https://containrrr.dev/watchtower/) - Automatic container updates
 
 ## Features
@@ -76,114 +75,11 @@ Access your content anywhere:
 - Automatic container updates via Watchtower
 - Backup and restore functionality
 
-## Dependencies
-
-### Required
-
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-
-The installation script can automatically install these on Debian/Ubuntu systems.
-
-## Before Installation
-
-Prepare the following:
-
-### 1. Installation Location
-
-- Default: `~/opt/yams`
-- Ensure your user has write permissions
-
-### 2. Media Directory
-
-- Default: `~/srv/media`
-- Will contain subdirectories:
-  - `~/srv/media/tvshows` — TV series
-  - `~/srv/media/movies` — Movies
-  - `~/srv/media/music` — Music files
-  - `~/srv/media/books` — Books and audiobooks
-  - `~/srv/media/downloads` — Temporary download location
-  - `~/srv/media/blackhole` — Watch folder for torrents
-
-### 3. Non-root User
-
-- Regular system user to own and manage files
-- Must have sudo privileges for initial setup
-
-### 4. VPN Service (Optional but Recommended)
-
-- Supported providers listed at https://yams.media/advanced/vpn#official-supported-vpns
-- [ProtonVPN](https://protonvpn.com/) recommended for:
-  - Simple configuration
-  - Port forwarding
-
-## Installation
-
-Quick installation:
-
-```bash
-git clone --depth=1 https://gitlab.com/rogs/yams.git /tmp/yams
-cd /tmp/yams
-bash install.sh
-```
-
-Follow the interactive prompts to configure your installation.
-
-### Tested On
-
-- Debian 11/12
-- Ubuntu 22.04
-
-## Usage
-
-YAMS provides a simple CLI interface:
-
-```text
-yams - Yet Another Media Server
-
-Usage: yams [command] [options]
-
-Commands:
---help                    displays this help message
-restart                   restarts yams services
-stop                      stops all yams services
-start                     starts yams services
-status                    checks yams services status
-destroy                   destroy yams services so you can start from scratch
-check-vpn                 checks if the VPN is working as expected
-backup                    backs up yams to the destination location
-update-containers         updates all yams containers
-
-Examples:
-  yams start                   # Start all YAMS services
-  yams backup /path/to/backup  # Backup YAMS to specified directory
-  yams update-containers       # Update all containers
-```
-
 ## Configuration
 
-Complete configuration guide:
+ To explore more or to install, view the complete main website:
 
-https://yams.media/config/
-
-## Future Development
-
-Planned features and improvements:
-
-- [x] Multiple media server support (Jellyfin/Emby/Plex)
-- [x] Portainer integration
-- [x] Update functionality
-- [x] Lidarr and Readarr integration
-- [x] Enhanced Usenet support
-- [ ] Alpine-based images for reduced footprint
-- [x] Additional download clients
-- [x] Jackett integration (https://yams.media/advanced/add-your-own-containers/)
-- [x] Request management (Jellyseerr/Overseerr) (https://yams.media/advanced/add-your-own-containers/)
-- [x] Dashboard integration (Organizr/Heimdall) (https://yams.media/advanced/add-your-own-containers/)
-- [ ] Enhanced themes and customization
-- [x] WireGuard VPN support (https://yams.media/advanced/wireguard/)
-- [x] Filebrowser integration (https://yams.media/advanced/add-your-own-containers/)
-- [x] Jellyfin account management (https://yams.media/advanced/add-your-own-containers/)
+https://yams.media/
 
 ## Donations
 

@@ -56,7 +56,7 @@ Thank you for your interest in contributing to YAMS! We appreciate your help in 
 
 ## Code of Conduct
 
-Basically, don't be an asshole. You can read our Code of Conduct here: [CODE_OF_CONDUCT.org](https://gitlab.com/rogs/yams/-/blob/master/CODE_OF_CONDUCT.org)
+Basically, don't be an asshole. You can read our Code of Conduct here: [CODE_OF_CONDUCT.md](https://gitlab.com/rogs/yams/-/blob/master/CODE_OF_CONDUCT.md)
 
 ## Questions and Support
 
