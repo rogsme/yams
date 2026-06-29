@@ -440,7 +440,7 @@ update_configuration_files() {
     local yams_script="$install_directory/yams"
 
     # Auto-detect timezone from system
-    local tz="${TZ:-$(cat /etc/timezone 2>/dev/null || echo 'UTC')}"
+    local tz="${TZ:-$(readlink /etc/localtime | sed 's/.*zoneinfo\///' || echo 'UTC')}"
 
     # Update .env file with universal settings
     log_info "Updating environment configuration..."

@@ -16,7 +16,6 @@ services:
       - 8096:8096 # plex
     restart: unless-stopped
 
-  # --vpn-service-start
   # Gluetun is our VPN, so you can download torrents safely
   gluetun:
     image: qmcgaw/gluetun:v3.41.0
@@ -41,7 +40,6 @@ services:
     volumes:
       - ${INSTALL_DIRECTORY}/config/gluetun:/gluetun
     restart: unless-stopped
-  # --vpn-service-end
 
   # qBitorrent is used to download torrents (Routed through VPN by default)
   qbittorrent:
