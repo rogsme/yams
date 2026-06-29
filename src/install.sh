@@ -382,8 +382,8 @@ get_installation_paths() {
 
 copy_configuration_files() {
     local -A files=(
-        ["docker-compose.example.yaml"]="docker-compose.yaml"
-        [".env.example"]=".env"
+        ["docker-compose.template.yaml"]="docker-compose.yaml"
+        [".env.template"]=".env"
         ["docker-compose.custom.yaml"]="docker-compose.custom.yaml"
     )
 
