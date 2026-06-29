@@ -42,7 +42,7 @@ readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
 readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/main/src"
 
 # Determine script path (needed for re-exec after Docker install)
-SCRIPT_PATH="${BASH_SOURCE[0]}"
+SCRIPT_PATH="${BASH_SOURCE[0]:-}"
 
 log_success() {
     echo -e "${GREEN}$1${NC}"
