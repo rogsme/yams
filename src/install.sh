@@ -139,6 +139,15 @@ check_dependencies() {
 
     if docker compose version &> /dev/null; then
         log_success "docker compose exists ✅"
+
+        if ! docker ps &> /dev/null; then
+            log_warning "Docker is installed, but $USER lacks permissions."
+            log_info "Adding $USER to the docker group..."
+            sudo usermod -aG docker "$USER"
+            log_info "Activating docker group permissions and restarting script..."
+            exec sg docker -c "bash '$0'"
+        fi
+
         return 0
     fi
 
