@@ -39,6 +39,10 @@ readonly NC='\033[0m' # No Color
 
 # Dependencies
 readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
+readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/main/src"
+
+# Determine script path (needed for re-exec after Docker install)
+SCRIPT_PATH="${BASH_SOURCE[0]}"
 
 log_success() {
     echo -e "${GREEN}$1${NC}"
@@ -146,7 +150,21 @@ check_dependencies() {
     install_docker=${install_docker:-"n"}
 
     if [ "${install_docker,,}" = "y" ]; then
-        bash ./docker.sh
+        log_info "Downloading and running the official Docker installation script..."
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sudo sh get-docker.sh
+        rm get-docker.sh
+
+        sudo usermod -aG docker "$USER"
+        log_success "Docker installed successfully! ✅"
+
+        log_info "Activating docker group permissions..."
+        if [[ ! -f "$SCRIPT_PATH" ]]; then
+            curl -fsSL "${REPO_RAW_URL}/install.sh" -o /tmp/yams-install.sh
+            exec sg docker -c "bash /tmp/yams-install.sh"
+        else
+            exec sg docker -c "bash '$SCRIPT_PATH'"
+        fi
     else
         log_error "Please install Docker and Docker Compose first"
     fi
@@ -385,17 +403,18 @@ copy_configuration_files() {
         ["docker-compose.template.yaml"]="docker-compose.yaml"
         [".env.template"]=".env"
         ["docker-compose.custom.yaml"]="docker-compose.custom.yaml"
+        ["yams"]="yams"
     )
 
     for src in "${!files[@]}"; do
         local dest="$install_directory/${files[$src]}"
         echo
-        log_info "Copying $src to $dest..."
+        log_info "Downloading $src to $dest..."
 
-        if cp "$src" "$dest"; then
-            log_success "$src copied successfully ✅"
+        if curl -fsSL "$REPO_RAW_URL/$src" -o "$dest"; then
+            log_success "$src downloaded successfully ✅"
         else
-            log_error "Failed to copy $src to $dest. Check permissions ❌"
+            log_error "Failed to download $src from $REPO_RAW_URL. Check your internet connection ❌"
         fi
     done
 }
@@ -403,36 +422,28 @@ copy_configuration_files() {
 update_configuration_files() {
     local filename="$install_directory/docker-compose.yaml"
     local env_file="$install_directory/.env"
-    local yams_script="yams"
+    local yams_script="$install_directory/yams"
 
-    # Update .env file
+    # Auto-detect timezone from system
+    local tz="${TZ:-$(cat /etc/timezone 2>/dev/null || echo 'UTC')}"
+
+    # Update .env file with universal settings
     log_info "Updating environment configuration..."
     sed -i -e "s|<your_PUID>|$puid|g" \
            -e "s|<your_PGID>|$pgid|g" \
+           -e "s|<your_timezone>|$tz|g" \
            -e "s|<media_directory>|$media_directory|g" \
            -e "s|<media_service>|$media_service|g" \
            -e "s|<install_directory>|$install_directory|g" \
            -e "s|vpn_enabled|$setup_vpn|g" "$env_file" || \
         log_error "Failed to update .env file"
 
-    # Update VPN configuration in .env file
-if [ "${setup_vpn,,}" == "y" ]; then
-sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=y|" \
-        -e "s|^VPN_SERVICE=.*|VPN_SERVICE=$vpn_service|" \
-        -e "s|^VPN_USER=.*|VPN_USER=$vpn_user|" \
-        -e "s|^VPN_PASSWORD=.*|VPN_PASSWORD=$vpn_password|" "$env_file" || \
-        log_error "Failed to update VPN configuration in .env"
-else
-sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=n|" "$env_file" || \
-        log_error "Failed to update VPN configuration in .env"
-fi
-
-    # Update docker-compose.yaml
+    # Handle Media Service Name in docker-compose.yaml
     log_info "Updating docker-compose configuration..."
     sed -i "s|<media_service>|$media_service|g" "$filename" || \
         log_error "Failed to update docker-compose.yaml"
 
-    # Configure Plex-specific settings
+    # Handle Plex-Specific Networking
     if [ "$media_service" == "plex" ]; then
         log_info "Configuring Plex-specific settings..."
         sed -i -e 's|#network_mode: host # plex|network_mode: host # plex|g' \
@@ -441,33 +452,43 @@ fi
             log_error "Failed to configure Plex settings"
     fi
 
-    # Configure VPN settings if enabled
+    # Handle VPN Configuration
     if [ "${setup_vpn,,}" == "y" ]; then
-        log_info "Configuring VPN settings..."
+        log_info "Configuring VPN settings in .env..."
 
         local port_forward_settings="off"
         if [ "${enable_port_forwarding,,}" = "y" ] && [ "${is_protonvpn_free_tier,,}" != "y" ]; then
             port_forward_settings="on"
         fi
 
-        sed -i -e "s|vpn_service|$vpn_service|g" \
-               -e "s|vpn_user|$vpn_user|g" \
-               -e "s|vpn_password|$vpn_password|g" \
-               -e "/PORT_FORWARD_ONLY=/s/=on/=$port_forward_settings/" \
-               -e "/VPN_PORT_FORWARDING=/s/=on/=$port_forward_settings/" \
-               -e "/VPN_PORT_FORWARDING=/ { s/^ *VPN_PORT_FORWARDING=.*/$( [ "${is_protonvpn_free_tier,,}" = "y" ] && echo "#" )VPN_PORT_FORWARDING=$port_forward_settings # ProtonVPN Free Tier does not support port forwarding/ }" \
-               -e 's|#network_mode: "service:gluetun"|network_mode: "service:gluetun"|g' \
-               -e 's|ports: # qbittorrent|#ports: # qbittorrent|g' \
-               -e 's|ports: # sabnzbd|#ports: # sabnzbd|g' \
-               -e 's|- 8081:8081 # qbittorrent|#- 8081:8081 # qbittorrent|g' \
-               -e 's|- 8080:8080 # sabnzbd|#- 8080:8080 # sabnzbd|g' \
-               -e 's|#- 8080:8080/tcp # gluetun|- 8080:8080/tcp # gluetun|g' \
-               -e 's|#- 8081:8081/tcp # gluetun|- 8081:8081/tcp # gluetun|g' "$filename" || \
-            log_error "Failed to configure VPN settings"
+        sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=y|" \
+               -e "s|^VPN_SERVICE=.*|VPN_SERVICE=$vpn_service|" \
+               -e "s|^VPN_USER=.*|VPN_USER=$vpn_user|" \
+               -e "s|^VPN_PASSWORD=.*|VPN_PASSWORD=$vpn_password|" "$env_file"
 
+        # Apply ProtonVPN specific subnets if free tier
         if [ "${is_protonvpn_free_tier,,}" = "y" ]; then
             sed -i '/FIREWALL_OUTBOUND_SUBNETS=/a\      - FREE_ONLY=true' "$filename"
+            sed -i "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=off|g" "$filename"
+            sed -i "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=off # ProtonVPN Free Tier unsupported|g" "$filename"
+        else
+            sed -i "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=$port_forward_settings|g" "$filename"
+            sed -i "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=$port_forward_settings|g" "$filename"
         fi
+
+    else
+        # IF THEY OPT OUT OF VPN: We must disconnect qBittorrent from Gluetun
+        log_info "Disabling VPN configuration..."
+        sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=n|" "$env_file"
+
+        # 1. Comment out the gluetun network mode
+        # 2. Uncomment the local ports so qBittorrent is accessible on the host
+        # 3. Use Docker profiles to hide the Gluetun container so it doesn't crash on boot
+        sed -i -e 's|network_mode: "service:gluetun"|#network_mode: "service:gluetun"|g' \
+               -e 's|^    #ports:|    ports:|' \
+               -e 's|^    #  - 8081:8081 # qbittorrent|    - 8081:8081 # qbittorrent|' \
+               -e '/container_name: gluetun/a\    profiles: ["disabled"]' "$filename" || \
+            log_error "Failed to remove VPN settings from docker-compose.yaml"
     fi
 
     # Update YAMS CLI script
@@ -481,7 +502,7 @@ fi
 install_cli() {
     echo
     log_info "Installing YAMS CLI..."
-    if sudo cp yams /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
+    if sudo cp "$install_directory/yams" /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
         log_success "YAMS CLI installed successfully ✅"
     else
         log_error "Failed to install YAMS CLI. Check permissions ❌"
