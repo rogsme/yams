@@ -78,8 +78,8 @@ Before you get the script up and running, you'll have to do some thinking about 
 
 - **A VPN service (optional but *STRONGLY* recommended)**: First lesson! A VPN is a paid service that encrypts your server's traffic, and masks its public IP address whilst it's sailing the high seas. This hides your activity from cooperations such as your ISP or copyright providers.
   - Note that most of these services are paid but don't worry, they aren't too expensive. (Cheaper than paying for 4 streaming services 😅)
-  - Although its not strictly necessary, be aware of the risks of choosing not to use one. Spend some time researching your country and ISP to see how harsh they can be.
-  - Pick one from this list LINK HERE which YAMS officially supports. For the best performance, make sure your provider supports port forwarding. *You'll learn what this means later.*
+  - To learn more about VPNs and how to pick a good option, check out the [YAMS VPN page](../advanced/concept%20explanations/vpn)
+  - Ensure you have an account with your chosen VPN providers before continuing with the installation and guide
 
 
 ## Pre-Installation Setup
