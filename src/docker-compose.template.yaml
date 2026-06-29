@@ -21,6 +21,7 @@ services:
   gluetun:
     image: qmcgaw/gluetun:v3.41.0
     container_name: gluetun
+    #profiles: ["disabled"] # Uncomment this line to disable the VPN container
     cap_add:
       - NET_ADMIN
     devices:
@@ -60,19 +61,20 @@ services:
     #  - 8081:8081 # qbittorrent
 
   # SABnzbd is used to download from usenet (Commented out by default)
-  # sabnzbd:
-  #   image: lscr.io/linuxserver/sabnzbd:latest
-  #   container_name: sabnzbd
-  #   environment:
-  #     - PUID=${PUID}
-  #     - PGID=${PGID}
-  #     - TZ=${TZ}
-  #   volumes:
-  #     - ${MEDIA_DIRECTORY}:/data
-  #     - ${INSTALL_DIRECTORY}/config/sabnzbd:/config
-  #   ports: # commnented out by default, as sabnzbd is routed through the VPN
-  #     - 8080:8080 # sabnzbd
-  #   restart: unless-stopped
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    #profiles: ["disabled"] # Uncomment this line to disable the SABnzbd container if you don't use usenet
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${MEDIA_DIRECTORY}:/data
+      - ${INSTALL_DIRECTORY}/config/sabnzbd:/config
+    ports: # commnented out by default, as sabnzbd is routed through the VPN
+      - 8080:8080 # sabnzbd
+    restart: unless-stopped
 
   # Sonarr is used to query, add downloads to the download queue and index TV shows
   sonarr:

@@ -337,6 +337,20 @@ EOF
     export vpn_service vpn_user vpn_password setup_vpn enable_port_forwarding
 }
 
+configure_usenet() {
+    echo
+    echo
+    echo
+    log_info "Time to set up Usenet."
+    log_info "Usenet allows you to download content via SABnzbd."
+    log_info "You can skip this if you only plan to use torrents."
+
+    read -p "Enable Usenet/SABnzbd? (Y/n) [Default = y]: " setup_usenet
+    setup_usenet=${setup_usenet:-"y"}
+
+    export setup_usenet
+}
+
 running_services_location() {
     local host_ip
     host_ip=$(hostname -I | awk '{ print $1 }')
@@ -487,8 +501,15 @@ update_configuration_files() {
         sed -i -e 's|network_mode: "service:gluetun"|#network_mode: "service:gluetun"|g' \
                -e 's|^    #ports:|    ports:|' \
                -e 's|^    #  - 8081:8081 # qbittorrent|    - 8081:8081 # qbittorrent|' \
-               -e '/container_name: gluetun/a\    profiles: ["disabled"]' "$filename" || \
+               -e 's|^    #profiles: \["disabled"\].*|    profiles: ["disabled"]|' "$filename" || \
             log_error "Failed to remove VPN settings from docker-compose.yaml"
+    fi
+
+    # Handle Usenet/SABnzbd configuration
+    if [ "${setup_usenet,,}" != "y" ]; then
+        log_info "Disabling Usenet/SABnzbd..."
+        sed -i 's|^    #profiles: \["disabled"\].*|    profiles: ["disabled"]|' "$filename" || \
+            log_error "Failed to disable SABnzbd in docker-compose.yaml"
     fi
 
     # Update YAMS CLI script
@@ -544,6 +565,7 @@ get_installation_paths
 # Configure services
 configure_media_service
 configure_vpn
+configure_usenet
 
 log_info "Configuring the docker-compose file for user \"$username\" in \"$install_directory\"..."
 
