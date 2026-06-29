@@ -501,14 +501,14 @@ update_configuration_files() {
         sed -i -e 's|network_mode: "service:gluetun"|#network_mode: "service:gluetun"|g' \
                -e 's|^    #ports:|    ports:|' \
                -e 's|^    #  - 8081:8081 # qbittorrent|    - 8081:8081 # qbittorrent|' \
-               -e 's|^    #profiles: \["disabled"\].*|    profiles: ["disabled"]|' "$filename" || \
+               -e '/disable the VPN container/s/^    #profiles:/    profiles:/' "$filename" || \
             log_error "Failed to remove VPN settings from docker-compose.yaml"
     fi
 
     # Handle Usenet/SABnzbd configuration
     if [ "${setup_usenet,,}" != "y" ]; then
         log_info "Disabling Usenet/SABnzbd..."
-        sed -i 's|^    #profiles: \["disabled"\].*|    profiles: ["disabled"]|' "$filename" || \
+        sed -i '/disable the SABnzbd container/s/^    #profiles:/    profiles:/' "$filename" || \
             log_error "Failed to disable SABnzbd in docker-compose.yaml"
     fi
 
