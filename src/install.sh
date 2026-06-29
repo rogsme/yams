@@ -39,10 +39,7 @@ readonly NC='\033[0m' # No Color
 
 # Dependencies
 readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
-readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/main/src"
-
-# Determine script path (needed for re-exec after Docker install)
-SCRIPT_PATH="${BASH_SOURCE[0]:-}"
+readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/v3/src"
 
 log_success() {
     echo -e "${GREEN}$1${NC}"
@@ -159,12 +156,7 @@ check_dependencies() {
         log_success "Docker installed successfully! ✅"
 
         log_info "Activating docker group permissions..."
-        if [[ ! -f "$SCRIPT_PATH" ]]; then
-            curl -fsSL "${REPO_RAW_URL}/install.sh" -o /tmp/yams-install.sh
-            exec sg docker -c "bash /tmp/yams-install.sh"
-        else
-            exec sg docker -c "bash '$SCRIPT_PATH'"
-        fi
+        exec sg docker -c "bash '$0'"
     else
         log_error "Please install Docker and Docker Compose first"
     fi
