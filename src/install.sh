@@ -273,10 +273,10 @@ EOF
 
     echo
     if [ "$vpn_service" = "mullvad" ]; then
-       log_warning "Mullvad is removing OpenVPN support on January 15, 2026."
+       log_warning "Mullvad has removed OpenVPN support, the default config YAMS uses."
        log_warning "If you plan to use Mullvad, you MUST migrate to WireGuard after installation."
        log_warning "Read more: https://mullvad.net/en/blog/removing-openvpn-15th-january-2026"
-       log_warning "WireGuard setup instructions: https://yams.media/advanced/wireguard/"
+       log_warning "WireGuard setup instructions: https://yams.media/advanced/wireguard/ FIX LINK"
        echo
     fi
 
@@ -296,7 +296,7 @@ EOF
         enable_port_forwarding=${user_enable_port_forwarding:-"n"}
     fi
 
-    # Handle special cases for VPN providers
+    # Handle special cases for ProtonVPN usernames that require the +pmp suffix for port forwarding
     if [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [ "$is_protonvpn_free_tier" != "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
         vpn_user="${vpn_user}+pmp"
         log_info "Added +pmp suffix to username for ProtonVPN port forwarding"
@@ -344,12 +344,27 @@ configure_usenet() {
     echo
     log_info "Time to set up Usenet."
     log_info "Usenet allows you to download content via SABnzbd."
+    log_info "You can change this later by editing docker-compose.yaml."
     log_info "You can skip this if you only plan to use torrents."
 
     read -p "Enable Usenet/SABnzbd? (Y/n) [Default = y]: " setup_usenet
     setup_usenet=${setup_usenet:-"y"}
 
     export setup_usenet
+}
+
+configure_lidarr() {
+    echo
+    echo
+    echo
+    log_info "Time to set up Lidarr."
+    log_info "Lidarr is used to query, add downloads to the download queue and index Music."
+    log_info "You can change this later by editing docker-compose.yaml."
+
+    read -p "Enable Lidarr? (Y/n) [Default = y]: " setup_lidarr
+    setup_lidarr=${setup_lidarr:-"y"}
+
+    export setup_lidarr
 }
 
 running_services_location() {
@@ -361,6 +376,7 @@ running_services_location() {
         ["SABnzbd"]="8090"
         ["Radarr"]="7878"
         ["Sonarr"]="8989"
+        ["Lidarr"]="8686"
         ["Prowlarr"]="9696"
         ["Bazarr"]="6767"
         ["$media_service"]="$media_service_port"
@@ -461,7 +477,7 @@ update_configuration_files() {
     if [ "$media_service" == "plex" ]; then
         log_info "Configuring Plex-specific settings..."
         sed -i -e 's|#network_mode: host # plex|network_mode: host # plex|g' \
-               -e 's|ports: # plex|#ports: # plex|g' \
+               -e 's|ports: # comment out if using plex|#ports: # comment out if using plex|g' \
                -e 's|- 8096:8096 # plex|#- 8096:8096 # plex|g' "$filename" || \
             log_error "Failed to configure Plex settings"
     fi
@@ -482,7 +498,7 @@ update_configuration_files() {
 
         # Apply ProtonVPN specific subnets if free tier
         if [ "${is_protonvpn_free_tier,,}" = "y" ]; then
-            sed -i '/FIREWALL_OUTBOUND_SUBNETS=/a\      - FREE_ONLY=true' "$filename"
+            sed -i 's|#- FREE_ONLY=true|- FREE_ONLY=true|' "$filename"
             sed -i "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=off|g" "$filename"
             sed -i "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=off # ProtonVPN Free Tier unsupported|g" "$filename"
         else
@@ -495,12 +511,13 @@ update_configuration_files() {
         log_info "Disabling VPN configuration..."
         sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=n|" "$env_file"
 
-        # 1. Comment out the gluetun network mode
-        # 2. Uncomment the local ports so qBittorrent is accessible on the host
+        # 1. Comment out the gluetun network mode on qBittorrent and SABnzbd
+        # 2. Uncomment the local ports so qBittorrent and SABnzbd are accessible on the host
         # 3. Use Docker profiles to hide the Gluetun container so it doesn't crash on boot
         sed -i -e 's|network_mode: "service:gluetun"|#network_mode: "service:gluetun"|g' \
-               -e 's|^    #ports:|    ports:|' \
+               -e 's|^    #ports:|    ports:|g' \
                -e 's|^    #  - 8081:8081 # qbittorrent|    - 8081:8081 # qbittorrent|' \
+               -e 's|^    #  - 8090:8080 # sabnzbd|    - 8090:8080 # sabnzbd|' \
                -e '/disable the VPN container/s/^    #profiles:/    profiles:/' "$filename" || \
             log_error "Failed to remove VPN settings from docker-compose.yaml"
     fi
@@ -510,6 +527,13 @@ update_configuration_files() {
         log_info "Disabling Usenet/SABnzbd..."
         sed -i '/disable the SABnzbd container/s/^    #profiles:/    profiles:/' "$filename" || \
             log_error "Failed to disable SABnzbd in docker-compose.yaml"
+    fi
+
+    # Handle Lidarr configuration
+    if [ "${setup_lidarr,,}" != "y" ]; then
+        log_info "Disabling Lidarr..."
+        sed -i '/disable the Lidarr container/s/^    #profiles:/    profiles:/' "$filename" || \
+            log_error "Failed to disable Lidarr in docker-compose.yaml"
     fi
 
     # Update YAMS CLI script
@@ -566,6 +590,7 @@ get_installation_paths
 configure_media_service
 configure_vpn
 configure_usenet
+configure_lidarr
 
 log_info "Configuring the docker-compose file for user \"$username\" in \"$install_directory\"..."
 

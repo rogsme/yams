@@ -5,7 +5,7 @@ title: What is YAMS?
 
 # Welcome to YAMS!
 
-YAMS (Yet Another Media Server) is a simple media server setup process that anyone can use! It provides a setup script as well as handcrafted guides to get you up and running with your own Docker Compose based \*Arr media server.
+YAMS (Yet Another Media Server) is a simple media server setup process that anyone can use! It provides a setup script as well as handcrafted guides to get you up and running with your own Docker Compose based \*Arr-based media server.
 
 It consists of 4 major parts:
 
@@ -97,7 +97,7 @@ YAMS utilises Docker as its foundation: it provides a docker compose with all th
 <!-- Compact Supporting Services Card -->
 <div class="simple-card" style="padding: 0.75rem 1.25rem; margin-top: 1rem;">
   <div class="card-content" style="font-size: 0.9rem; line-height: 1.4; opacity: 0.95;">
-    Also includes <strong>SABnzbd</strong> (Usenet), <strong>Bazarr</strong> (Subtitles), <strong>Prowlarr</strong> (Indexers), <strong>Dozzle</strong> (Logs), and <strong>Watchtower</strong> (Auto-updates).
+    Also includes <strong>Lidarr</strong> (Music), <strong>SABnzbd</strong> (Usenet), <strong>Bazarr</strong> (Subtitles), <strong>Prowlarr</strong> (Indexers), <strong>Dozzle</strong> (Logs), and <strong>Watchtower</strong> (Auto-updates).
   </div>
 </div>
 

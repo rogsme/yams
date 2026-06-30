@@ -38,7 +38,7 @@ Considerations when picking a VPN provider:
 
 ### YAMS Supported Providers
 
-YAMS works with tons of VPN providers! If Gluetun supports it, YAMS does too. Here's the full list, with direct links to their setup guides:
+YAMS works with tons of VPN providers! If Gluetun supports it, YAMS does too. Here's the full list, with direct links to their setup guides (search them up for their pricing and main pages!):
 
 Here are some of the most popular choices for torrenting that support port forwarding:
 - [{{< icon "logos/proton-vpn" >}} ProtonVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md) (Recommended by the YAMS creator! Easy to set up and great privacy)
@@ -111,7 +111,7 @@ Different VPN providers require different configuration options. Before continui
 
 https://github.com/qdm12/gluetun-wiki/tree/main/setup/providers
 
-Find your VPN provider and note any additional environment variables that are required, if there are any. Note any other general information or notices from Gluetun.
+Find your VPN provider and note any additional environment variables that are required, if there are any. If your provider only supports Wireguard, follow the Gluetun steps for your provider to get required Wireguard `ENV` values. Note any other general information or notices from Gluetun.
 
 These additional environment variables should be added to the `gluetun` service in your Docker Compose file later in this guide.
 
@@ -171,6 +171,10 @@ gluetun:
     - SERVER_COUNTRIES=Antarctica
     - CUSTOM_KEY=value
 ```
+
+If your provider supports wireguard, supply all required environment variables.
+
+It can be a smart idea to add sensitive variables into you `.env` file, and then pass them through into the container by adding it to Gluetun's docker compose entry (e.g. `WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}`). Learn more about how the `.env` file works [here](../concept%20explanations/environment-variables).
 
 #### Expose qBittorrent and SABnzbd Through Gluetun
 
