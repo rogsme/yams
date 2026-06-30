@@ -141,11 +141,15 @@ check_dependencies() {
         log_success "docker compose exists ✅"
 
         if ! docker ps &> /dev/null; then
-            log_warning "Docker is installed, but $USER lacks permissions."
-            log_info "Adding $USER to the docker group..."
-            sudo usermod -aG docker "$USER"
-            log_info "Activating docker group permissions and restarting script..."
-            exec sg docker -c "bash '$0'"
+            if ! groups "$USER" | grep -qw docker; then
+                log_warning "Docker is installed, but $USER lacks permissions."
+                log_info "Adding $USER to the docker group..."
+                sudo usermod -aG docker "$USER"
+                log_info "Activating docker group permissions and restarting script..."
+                exec sg docker -c "bash '$0'"
+            else
+                log_error "Docker is installed, but the daemon is not running. Please start the Docker service and try again."
+            fi
         fi
 
         return 0
@@ -227,6 +231,22 @@ configure_vpn() {
     read -p "VPN service? (with spaces) [$DEFAULT_VPN_SERVICE]: " vpn_service
     vpn_service=${vpn_service:-$DEFAULT_VPN_SERVICE}
 
+    echo
+    log_info "VPN type selection:"
+    log_info "  openvpn:  Default. Works with most providers."
+    log_warning "  wireguard: Only available for some providers. Only pick if you have your WireGuard credentials ready."
+    read -p "VPN type? (openvpn/wireguard) [Default = openvpn]: " vpn_type
+    vpn_type=${vpn_type:-"openvpn"}
+    vpn_type=$(echo "$vpn_type" | awk '{print tolower($0)}')
+
+    if [ "$vpn_type" != "openvpn" ] && [ "$vpn_type" != "wireguard" ]; then
+        log_error "Invalid VPN type. Choose \"openvpn\" or \"wireguard\""
+    fi
+
+    wg_private_key=""
+    wg_addresses=""
+    wg_preshared_key=""
+
 # Clear screen and show dramatic warning
     printf "\033c"
 
@@ -280,8 +300,36 @@ EOF
        echo
     fi
 
-    read -p "VPN username (without spaces): " vpn_user
-    [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
+    if [ "$vpn_type" = "wireguard" ]; then
+        log_info "WireGuard selected. You will need your private key and addresses."
+        echo
+
+        read -p "WireGuard private key: " wg_private_key
+        [ -z "$wg_private_key" ] && log_error "WireGuard private key cannot be empty"
+
+        read -p "WireGuard addresses (comma separated): " wg_addresses
+        [ -z "$wg_addresses" ] && log_error "WireGuard addresses cannot be empty"
+
+        read -p "WireGuard preshared key (enter only if your provider uses it, otherwise leave blank): " wg_preshared_key
+
+        vpn_user=""
+        vpn_password=""
+    else
+        read -p "VPN username (without spaces): " vpn_user
+        [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
+        vpn_user=$(echo "$vpn_user" | tr -d '[:space:]')
+
+        # Handle password input based on VPN service
+        if [ "$vpn_service" = "mullvad" ]; then
+            vpn_password="$vpn_user"
+            log_info "Using Mullvad username as password"
+        else
+            read -s -p "VPN password: " vpn_password
+            echo
+
+            [ -z "$vpn_password" ] && log_error "VPN password cannot be empty"
+        fi
+    fi
 
     # Port forwarding configuration
     if [ "$is_protonvpn_free_tier" = "y" ]; then
@@ -297,45 +345,13 @@ EOF
     fi
 
     # Handle special cases for ProtonVPN usernames that require the +pmp suffix for port forwarding
-    if [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [ "$is_protonvpn_free_tier" != "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
+    if [ "$vpn_type" = "openvpn" ] && [ "$vpn_service" = "protonvpn" ] && [ "${enable_port_forwarding,,}" = "y" ] && [ "$is_protonvpn_free_tier" != "y" ] && [[ ! "$vpn_user" =~ \+pmp$ ]]; then
         vpn_user="${vpn_user}+pmp"
         log_info "Added +pmp suffix to username for ProtonVPN port forwarding"
     fi
 
-    # Handle password input based on VPN service
-    if [ "$vpn_service" = "mullvad" ]; then
-        vpn_password="$vpn_user"
-        log_info "Using Mullvad username as password"
-    else
-        # Use hidden input for password
-        unset vpn_password
-        charcount=0
-        prompt="VPN password: "
-        while IFS= read -p "$prompt" -r -s -n 1 char; do
-            if [[ $char == $'\0' ]]; then
-                break
-            fi
-            if [[ $char == $'\177' ]]; then
-                if [ $charcount -gt 0 ]; then
-                    charcount=$((charcount-1))
-                    prompt=$'\b \b'
-                    vpn_password="${vpn_password%?}"
-                else
-                    prompt=''
-                fi
-            else
-                charcount=$((charcount+1))
-                prompt='*'
-                vpn_password+="$char"
-            fi
-        done
-        echo
-
-        [ -z "$vpn_password" ] && log_error "VPN password cannot be empty"
-    fi
-
     # Export for use in other functions
-    export vpn_service vpn_user vpn_password setup_vpn enable_port_forwarding
+    export vpn_service vpn_user vpn_password setup_vpn enable_port_forwarding vpn_type wg_private_key wg_addresses wg_preshared_key
 }
 
 configure_usenet() {
@@ -459,6 +475,7 @@ update_configuration_files() {
 
     # Update .env file with universal settings
     log_info "Updating environment configuration..."
+    local selected_vpn_type="${vpn_type:-openvpn}"
     sed -i -e "s|<your_PUID>|$puid|g" \
            -e "s|<your_PGID>|$pgid|g" \
            -e "s|<your_timezone>|$tz|g" \
@@ -467,6 +484,9 @@ update_configuration_files() {
            -e "s|<install_directory>|$install_directory|g" \
            -e "s|vpn_enabled|$setup_vpn|g" "$env_file" || \
         log_error "Failed to update .env file"
+
+    sed -i -e "s|^VPN_TYPE=.*|VPN_TYPE=$selected_vpn_type|g" "$env_file" || \
+        log_error "Failed to update VPN type in .env file"
 
     # Handle Media Service Name in docker-compose.yaml
     log_info "Updating docker-compose configuration..."
@@ -491,10 +511,11 @@ update_configuration_files() {
             port_forward_settings="on"
         fi
 
-        sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=y|" \
-               -e "s|^VPN_SERVICE=.*|VPN_SERVICE=$vpn_service|" \
-               -e "s|^VPN_USER=.*|VPN_USER=$vpn_user|" \
-               -e "s|^VPN_PASSWORD=.*|VPN_PASSWORD=$vpn_password|" "$env_file"
+        sed -i -e "/^VPN_ENABLED=/d" -e "/^VPN_SERVICE=/d" -e "/^VPN_USER=/d" -e "/^VPN_PASSWORD=/d" "$env_file"
+        printf 'VPN_ENABLED=y\n' >> "$env_file"
+        printf 'VPN_SERVICE=%s\n' "$vpn_service" >> "$env_file"
+        printf 'VPN_USER=%s\n' "$vpn_user" >> "$env_file"
+        printf 'VPN_PASSWORD=%s\n' "$vpn_password" >> "$env_file"
 
         # Apply ProtonVPN specific subnets if free tier
         if [ "${is_protonvpn_free_tier,,}" = "y" ]; then
@@ -506,33 +527,60 @@ update_configuration_files() {
             sed -i "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=$port_forward_settings|g" "$filename"
         fi
 
+        # Apply WireGuard settings if selected
+        if [ "$vpn_type" = "wireguard" ]; then
+            log_info "Configuring WireGuard settings..."
+            sed -i 's|.*- OPENVPN_USER=.*|      #- OPENVPN_USER=${VPN_USER}|' "$filename"
+            sed -i 's|.*- OPENVPN_PASSWORD=.*|      #- OPENVPN_PASSWORD=${VPN_PASSWORD}|' "$filename"
+            sed -i 's|.*- OPENVPN_CIPHERS=.*|      #- OPENVPN_CIPHERS=AES-256-GCM|' "$filename"
+            # Uncomment WireGuard variable references in docker-compose.yaml
+            sed -i 's|      #- WIREGUARD_PRIVATE_KEY=.*|      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}|' "$filename"
+            sed -i 's|      #- WIREGUARD_ADDRESSES=.*|      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}|' "$filename"
+            if [ -n "$wg_preshared_key" ]; then
+                sed -i 's|      #- WIREGUARD_PRESHARED_KEY=.*|      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}|' "$filename"
+            fi
+            # Populate WireGuard secrets in .env
+            sed -i -e "/^WIREGUARD_PRIVATE_KEY=/d" -e "/^#WIREGUARD_PRIVATE_KEY=/d" "$env_file"
+            sed -i -e "/^WIREGUARD_ADDRESSES=/d" -e "/^#WIREGUARD_ADDRESSES=/d" "$env_file"
+            sed -i -e "/^WIREGUARD_PRESHARED_KEY=/d" -e "/^#WIREGUARD_PRESHARED_KEY=/d" "$env_file"
+            printf 'WIREGUARD_PRIVATE_KEY=%s\n' "$wg_private_key" >> "$env_file"
+            printf 'WIREGUARD_ADDRESSES=%s\n' "$wg_addresses" >> "$env_file"
+            if [ -n "$wg_preshared_key" ]; then
+                printf 'WIREGUARD_PRESHARED_KEY=%s\n' "$wg_preshared_key" >> "$env_file"
+            else
+                printf '#WIREGUARD_PRESHARED_KEY=\n' >> "$env_file"
+            fi
+        fi
+
     else
         # IF THEY OPT OUT OF VPN: We must disconnect qBittorrent from Gluetun
         log_info "Disabling VPN configuration..."
-        sed -i -e "s|^VPN_ENABLED=.*|VPN_ENABLED=n|" "$env_file"
+        sed -i -e "/^VPN_ENABLED=/d" -e "/^VPN_SERVICE=/d" -e "/^VPN_USER=/d" -e "/^VPN_PASSWORD=/d" "$env_file"
+        printf 'VPN_ENABLED=n\n' >> "$env_file"
 
         # 1. Comment out the gluetun network mode on qBittorrent and SABnzbd
         # 2. Uncomment the local ports so qBittorrent and SABnzbd are accessible on the host
         # 3. Use Docker profiles to hide the Gluetun container so it doesn't crash on boot
         sed -i -e 's|network_mode: "service:gluetun"|#network_mode: "service:gluetun"|g' \
-               -e 's|^    #ports:|    ports:|g' \
-               -e 's|^    #  - 8081:8081 # qbittorrent|    - 8081:8081 # qbittorrent|' \
-               -e 's|^    #  - 8090:8080 # sabnzbd|    - 8090:8080 # sabnzbd|' \
-               -e '/disable the VPN container/s/^    #profiles:/    profiles:/' "$filename" || \
+             -e 's|^[[:space:]]*#ports: # qbittorrent_ports.*|    ports:|g' \
+             -e 's|^[[:space:]]*#[[:space:]]*- 8081:8081.*|    - 8081:8081|' \
+             -e 's|^[[:space:]]*#ports: # sabnzbd_ports.*|    ports:|g' \
+             -e 's|^[[:space:]]*#[[:space:]]*- 8090:8080.*|    - 8090:8080|' \
+               -e '/disable the VPN container/s|^[[:space:]]*#profiles:|    profiles:|' "$filename" || \
             log_error "Failed to remove VPN settings from docker-compose.yaml"
     fi
 
     # Handle Usenet/SABnzbd configuration
     if [ "${setup_usenet,,}" != "y" ]; then
         log_info "Disabling Usenet/SABnzbd..."
-        sed -i '/disable the SABnzbd container/s/^    #profiles:/    profiles:/' "$filename" || \
+        sed -i '/disable the SABnzbd container/s|^[[:space:]]*#profiles:|    profiles:|' "$filename" || \
             log_error "Failed to disable SABnzbd in docker-compose.yaml"
     fi
 
     # Handle Lidarr configuration
     if [ "${setup_lidarr,,}" != "y" ]; then
         log_info "Disabling Lidarr..."
-        sed -i '/disable the Lidarr container/s/^    #profiles:/    profiles:/' "$filename" || \
+        sed -i '/disable the Lidarr container/s|^[[:space:]]*#profiles:|    profiles:|' "$filename" || \
             log_error "Failed to disable Lidarr in docker-compose.yaml"
     fi
 

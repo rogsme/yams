@@ -27,10 +27,18 @@ services:
       - /dev/net/tun:/dev/net/tun
     environment:
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE}
-      - VPN_TYPE=openvpn
+
+      # openvpn specific settings
+      - VPN_TYPE=${VPN_TYPE}
       - OPENVPN_USER=${VPN_USER}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - OPENVPN_CIPHERS=AES-256-GCM
+
+      # wireguard specific settings
+      #- WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      #- WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+      #- WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+
       - PORT_FORWARD_ONLY=on
       - VPN_PORT_FORWARDING=on
       - TZ=${TZ}
@@ -57,7 +65,7 @@ services:
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
     network_mode: "service:gluetun"
-    #ports: # commented out by default, as qbittorrent is routed through the VPN
+    #ports: # qbittorrent_ports
     #  - 8081:8081 # qbittorrent
     restart: unless-stopped
 
@@ -74,7 +82,7 @@ services:
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/sabnzbd:/config
     network_mode: "service:gluetun"
-    #ports:
+    #ports: # sabnzbd_ports
     #  - 8090:8080 # sabnzbd
     restart: unless-stopped
 
