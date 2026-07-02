@@ -1,6 +1,6 @@
 ---
-weight: 5
-title: Backups
+weight: 8
+title: Backing up YAMS
 ---
 # Backing up YAMS
 
@@ -13,7 +13,7 @@ The key item your should backup from your media server is your config folder (`{
 
 > Note that this does **not** contain your media. Backing up your media is less important and will not be covered in this guide.
 
-Backups can either be conducted using the `yams` command, or by a third party. If you run other applications on your server in differing folders or want a more comprehensive backup method, you might look for a more capable backup handler. Some options might be the popular [restic](https://restic.net/) or [borg](https://borgbackup.readthedocs.io/en/stable/) which are command line utilities (don't worry, there are projects out there that wrap them and make them easier to digest) that store backup snapshots in a de-duplicating repository that can easily be stored on local as well asn third party storage.
+Backups can either be conducted using the `yams` command, or by a third party. If you run other applications on your server in differing folders or want a more comprehensive backup method, you might look for a more capable backup handler. Some options might be the popular [restic](https://restic.net/) or [borg](https://borgbackup.readthedocs.io/en/stable/) which are command line utilities (don't worry, there are projects out there that wrap them and make them easier to digest) that store backup snapshots in a de-duplicating repository that can easily be stored on local as well  third party storage.
 
 The `yams backup` command is a simple utility that simple creates a compressed archive of all your YAMS data at that point in time! You are responsible for storing and managing this file.
 

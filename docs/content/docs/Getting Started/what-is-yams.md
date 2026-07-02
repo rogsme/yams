@@ -5,7 +5,7 @@ title: What is YAMS?
 
 # Welcome to YAMS!
 
-YAMS (Yet Another Media Server) is a simple media server setup process that anyone can use! It provides a setup script as well as handcrafted guides to get you up and running with your own Docker Compose based \*Arr-based media server.
+YAMS (Yet Another Media Server) is a simple media server setup process that anyone can use! It provides a setup script as well as handcrafted guides to get you up and running with your own Docker Compose based \*Arr media server.
 
 It consists of 4 major parts:
 
@@ -20,7 +20,7 @@ It consists of 4 major parts:
 
 2. ## Setup Guide
 
-   A handwritten guide with step-by-step instructions (including screenshots!) on how to connect all the applications within your stack together. Don't worry if you don't know what they are yet, you'll learn more about each one as you go!
+   A handwritten guide with step-by-step instructions (including screenshots!) on how to connect all the applications within your stack together. You'll learn more about each one and the fundamental concepts it relies on as you go!
 
 3. ## CLI Tool
 
@@ -77,7 +77,7 @@ YAMS utilises Docker as its foundation: it provides a docker compose with all th
       <h4 class="card-title">qBitTorrent + Gluetun</h4>
     </div>
     <div class="card-content">
-      Download and seed your media (behind a VPN if needed).
+      Download and seed your media behind a VPN.
     </div>
   </div>
 

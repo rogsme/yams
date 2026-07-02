@@ -1,5 +1,5 @@
 ---
-title: Concept Explanations
+title: YAMS Fundamentals
 weight: 1
 bookCollapseSection: true
 ---

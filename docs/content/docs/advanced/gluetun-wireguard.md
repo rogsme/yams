@@ -1,8 +1,7 @@
 ---
-weight: 5
-title: Switching Gluetun to Wireguard
+weight: 6
+title: Switching between OpenVPN and Wireguard
 ---
-
 
 Want faster VPN speeds and quicker connection times? It's time to switch from OpenVPN to **WireGuard**! This guide will walk you through updating your Gluetun configuration to use WireGuard — with a focus on **ProtonVPN**.
 
