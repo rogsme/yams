@@ -1,6 +1,6 @@
 ---
-weight: 2
-title: Adding Your Own Containers
+weight: 1
+title: Custom Containers
 bookCollapseSection: true
 ---
 

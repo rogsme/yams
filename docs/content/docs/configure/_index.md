@@ -1,6 +1,6 @@
 ---
 title: Configure
-weight: 2
+weight: 3
 params:
   bookFlatSection: true
 bookIcon: handyman
