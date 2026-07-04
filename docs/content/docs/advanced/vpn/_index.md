@@ -1,5 +1,5 @@
 ---
-title: Maintenance
-weight: 3
+title: VPN
+weight: 1
 bookCollapseSection: true
 ---

@@ -409,19 +409,8 @@ Don't worry about memorizing these - they're saved in `~/yams_services.txt` for 
 
 ## What's Next?
 
-Time to configure your new media server! Head over to [Configuration](/docs/configure/) and follow these guides in order:
-1. [qBittorrent](/docs/configure/qbittorrent)
-2. [SABnzbd](/docs/configure/sabnzbd)
-3. [Radarr](/docs/configure/radarr)
-4. [Sonarr](/docs/configure/sonarr)
-5. [Prowlarr](/docs/configure/prowlarr)
-6. [Bazarr](/docs/configure/bazarr)
-7. Your chosen media service:
-   - [Jellyfin](/docs/configure/jellyfin)
-   - [Emby](/docs/configure/emby)
-   - [Plex](/docs/configure/plex)
+Time to configure your media server!
 
-Need help? We've got your back!
-- Check our [Common Issues](/docs/faqs/) page
-- Visit the [YAMS Forum](https://forum.yams.media)
-- Join our [Discord](https://discord.gg/Gwae3tNMST) chat
+If you are a bit unsure about how everything works, or can't conceptualise what YAMS is, check out the fundamentals section. There are simple explanations of YAMS and its backing technology (torrenting, VPNs, docker) to help you get a broader idea of how everything works together *before* configuration, to assist with debugging.
+
+If you are confident or short on time, no worries! Head straight onto the configuration. The YAMS fundamentals will always be there for reference in the future, or as you see fit as you follow the guides.
