@@ -31,6 +31,7 @@ declare -A COMMANDS=(
     ["check-vpn"]="checks if the VPN is working as expected"
     ["backup"]="backs up yams to the destination location"
     ["update-containers"]="updates all yams containers"
+    ["update-cli"]="updates this CLI tool from the Gitea repository"
 )
 
 # Functions
@@ -216,9 +217,9 @@ start_yams() {
         $DC up -d || log_error "Failed to start services"
         wait_for_services
     else
-        $DC up -d "$@" || log_error "Failed to start services" 
+        $DC up -d "$@" || log_error "Failed to start services"
     fi
-    
+
 }
 
 restart_yams() {
@@ -229,7 +230,7 @@ restart_yams() {
     else
         $DC stop "$@" && $DC up -d "$@"
     fi
-    
+
 }
 
 stop_yams() {
@@ -259,6 +260,44 @@ update_containers() {
     else
         echo "Update aborted."
     fi
+}
+
+update_cli() {
+    local -r GITEA_URL="https://git.rogs.me/rogs/yams/src/branch/master/yams"
+    local -r SCRIPT_PATH=$(realpath "$0")
+    local -r TMP_FILE="/tmp/yams_update.sh"
+
+    echo "Checking for YAMS CLI updates..."
+
+    local current_dc
+    local current_install_dir
+
+    current_dc=$(grep "^readonly DC=" "$SCRIPT_PATH" || true)
+    current_install_dir=$(grep "^readonly INSTALL_DIRECTORY=" "$SCRIPT_PATH" || true)
+
+    if [ -z "$current_dc" ] || [ -z "$current_install_dir" ]; then
+        log_error "Failed to read current configuration lines from $SCRIPT_PATH."
+    fi
+
+    echo "Fetching newest script from Gitea..."
+    if ! curl -sSf -L "$GITEA_URL" -o "$TMP_FILE"; then
+        log_error "Failed to download the update from Gitea. Check your internet connection."
+    fi
+
+    sed -i "s|^readonly DC=.*|$current_dc|" "$TMP_FILE"
+    sed -i "s|^readonly INSTALL_DIRECTORY=.*|$current_install_dir|" "$TMP_FILE"
+
+    if ! grep -q "main \"\$@\"" "$TMP_FILE"; then
+        rm -f "$TMP_FILE"
+        log_error "Downloaded script appears corrupted or incomplete. Aborting update."
+    fi
+
+    echo "Applying updates..."
+    mv "$TMP_FILE" "$SCRIPT_PATH"
+    chmod +x "$SCRIPT_PATH"
+
+    log_success "YAMS CLI updated successfully! 🎉"
+    exit 0
 }
 
 main() {
@@ -297,6 +336,9 @@ main() {
             ;;
         update-containers)
             update_containers
+            ;;
+        update-cli)
+            update_cli
             ;;
         *)
             log_error "Unknown command: $command\nRun 'yams --help' for usage information"
