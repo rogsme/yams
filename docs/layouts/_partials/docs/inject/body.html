@@ -5,7 +5,8 @@
 
     const DEFAULTS = {
       '{media_path}': '/srv/media',
-      '{config_path}': '/opt/yams'
+      '{config_path}': '/opt/yams',
+      '{user_ip}': 'YOUR_IP'
     };
 
     let textNodes = [];
@@ -16,7 +17,7 @@
       let node;
       while (node = walker.nextNode()) {
         const originalText = node.nodeValue;
-        if (originalText.includes('{media_path}') || originalText.includes('{config_path}')) {
+        if (originalText.includes('{media_path}') || originalText.includes('{config_path}') || originalText.includes('{user_ip}')) {
           textNodes.push({ node, originalText });
         }
       }
@@ -28,11 +29,13 @@
 
       const mediaPath = localStorage.getItem("MEDIA_PATH") || DEFAULTS['{media_path}'];
       const configPath = localStorage.getItem("CONFIG_PATH") || DEFAULTS['{config_path}'];
+      const userIp = localStorage.getItem("USER_IP") || DEFAULTS['{user_ip}'];
 
       for (const { node, originalText } of textNodes) {
         node.nodeValue = originalText
           .replace(/{media_path}/g, mediaPath)
-          .replace(/{config_path}/g, configPath);
+          .replace(/{config_path}/g, configPath)
+          .replace(/{user_ip}/g, userIp);
       }
     };
 

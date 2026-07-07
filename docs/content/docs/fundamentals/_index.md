@@ -1,5 +1,5 @@
 ---
-title: Fundamentals
+title: YAMS Fundamentals
 weight: 2
 params:
   bookFlatSection: true

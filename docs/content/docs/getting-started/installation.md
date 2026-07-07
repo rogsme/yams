@@ -79,8 +79,7 @@ Before you get the script up and running, you'll have to do some thinking about 
 - **A VPN service (optional but *STRONGLY* recommended)**: First lesson! A VPN is a paid service that encrypts your server's traffic, and masks its public IP address whilst it's sailing the high seas. This hides your activity from cooperations such as your ISP or copyright providers.
   - Note that most of these services are paid but don't worry, they aren't too expensive. (Cheaper than paying for 4 streaming services 😅)
   - To learn more about VPNs and how to pick a good option, check out the [YAMS VPN page](../advanced/concept%20explanations/vpn)
-  - Ensure you have an account with your chosen VPN providers before continuing with the installation and guide
-
+  - **Ensure you have an account with your chosen VPN provider before continuing with the installation and guide**
 
 ## Pre-Installation Setup
 
@@ -109,6 +108,17 @@ Important notes:
 - Make sure your user has full read/write permissions to this directory
 - If you’re using an external drive or NFS/SMB mount, mount it first, then set permissions
 - The installer will create subdirectories (tvshows, movies, music, etc.) automatically
+
+#### 3. Install `curl`
+
+In order to download and run the YAMS script, you need to be able to run the `curl` command on your machine. This is an extremely common utility, so check if it is already installed by running an empty `curl` command.
+
+```bash
+$ curl
+curl: try 'curl --help' or 'curl --manual' for more information
+```
+
+If you receive this output, you are good to go! Else, use `sudo apt install curl` to first install the package, then run the command above to check.
 
 ---
 

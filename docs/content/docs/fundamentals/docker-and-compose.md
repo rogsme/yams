@@ -1,6 +1,6 @@
 ---
 weight: 1
-title: Docker and Compose
+title: Docker and Docker Compose
 ---
 
 Welcome to the fundamentals section! Note that these are simplified explanations aimed to equip you with enough knowledge to get started. For more curious media enthusiasts, ask our community or conduct some independent research!
@@ -14,7 +14,6 @@ YAMS is a media server template that operates using Docker and Docker Compose. B
 ## What is Docker?
 
 Firstly what is Docker?
-
 
 Docker is a 'containerization' system that you install on your Linux machine. Instead of installing programs like Radarr, Sonarr and Jellyfin directly onto your server's operating system, they each run inside their own isolated container. A container packages an application together with everything it needs to run, so you don't have to manually install dependencies, configure services, or worry as much about software conflicts.
 
@@ -42,7 +41,7 @@ A **container** is a running instance of an image. It's when you grab the templa
 
 A running container is like a mini-machine inside your server that represents a running instance of that application. Its a bit like starting up desktop apps on a traditional computer.
 
-This container is like a mini-machine that the app inside is running on, mostly isolated from its host. The container has its own filesystem, its own ports that do not affect the host. However
+This container is like a mini-machine that the app inside is running on, mostly isolated from its host. The container has its own filesystem and its own ports that do not affect the host.
 
 ### Volumes
 

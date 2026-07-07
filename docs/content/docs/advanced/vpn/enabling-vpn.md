@@ -28,7 +28,6 @@ Update the VPN section with your provider's details:
 
 ```bash {filename="config_path/.env"}
 # VPN configuration
-VPN_ENABLED=y
 VPN_SERVICE=myservice     # Your VPN service from the list above
 VPN_USER=your-username    # Your VPN username
 VPN_PASSWORD=your-pass    # Your VPN password

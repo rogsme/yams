@@ -1,5 +1,5 @@
 ---
-weight: 3
+weight: 2
 title: Environment Variables
 ---
 
@@ -28,9 +28,9 @@ See? Just `SETTING_NAME=some_value` on each line. It's incredibly straightforwar
 
 ### How YAMS Uses It (The Magic Part!)
 
-Now, where do these settings get used? Primarily in your `docker-compose.yaml` and `docker-compose-custom.yaml` files. These files tell Docker how to run all the YAMS services (like Radarr, Sonarr, Plex, etc.).
+Now, where do these settings get used? Primarily in your `docker-compose.yaml` and `docker-compose-custom.yaml` files. These files tell Docker how to run all the YAMS services (like Radarr, Sonarr, Plex, etc.). *Learn more about them [here](../fundamentals/docker-and-compose)*
 
-Inside the `environment` section of our docker compose folders, there is another environment variable list! These ones are the variables being passed into the application. So, quick recap: **.env** file has all the common env vars that the docker compose files can use. The `environment` section of each container it how we pass these on!
+Inside the `environment` section of our docker compose folders, there is another environment variable list! These ones are the variables being passed into the application. So, quick recap: **.env** file has all the common env vars that the docker compose files can use. The `environment` section of each container is how we pass these on!
 
 Instead of writing the same path or ID over and over again in those files, we can just use the *name* of the setting from `.env`, but with a dollar sign (`$`) in front, and wrapped inside curly brackets `{}`. Like this:
 
@@ -64,10 +64,6 @@ When you first set up YAMS, your `.env` file comes pre-filled with a few essenti
 - `MEDIA_DIRECTORY`: This is the main folder on your computer where all your media lives (or will live!). The default is `/srv/media`. Feel free to change it to wherever you keep your stuff, just make sure the user from `PUID`/`PGID` can read and write there! **Heads Up:** For smooth sailing and efficient hardlinking (which saves disk space!), try to keep all your media (movies, TV, music, books) in *subfolders* under this *one* main directory.
 - `INSTALL_DIRECTORY`: This tells YAMS where its own configuration files for each service should live. Default is `/opt/yams`. You set this during install and probably won't touch it again.
 - `TZ`: This makes sure all the containers are on the same page about what your local timezone is.
-
-### What About VPN Stuff?
-
-Good question! Some VPN setups also rely on settings you might put in your `.env` file. For the specifics on that, check over the head over to the [Torrenting with VPN guide](LINK BROKEN, ADD REFERENCE TO WIREGUARD, MAIN SETUP AND CONCEPT PAGE).
 
 ---
 
