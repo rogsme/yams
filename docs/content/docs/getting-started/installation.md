@@ -118,7 +118,7 @@ $ curl
 curl: try 'curl --help' or 'curl --manual' for more information
 ```
 
-If you receive this output, you are good to go! Else, use `sudo apt install curl` to first install the package, then run the command above to check.
+If you receive this output, you are good to go! Else, use `sudo apt update && sudo apt install curl` to first install the package, then run the command above to check.
 
 ---
 
@@ -136,13 +136,12 @@ If you receive this output, you are good to go! Else, use `sudo apt install curl
 
 Its go time! If you have completed all the pre-installation steps above, its time actually get installing!
 
-### 1. Get YAMS on your system
+### 1. Download the installer script
 
-First, let's grab a fresh copy of YAMS and put it in a temporary location (we like to keep things tidy!):
+First, let's use `curl` to download the main installer script into the current directory:
 
 ```bash
-git clone --depth=1 https://gitlab.com/rogs/yams.git /tmp/yams
-cd /tmp/yams
+curl -fsSL -o install.sh https://raw.githubusercontent.com/not-first/yams/v3/src/install.sh (change this URL)
 ```
 
 ### 2. Start the installer
@@ -169,6 +168,8 @@ You'll see this welcome screen:
 Welcome to YAMS (Yet Another Media Server)
 Installation process should be really quick
 We just need you to answer some questions
+We are going to ask for your sudo password in the end
+to finish the installation of the CLI
 ====================================================
 ```
 
@@ -177,38 +178,42 @@ We just need you to answer some questions
 The installer will first check for Docker:
 ```bash
 Checking prerequisites...
-⚠️ Docker not found! ⚠️
-Do you want YAMS to install docker and docker-compose? IT ONLY WORKS ON DEBIAN AND UBUNTU! [y/N]: y
+curl exists ✅
+sed exists ✅
+awk exists ✅
+⚠️  Docker/Docker Compose not found! ⚠️
+Do you want YAMS to install docker and docker-compose? [y/N]: y
 ```
 
 - If you don't have Docker installed:
-  - Type `y` and hit `Enter` to let YAMS handle the Docker installation
+  - Type `y` and hit `Enter` to let YAMS handle the Docker installation by running the official installation script
   - The script will install both Docker and Docker Compose
-  - This only works on Debian and Ubuntu!
+  - You may need to enter your `sudo` password
 
 - If you already have Docker:
   - You'll see "docker exists ✅" instead
   - The installer will move to the next step
 
+### 4. Select User
+
+```bash
+User to own the media server files? [your_current_user]:
+```
+
+- Press Enter to use your current user (recommended) or type a different username
+- Remember: Don't use `root`!
+- The user must exist and have sudo privileges
+
 ### 4. Choose Installation Location
 
 ```bash
-Where do you want to install the docker-compose file? [/opt/yams]:
+Installation directory? [/opt/yams]:
 ```
 
 - Press Enter to use the default `/opt/yams` or type a different path if you want to install somewhere else.
   - Based on your configuration of this guide, you should type `[[config_path]]`
 - **Important**: You must use an absolute path (e.g., `/mnt/yams`). Docker does not expand `~` to your home directory, so avoid using something like `~/yams`
 
-### 5. Select User
-
-```bash
-What's the user that is going to own the media server files? [your_current_user]:
-```
-
-- Press Enter to use your current user (recommended) or type a different username
-- Remember: Don't use `root`!
-- The user must exist and have sudo privileges
 
 ### 6. Set Media Directory
 

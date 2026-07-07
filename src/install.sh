@@ -141,13 +141,20 @@ check_dependencies() {
         log_success "docker compose exists ✅"
 
         if ! docker ps &> /dev/null; then
-            if ! groups "$USER" | grep -qw docker; then
-                log_warning "Docker is installed, but $USER lacks permissions."
-                log_info "Adding $USER to the docker group..."
-                sudo usermod -aG docker "$USER"
-                log_info "Activating docker group permissions and restarting script..."
+            # Check if the 'docker' group is missing from the ACTIVE session
+            if ! id -nG | grep -qw docker; then
+                log_warning "Refreshing docker permissions for this terminal session..."
+
+                # If they are missing from the system database, add them as per the official Docker instructions
+                if ! groups "$USER" | grep -qw docker; then
+                    log_info "Adding $USER to the docker group..."
+                    sudo usermod -aG docker "$USER"
+                fi
+
+                # Restart the script with the active group permissions
                 exec sg docker -c "bash '$0'"
             else
+                # If they have active permissions and it still fails, the daemon is probablhy off
                 log_error "Docker is installed, but the daemon is not running. Please start the Docker service and try again."
             fi
         fi
@@ -156,7 +163,7 @@ check_dependencies() {
     fi
 
     log_warning "⚠️  Docker/Docker Compose not found! ⚠️"
-    read -p "Install Docker and Docker Compose? Only works on Debian/Ubuntu (y/N) [Default = n]: " install_docker
+    read -p "Install Docker and Docker Compose? (y/N) [Default = n]: " install_docker
     install_docker=${install_docker:-"n"}
 
     if [ "${install_docker,,}" = "y" ]; then

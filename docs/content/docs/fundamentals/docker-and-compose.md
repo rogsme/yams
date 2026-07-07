@@ -130,3 +130,8 @@ However, although this also works for container-to-container communication, it i
 ---
 
 To learn more, check out [Docker's official page](https://docs.docker.com/get-started/docker-overview/)
+
+---
+# YAMS and Docker
+
+YAMS is based on Docker. EXPAND THIS SECTION talking about how it uses two docker compose files, uses comments to selectively alter, uses profiles to disable, and the CLI just wraps docker commands.
