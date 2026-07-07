@@ -90,8 +90,8 @@ Before you get the script up and running, you'll have to do some thinking about 
 Remember from before? This is where all the config files and application storage goes! First, create the folder and set up your user permissions if it hasn't been done already.
 
 ```
-sudo mkdir -p {config_path}
-sudo chown -R $USER:$USER {config_path}
+sudo mkdir -p [[config_path]]
+sudo chown -R $USER:$USER [[config_path]]
 ```
 
 #### 2. Setup your media directory
@@ -100,8 +100,8 @@ This is where your media files are stored (make sure it has tons of space).
 If your media directory doesn’t exist yet, you’ll need to create it and set the correct permissions.
 
 ```
-sudo mkdir -p {media_path}
-sudo chown -R $USER:$USER {media_path}
+sudo mkdir -p [[media_path]]
+sudo chown -R $USER:$USER [[media_path]]
 ```
 
 Important notes:
@@ -197,7 +197,7 @@ Where do you want to install the docker-compose file? [/opt/yams]:
 ```
 
 - Press Enter to use the default `/opt/yams` or type a different path if you want to install somewhere else.
-  - Based on your configuration of this guide, you should type `{config_path}`
+  - Based on your configuration of this guide, you should type `[[config_path]]`
 - **Important**: You must use an absolute path (e.g., `/mnt/yams`). Docker does not expand `~` to your home directory, so avoid using something like `~/yams`
 
 ### 5. Select User
@@ -217,7 +217,7 @@ Please, input your media directory [/srv/media]:
 ```
 
 - Press Enter to use the default `/srv/media` or type the path where you want your media stored. This path can also be a SMB/NFS mount, an external drive or a different partition.
-  - Based on your configuration of this guide, you should type `{media_path}`
+  - Based on your configuration of this guide, you should type `[[media_path]]`
 - **Important**: You must use an absolute path (e.g., `/mnt/media`). Docker does not expand `~` to your home directory, so avoid using something like `~/media`
 
 Then confirm your choice:

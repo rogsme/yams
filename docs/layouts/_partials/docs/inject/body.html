@@ -3,42 +3,84 @@
     const pageContainer = document.querySelector('.book-page') || document.querySelector('article') || document.body;
     if (!pageContainer) return;
 
-    const DEFAULTS = {
-      '{media_path}': '/srv/media',
-      '{config_path}': '/opt/yams',
-      '{user_ip}': 'YOUR_IP'
-    };
+    const PLACEHOLDERS = [
+      { pattern: '[[config_path]]', key: 'config_path', storage: 'CONFIG_PATH', fallback: '/opt/yams' },
+      { pattern: '[[media_path]]', key: 'media_path', storage: 'MEDIA_PATH', fallback: '/srv/media' },
+      { pattern: '[[user_ip]]', key: 'user_ip', storage: 'USER_IP', fallback: 'YOUR_IP' },
+    ];
 
-    let textNodes = [];
-    let initialized = false;
-
-    function init() {
-      const walker = document.createTreeWalker(pageContainer, NodeFilter.SHOW_TEXT, null, false);
-      let node;
-      while (node = walker.nextNode()) {
-        const originalText = node.nodeValue;
-        if (originalText.includes('{media_path}') || originalText.includes('{config_path}') || originalText.includes('{user_ip}')) {
-          textNodes.push({ node, originalText });
-        }
-      }
-      initialized = true;
+    const phMap = {};
+    for (const ph of PLACEHOLDERS) {
+      phMap[ph.pattern] = ph;
     }
 
-    window.updatePagePaths = function () {
-      if (!initialized) init();
+    function getConfiguredValue(ph) {
+      const stored = localStorage.getItem(ph.storage);
+      return stored || ph.fallback;
+    }
 
-      const mediaPath = localStorage.getItem("MEDIA_PATH") || DEFAULTS['{media_path}'];
-      const configPath = localStorage.getItem("CONFIG_PATH") || DEFAULTS['{config_path}'];
-      const userIp = localStorage.getItem("USER_IP") || DEFAULTS['{user_ip}'];
+    function isCustomized(ph) {
+      const stored = localStorage.getItem(ph.storage);
+      return stored !== null && stored !== '';
+    }
 
-      for (const { node, originalText } of textNodes) {
-        node.nodeValue = originalText
-          .replace(/{media_path}/g, mediaPath)
-          .replace(/{config_path}/g, configPath)
-          .replace(/{user_ip}/g, userIp);
+    function restoreSpans() {
+      const spans = pageContainer.querySelectorAll('.ph');
+      for (const span of spans) {
+        const key = span.dataset.ph;
+        const text = document.createTextNode(`[[${key}]]`);
+        span.parentNode.replaceChild(text, span);
       }
-    };
+    }
 
-    window.updatePagePaths();
+    function processNode(node, originalText) {
+      const joined = PLACEHOLDERS.map(ph => ph.pattern).join('|');
+      const escaped = joined.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
+      const re = new RegExp(`(${escaped})`, 'g');
+      const parts = originalText.split(re);
+      if (parts.length === 1) return;
+
+      const fragment = document.createDocumentFragment();
+      for (const part of parts) {
+        const ph = phMap[part];
+        if (ph) {
+          const span = document.createElement('span');
+          span.className = 'ph';
+          span.dataset.ph = ph.key;
+          span.textContent = getConfiguredValue(ph);
+          fragment.appendChild(span);
+        } else {
+          fragment.appendChild(document.createTextNode(part));
+        }
+      }
+      node.parentNode.replaceChild(fragment, node);
+    }
+
+    function walkAndProcess() {
+      restoreSpans();
+
+      const walker = document.createTreeWalker(pageContainer, NodeFilter.SHOW_TEXT, null, false);
+      const nodes = [];
+      let node;
+      while (node = walker.nextNode()) {
+        const text = node.nodeValue;
+        if (text.includes('[[config_path]]') || text.includes('[[media_path]]') || text.includes('[[user_ip]]')) {
+          nodes.push(node);
+        }
+      }
+      for (const n of nodes) {
+        processNode(n, n.nodeValue);
+      }
+    }
+
+    window.updatePagePaths = walkAndProcess;
+
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'CONFIG_PATH' || e.key === 'MEDIA_PATH' || e.key === 'USER_IP') {
+        walkAndProcess();
+      }
+    });
+
+    walkAndProcess();
   })();
 </script>

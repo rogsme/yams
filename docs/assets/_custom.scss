@@ -71,7 +71,6 @@ pre,
   }
 }
 
-// Minimalist, Non-interactive Content Card
 .simple-card {
   border: 1px solid var(--gray-200);
   border-radius: 0 !important; // Stays sharp and boxy
@@ -166,6 +165,14 @@ pre,
     }
   }
 
+  .panel-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .input-container {
     display: flex;
     flex-direction: column;
@@ -190,4 +197,13 @@ pre,
       }
     }
   }
+}
+
+// ── Placeholder substitution indicator ──
+.ph {
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--color-link);
+  text-decoration-thickness: 1px;
+  cursor: help;
 }

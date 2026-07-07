@@ -61,14 +61,14 @@ volumes:
 When the environment variables are substituted in (learn more about env vars [here](../fundamentals/environment-variables)) the Docker compose can be imagined like this:
 ```yaml
 volumes:
-  - {media_path}:/data
-  - {config_path}/config/radarr:/config
+  - [[media_path]]:/data
+  - [[config_path]]/config/radarr:/config
 ```
 
-What this means is that the **host** directory of `{media_path}` is being mapped into the Radarr container, but inside the container its path is `/data`. When data writes into the `/data` folder inside its little container, it *actually* is writing to your host `{media_path}` directory!
+What this means is that the **host** directory of `[[media_path]]` is being mapped into the Radarr container, but inside the container its path is `/data`. When data writes into the `/data` folder inside its little container, it *actually* is writing to your host `[[media_path]]` directory!
 
 ```
-Server folder: {media_path} -> Container folder: /data
+Server folder: [[media_path]] -> Container folder: /data
 ```
 
 > [!INFO]
@@ -76,7 +76,7 @@ Server folder: {media_path} -> Container folder: /data
 
 ### Ports
 
-Ports are how you actually access any of your running applications! A port is a slot your server can serve an application on. You've probably seen them before when having to access applications you run yourself, where you have to type `http://{user_ip}:PORT` into your browser.
+Ports are how you actually access any of your running applications! A port is a slot your server can serve an application on. You've probably seen them before when having to access applications you run yourself, where you have to type `http://[[user_ip]]:PORT` into your browser.
 
 Just like each container's own filesystem, each container *also* has its own ports. This means Radarr might be running on port `7878` inside you container, but you can't access it unless you map this port to a port on your host!
 
@@ -122,7 +122,7 @@ However, YAMS has a `docker-compose.custom.yaml` file ! This is where you add ad
 
 If you want to access an application, you will have to ensure it is accessible on a host port, and then type your server's IP address and respective port into your browser.
 
-However, although this also works for container-to-container communication, it isn't the best way. Instead of using the server IP address, all YAMS containers can actually use each other's container identifier as a hostname! For example, if Radarr wanted to communicate with Sonarr, it doesn't have to use `http://{user_ip}:8989`. It can actually use `http://sonarr:8989`, and Docker handles the connection!
+However, although this also works for container-to-container communication, it isn't the best way. Instead of using the server IP address, all YAMS containers can actually use each other's container identifier as a hostname! For example, if Radarr wanted to communicate with Sonarr, it doesn't have to use `http://[[user_ip]]:8989`. It can actually use `http://sonarr:8989`, and Docker handles the connection!
 
 > [!WARNING]
 > If your qBitTorrent instance is behind a VPN, make sure to use `http://gluetun:8081` in other containers instead of `http://qbittorrent:8081`. Because remember: qBitTorrent is being masked *behind* Gluetun!

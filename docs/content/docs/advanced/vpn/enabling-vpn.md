@@ -21,7 +21,7 @@ yams stop
 Open your `.env` file:
 
 ```bash
-nano {config_path}/.env
+nano [[config_path]]/.env
 ```
 
 Update the VPN section with your provider's details:
@@ -48,7 +48,7 @@ These additional environment variables should be added to the `gluetun` service 
 Open your Docker Compose file:
 
 ```bash
-nano {config_path}/docker-compose.yaml
+nano [[config_path]]/docker-compose.yaml
 ```
 
 #### Update qBittorrent
@@ -135,7 +135,7 @@ Getting your qBittorrent IP...
 Your country in qBittorrent is XYZ
 
 Getting your IP...
-{user_ip}
+[[user_ip]]
 Your local IP country is ZYX
 
 Your IPs are different. qBittorrent is working as expected! ✅

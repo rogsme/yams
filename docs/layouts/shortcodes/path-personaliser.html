@@ -3,9 +3,11 @@
     <h3>Personalize This Installation Guide</h3>
     <p>If you are using paths other than the defaults, enter them below to update the commands in this guide
       automatically. If you are unsure or happy to stick with the defaults, leave the fields blank.</p>
+    <p>If you are unsure of your server's IP address, you can find it by running <code>hostname -I | awk '{print $1}'</code> on your
+      server.</p>
   </div>
 
-  <div class="panel-grid">
+  <div class="panel-grid panel-grid-3">
     <div class="input-container">
       <label for="config-input">Installation Directory:</label>
       <input type="text" id="config-input" placeholder="/opt/yams" autocomplete="off" spellcheck="false">
@@ -15,6 +17,11 @@
       <label for="media-input">Media Directory:</label>
       <input type="text" id="media-input" placeholder="/srv/media" autocomplete="off" spellcheck="false">
     </div>
+
+    <div class="input-container">
+      <label for="userip-input">Your Server IP:</label>
+      <input type="text" id="userip-input" placeholder="YOUR_IP" autocomplete="off" spellcheck="false">
+    </div>
   </div>
 </div>
 
@@ -22,15 +29,18 @@
   (function () {
     const configIn = document.getElementById('config-input');
     const mediaIn = document.getElementById('media-input');
+    const useripIn = document.getElementById('userip-input');
 
-    if (!configIn || !mediaIn) return;
+    if (!configIn || !mediaIn || !useripIn) return;
 
     configIn.value = localStorage.getItem("CONFIG_PATH") || "";
     mediaIn.value = localStorage.getItem("MEDIA_PATH") || "";
+    useripIn.value = localStorage.getItem("USER_IP") || "";
 
     function handleTyping() {
       localStorage.setItem("CONFIG_PATH", configIn.value.trim());
       localStorage.setItem("MEDIA_PATH", mediaIn.value.trim());
+      localStorage.setItem("USER_IP", useripIn.value.trim());
 
       if (typeof window.updatePagePaths === 'function') {
         window.updatePagePaths();
@@ -39,5 +49,6 @@
 
     configIn.addEventListener('input', handleTyping);
     mediaIn.addEventListener('input', handleTyping);
+    useripIn.addEventListener('input', handleTyping);
   })();
 </script>
