@@ -174,12 +174,19 @@ check_dependencies() {
     if [ "${install_docker,,}" = "y" ]; then
         log_info "Downloading and running the official Docker installation script..."
         curl -fsSL https://get.docker.com -o get-docker.sh
-        sudo sh get-docker.sh
-        rm get-docker.sh
 
-        log_info "Adding $USER to the docker group..."
-        sudo usermod -aG docker "$USER"
-        log_success "Docker installed successfully! ✅"
+        # run the script silently, but save the output to a log file
+        if sudo sh get-docker.sh > /tmp/yams_docker_install.log 2>&1; then
+            rm get-docker.sh
+            log_info "Adding $USER to the docker group..."
+            sudo usermod -aG docker "$USER"
+            log_success "Docker installed successfully! ✅"
+        else
+            # if the script fails, tell the user the logfile
+            log_error "Docker installation failed! Please check /tmp/yams_docker_install.log for details."
+            rm get-docker.sh
+            exit 1
+        fi
 
         echo
         log_info "===================================================="

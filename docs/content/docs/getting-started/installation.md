@@ -196,7 +196,8 @@ Do you want YAMS to install docker and docker-compose? [y/N]: y
   - You'll see "docker exists ✅" instead
   - The installer will move to the next step
 
--
+- If the script has installed Docker or fixed missing Docker permissions, you wil have to refresh these manually
+- Run the command `newgrp docker`, and then re-run the installation script!
 
 ### 4. Select User
 
