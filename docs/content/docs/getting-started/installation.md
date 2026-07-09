@@ -133,15 +133,17 @@ If you receive this output, you are good to go! Else, use `sudo apt update && su
 
 ## Installation
 
-
 Its go time! If you have completed all the pre-installation steps above, its time actually get installing!
+
+> [!SUCCESS]
+> Note that the installation script can be rerun if it fails or exits. If you realise you have set up your system wrong or the script itself reports a problem, you can simply rerun it and it will still work fine!
 
 ### 1. Download the installer script
 
 First, let's use `curl` to download the main installer script into the current directory:
 
 ```bash
-curl -fsSL -o install.sh https://raw.githubusercontent.com/not-first/yams/v3/src/install.sh (change this URL)
+curl -fsSL -o install.sh https://raw.githubusercontent.com/not-first/yams/v3/src/install.sh
 ```
 
 ### 2. Start the installer
@@ -194,6 +196,8 @@ Do you want YAMS to install docker and docker-compose? [y/N]: y
   - You'll see "docker exists ✅" instead
   - The installer will move to the next step
 
+-
+
 ### 4. Select User
 
 ```bash
@@ -212,26 +216,30 @@ Installation directory? [/opt/yams]:
 
 - Press Enter to use the default `/opt/yams` or type a different path if you want to install somewhere else.
   - Based on your configuration of this guide, you should type `[[config_path]]`
-- **Important**: You must use an absolute path (e.g., `/mnt/yams`). Docker does not expand `~` to your home directory, so avoid using something like `~/yams`
+
+> [!WARNING]
+> You must use an absolute path (e.g., `/mnt/yams`). Docker does not expand `~` to your home directory, so avoid using something like `~/yams`
 
 
 ### 6. Set Media Directory
 
 ```bash
-Please, input your media directory [/srv/media]:
+Media directory [/srv/media]:
 ```
 
 - Press Enter to use the default `/srv/media` or type the path where you want your media stored. This path can also be a SMB/NFS mount, an external drive or a different partition.
   - Based on your configuration of this guide, you should type `[[media_path]]`
-- **Important**: You must use an absolute path (e.g., `/mnt/media`). Docker does not expand `~` to your home directory, so avoid using something like `~/media`
+
+> [!WARNING]
+> You must use an absolute path (e.g., `/mnt/media`). Docker does not expand `~` to your home directory, so avoid using something like `~/media`
 
 Then confirm your choice:
 ```bash
-Are you sure your media directory is "/srv/media"? [y/N]:
+Are you sure your media directory is "[[media_path]]"? (y/N) [Default = n]:
 ```
 
 - Type `y` and press Enter if the path is correct
-- Type `n` or press Enter to go back and change it
+- Type `n` or press Enter to abort the script
 
 ### 7. Choose Media Service
 

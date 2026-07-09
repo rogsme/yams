@@ -140,26 +140,31 @@ check_dependencies() {
     if docker compose version &> /dev/null; then
         log_success "docker compose exists ✅"
 
-        if ! docker ps &> /dev/null; then
-            # Check if the 'docker' group is missing from the ACTIVE session
-            if ! id -nG | grep -qw docker; then
-                log_warning "Refreshing docker permissions for this terminal session..."
+        # Explicitly check and log docker permissions
+        if docker ps &> /dev/null; then
+            log_success "docker permissions are correct ✅"
+            return 0
+        else
+            log_warning "docker permissions are inactive ❌"
 
-                # If they are missing from the system database, add them as per the official Docker instructions
-                if ! groups "$USER" | grep -qw docker; then
-                    log_info "Adding $USER to the docker group..."
-                    sudo usermod -aG docker "$USER"
-                fi
-
-                # Restart the script with the active group permissions
-                exec sg docker -c "bash '$0'"
-            else
-                # If they have active permissions and it still fails, the daemon is probablhy off
-                log_error "Docker is installed, but the daemon is not running. Please start the Docker service and try again."
+            # If they are missing from the system database entirely, add them
+            if ! groups "$USER" | grep -qw docker; then
+                log_info "Adding $USER to the docker group..."
+                sudo usermod -aG docker "$USER"
+                log_success "Successfully added $USER to the docker group ✅"
             fi
-        fi
 
-        return 0
+            echo
+            log_info "===================================================="
+            log_info "We need to refresh your terminal session to apply your new Docker permissions."
+            log_info "Please run the following command:"
+            echo
+            log_warning "newgrp docker"
+            echo
+            log_info "After running that command, run this installation script again!"
+            log_info "===================================================="
+            exit 1
+        fi
     fi
 
     log_warning "⚠️  Docker/Docker Compose not found! ⚠️"
@@ -172,13 +177,22 @@ check_dependencies() {
         sudo sh get-docker.sh
         rm get-docker.sh
 
+        log_info "Adding $USER to the docker group..."
         sudo usermod -aG docker "$USER"
         log_success "Docker installed successfully! ✅"
 
-        log_info "Activating docker group permissions..."
-        exec sg docker -c "bash '$0'"
+        echo
+        log_info "===================================================="
+        log_info "We need to refresh your terminal session to apply your new Docker permissions."
+        log_info "Please run the following command:"
+        echo
+        log_warning "newgrp docker"
+        echo
+        log_info "After running that command, simply run this installation script again!"
+        log_info "===================================================="
+        exit 1
     else
-        log_error "Please install Docker and Docker Compose first"
+        log_error "Please install Docker and Docker Compose first, then rerun the script."
     fi
 }
 
@@ -562,8 +576,15 @@ update_configuration_files() {
     else
         # IF THEY OPT OUT OF VPN: We must disconnect qBittorrent from Gluetun
         log_info "Disabling VPN configuration..."
-        sed -i -e "/^VPN_ENABLED=/d" -e "/^VPN_SERVICE=/d" -e "/^VPN_USER=/d" -e "/^VPN_PASSWORD=/d" "$env_file"
+        # 1. Delete the existing VPN lines
+        sed -i -e "/^VPN_ENABLED=/d" -e "/^VPN_SERVICE=/d" -e "/^VPN_USER=/d" -e "/^VPN_PASSWORD=/d" -e "/^VPN_TYPE=/d" "$env_file"
+
+        # 2. Add them back as explicitly blank variables to stop Docker warnings
         printf 'VPN_ENABLED=n\n' >> "$env_file"
+        printf 'VPN_SERVICE=\n' >> "$env_file"
+        printf 'VPN_USER=\n' >> "$env_file"
+        printf 'VPN_PASSWORD=\n' >> "$env_file"
+        printf 'VPN_TYPE=\n' >> "$env_file"
 
         # 1. Comment out the gluetun network mode on qBittorrent and SABnzbd
         # 2. Uncomment the local ports so qBittorrent and SABnzbd are accessible on the host
