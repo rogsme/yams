@@ -172,7 +172,7 @@ check_dependencies() {
     install_docker=${install_docker:-"n"}
 
     if [ "${install_docker,,}" = "y" ]; then
-        log_info "Downloading and running the official Docker installation script..."
+        log_info "Downloading and running the official Docker installation script (give it some time!)..."
         curl -fsSL https://get.docker.com -o get-docker.sh
 
         # run the script silently, but save the output to a log file
@@ -583,19 +583,15 @@ update_configuration_files() {
     else
         # IF THEY OPT OUT OF VPN: We must disconnect qBittorrent from Gluetun
         log_info "Disabling VPN configuration..."
-        # 1. Delete the existing VPN lines
-        sed -i -e "/^VPN_ENABLED=/d" -e "/^VPN_SERVICE=/d" -e "/^VPN_USER=/d" -e "/^VPN_PASSWORD=/d" -e "/^VPN_TYPE=/d" "$env_file"
 
-        # 2. Add them back as explicitly blank variables to stop Docker warnings
-        printf 'VPN_ENABLED=n\n' >> "$env_file"
-        printf 'VPN_SERVICE=\n' >> "$env_file"
-        printf 'VPN_USER=\n' >> "$env_file"
-        printf 'VPN_PASSWORD=\n' >> "$env_file"
-        printf 'VPN_TYPE=\n' >> "$env_file"
+        sed -i -e "s|^VPN_SERVICE=.*|VPN_SERVICE=|g" \
+               -e "s|^VPN_USER=.*|VPN_USER=|g" \
+               -e "s|^VPN_PASSWORD=.*|VPN_PASSWORD=|g" \
+               -e "s|^VPN_TYPE=.*|VPN_TYPE=|g" "$env_file"
 
         # 1. Comment out the gluetun network mode on qBittorrent and SABnzbd
         # 2. Uncomment the local ports so qBittorrent and SABnzbd are accessible on the host
-        # 3. Use Docker profiles to hide the Gluetun container so it doesn't crash on boot
+        # 3. Use Docker profiles to hide the Gluetun container
         sed -i -e 's|network_mode: "service:gluetun"|#network_mode: "service:gluetun"|g' \
              -e 's|^[[:space:]]*#ports: # qbittorrent_ports.*|    ports:|g' \
              -e 's|^[[:space:]]*#[[:space:]]*- 8081:8081.*|    - 8081:8081|' \
