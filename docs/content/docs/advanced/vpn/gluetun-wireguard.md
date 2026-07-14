@@ -3,17 +3,18 @@ weight: 2
 title: Switching between OpenVPN and Wireguard
 ---
 
-Want faster VPN speeds and quicker connection times? It's time to switch from OpenVPN to **WireGuard**! This guide will walk you through updating your Gluetun configuration to use WireGuard — with a focus on **ProtonVPN**.
-
-> ✅ **Why switch?** WireGuard is a modern VPN protocol that’s faster, more efficient, and easier to configure than OpenVPN.
+Need to switch between VPN protocols? Whether you're moving to **WireGuard** for faster speeds or back to **OpenVPN** for better compatibility, this guide covers both directions — with a focus on **ProtonVPN**.
 
 ---
 
-## For ProtonVPN Users 🚀
+## Switching to WireGuard 🚀
 
-ProtonVPN makes it easy to use WireGuard with Gluetun. Here's how to update your configuration.
+WireGuard is a modern VPN protocol that's faster, more efficient, and easier to configure than OpenVPN.
 
-### Step 1: Get Your WireGuard Private Key 🔑
+### ProtonVPN Step 1: Get Your WireGuard Private Key 🔑
+
+> [!INFO]
+> If you do not use ProtonVPN, refer to your respective provider's Gluetun documentation on how to get any required Wireguard values
 
 - Go to [ProtonVPN WireGuard Config Generator](https://account.proton.me/u/0/vpn/WireGuard)
 - Select Platform: GNU/Linux
@@ -35,19 +36,28 @@ PrivateKey = wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
 
 ### Step 2: Update Your `.env` File 🛠️
 
-Open your `.env` file and remove the OpenVPN credentials:
+Open your `.env` file:
 
-```bash
-nano /opt/yams/.env
+```
+nano [[config_path]]/.env
 ```
 
-Remove or comment out:
-```env
-VPN_USER=your-username
-VPN_PASSWORD=your-password
+Comment out the OpenVPN lines and uncomment the WireGuard lines:
+
+```env {filename="[[config_path]]/.env"}
+VPN_TYPE=wireguard
+
+# openvpn specific settings
+#VPN_USER=your-openvpn-username      # Comment this out
+#VPN_PASSWORD=your-openvpn-password  # Comment this out
+
+# WireGuard specific settings (uncomment all the relevant ones here!)
+WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=  # Add your key here
+WIREGUARD_ADDRESSES=10.2.0.2/32
+#WIREGUARD_PRESHARED_KEY=
 ```
 
-You can also remove `VPN_SERVICE=protonvpn` if you want to hardcode it in the compose file (see below), or leave it — both work.
+Ensure your `VPN_TYPE` variable is set to `wireguard`.
 
 > 💡 Not sure how the `.env` file works? Check out our [Environment File Guide](/docs/advanced/concept-explanations/environment-variables/) to learn how to manage variables like `WIREGUARD_PRIVATE_KEY` securely.
 
@@ -55,19 +65,145 @@ You can also remove `VPN_SERVICE=protonvpn` if you want to hardcode it in the co
 
 ### Step 3: Update `docker-compose.yaml` 🐳
 
-Find the `gluetun` service and replace the `environment:` section with the following:
+Find the `gluetun` service's `environment` section. It should currently look like this:
 
 ```yaml
-environment:
-  - VPN_SERVICE_PROVIDER=protonvpn
-  - VPN_TYPE=wireguard
-  - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
-  - VPN_PORT_FORWARDING=on
-  - VPN_PORT_FORWARDING_PROVIDER=protonvpn
-  - PORT_FORWARD_ONLY=on
+  # openvpn specific settings          ← currently active
+  - OPENVPN_USER=${VPN_USER}
+  - OPENVPN_PASSWORD=${VPN_PASSWORD}
+  - OPENVPN_CIPHERS=AES-256-GCM
+
+  # wireguard specific settings         ← currently commented out
+  #- WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+  #- WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+  #- WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
 ```
 
-> 🧠 **Tip:** You can still use `${VARIABLE}` syntax if you prefer to keep the private key in your `.env` file. See the [Environment File Guide](/docs/advanced/concept-explanations/environment-variables/) for more info.
+Comment out the OpenVPN lines and uncomment the WireGuard lines so it looks like this:
+
+```yaml
+  # openvpn specific settings          ← now commented out
+  #- OPENVPN_USER=${VPN_USER}
+  #- OPENVPN_PASSWORD=${VPN_PASSWORD}
+  #- OPENVPN_CIPHERS=AES-256-GCM
+
+  # wireguard specific settings         ← now active
+  - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+  - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+  #- WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+```
+
+
+---
+
+### Step 4: Restart YAMS
+
+Apply the changes:
+
+```bash
+yams restart
+```
+
+---
+
+### Step 5: Verify It's Working
+
+Run the VPN check:
+
+```bash
+yams check-vpn
+```
+
+You should see your qBittorrent IP is different from your local IP — and located in the country you selected for you VPN (if you did, you don't have to!).
+
+Check the Gluetun logs in your Dozzle interface, and give them a quick skim over to make sure everything looks right.
+
+Look for lines like:
+```
+Using VPN provider: protonvpn
+VPN type: wireguard
+Port forwarding is enabled
+```
+
+---
+
+## Switching to OpenVPN 🔄
+
+OpenVPN is the most widely supported VPN protocol and works with nearly every provider. Switch back if you're having compatibility issues or your provider doesn't support WireGuard.
+
+### Step 1: Get Your OpenVPN Credentials
+
+> [!INFO]
+> If you do not use ProtonVPN, refer to your respective provider's Gluetun documentation on how to get any required OpenVPN values.
+
+ProtonVPN uses dedicated OpenVPN credentials that are different from your main account login:
+
+- Go to [ProtonVPN Account](https://account.proton.me/u/0/vpn) → **OpenVPN / IKEv2** section
+- Copy your **OpenVPN username** and **OpenVPN password**
+
+If you're using a different provider, check their documentation for the correct OpenVPN credentials (usually a username and password, sometimes your account credentials).
+
+---
+
+### Step 2: Update Your `.env` File
+
+Open your `.env` file:
+
+```
+nano [[config_path]]/.env
+```
+
+Comment out the WireGuard lines and uncomment the OpenVPN lines:
+
+```env {filename="[[config_path]]/.env"}
+VPN_TYPE=openvpn
+
+# openvpn specific settings
+VPN_USER=your-openvpn-username      # Uncomment and set this
+VPN_PASSWORD=your-openvpn-password  # Uncomment and set this
+
+# WireGuard specific settings
+#WIREGUARD_PRIVATE_KEY=              # Comment this out
+#WIREGUARD_PRESHARED_KEY=           # Comment this out
+#WIREGUARD_ADDRESSES=               # Comment this out
+```
+
+Ensure your `VPN_TYPE` variable is set to `openvpn`.
+
+> [!WARNING]
+> ⚠️ ProtonVPN does not support port forwarding over OpenVPN. If you had port forwarding enabled with WireGuard, it will no longer work after switching.
+
+---
+
+### Step 3: Update `docker-compose.yaml` 🐳
+
+Find the `gluetun` service's `environment` section. It should currently look like this:
+
+```yaml
+  # openvpn specific settings          ← currently commented out
+  #- OPENVPN_USER=${VPN_USER}
+  #- OPENVPN_PASSWORD=${VPN_PASSWORD}
+  #- OPENVPN_CIPHERS=AES-256-GCM
+
+  # wireguard specific settings         ← currently active
+  - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+  - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+  #- WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+```
+
+Comment out the WireGuard lines and uncomment the OpenVPN lines so it looks like this:
+
+```yaml
+  # openvpn specific settings          ← now active
+  - OPENVPN_USER=${VPN_USER}
+  - OPENVPN_PASSWORD=${VPN_PASSWORD}
+  - OPENVPN_CIPHERS=AES-256-GCM
+
+  # wireguard specific settings         ← now commented out
+  #- WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+  #- WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+  #- WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+```
 
 ---
 
@@ -81,7 +217,7 @@ yams restart
 
 ---
 
-### Step 5: Verify It’s Working ✅
+### Step 5: Verify it's working
 
 Run the VPN check:
 
@@ -89,52 +225,16 @@ Run the VPN check:
 yams check-vpn
 ```
 
-You should see your qBittorrent IP is different from your local IP — and located in the country you selected in ProtonVPN.
-
-You can also check the Gluetun logs:
-
-```bash
-docker logs gluetun
-```
+You can also check the Gluetun logs in the Dozzle interface.
 
 Look for lines like:
 ```
 Using VPN provider: protonvpn
-VPN type: wireguard
-Port forwarding is enabled
+VPN type: openvpn
 ```
 
 ---
 
-## For Other VPN Providers 🌐
-
-WireGuard support varies by provider. Here’s what to do:
-
-1. Visit the [Gluetun Provider Docs](https://github.com/qdm12/gluetun-wiki/tree/main/setup/providers)
-2. Find your VPN provider and follow their WireGuard instructions
-3. Replace the `gluetun` environment variables in your `docker-compose.yaml` accordingly
-
+> [!WARNING]
 > ⚠️ Not all providers support WireGuard or port forwarding. Check their documentation carefully.
 
----
-
-## Troubleshooting 🔧
-
-### Gluetun won’t start?
-- Double-check your `WIREGUARD_PRIVATE_KEY`
-- Make sure `VPN_TYPE=wireguard` is set
-- Check for typos in your `docker-compose.yaml`
-
-### Port forwarding not working?
-- Ensure `VPN_PORT_FORWARDING=on` and `PORT_FORWARD_ONLY=on` are set
-- Verify that port forwarding is enabled in your ProtonVPN config
-- Check Gluetun logs for forwarded port info
-
----
-
-## Need Help? 🆘
-
-If you're stuck:
-- Visit our [Common Issues](/docs/faqs/) page
-- Join our [Discord](https://discord.gg/Gwae3tNMST) chat
-- Or ask in the [YAMS Forum](https://forum.yams.media)

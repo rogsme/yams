@@ -20,13 +20,13 @@ yams stop
 
 Open your `.env` file:
 
-```bash
+```
 nano [[config_path]]/.env
 ```
 
 Update the VPN section with your provider's details:
 
-```bash {filename="config_path/.env"}
+```bash {filename="[[config_path]]/.env"}
 # VPN configuration
 VPN_ENABLED=y
 VPN_SERVICE=protonvpn
@@ -53,7 +53,7 @@ If you want to use Wireguard, follow the Gluetun steps for your provider to get 
 
 Open your Docker Compose file:
 
-```bash
+```
 nano [[config_path]]/docker-compose.yaml
 ```
 
@@ -67,7 +67,7 @@ If you wish to use port forwarding and are certain your provider supports it, en
 
 Find the qBittorrent section, comment out the ports, and uncomment the `network_mode` line:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 qbittorrent:
   # ports:
   #   - 8081:8081
@@ -80,7 +80,7 @@ This routes qBittorrent's traffic through the VPN.
 
 If you use SABnzbd, make similar changes:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 sabnzbd:
   # ports:
   #   - 8080:8080
@@ -93,7 +93,7 @@ This routes SABnzbd's traffic through the VPN.
 
 Find the `gluetun` service and comment out or remove the `profiles` line:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 # profiles: ["disabled"]
 ```
 
@@ -103,14 +103,14 @@ If your VPN provider **requires** additional environment variables from the Glue
 
 Example:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 gluetun:
   environment:
     - SERVER_COUNTRIES=Antarctica
     - CUSTOM_KEY=value
 ```
 
-It can be a smart idea to add sensitive variables into your `.env` file, and then pass them through into the container by adding them to Gluetun's docker compose entry (e.g. `WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}`). Learn more about how the `.env` file works [here](../concept%20explanations/environment-variables).
+> It can be a smart idea to add *sensitive* variables into your `.env` file, and then pass them through into the container by adding them to Gluetun's docker compose entry.
 
 ### Step 4: Restart YAMS
 
@@ -155,13 +155,13 @@ yams stop
 
 Find the `gluetun` service in your Docker Compose file and uncomment the `profiles` line:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 # profiles: ["disabled"]
 ```
 
 It should become:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 profiles: ["disabled"]
 ```
 
@@ -171,7 +171,7 @@ This prevents Gluetun from starting when YAMS is up.
 
 Find the qBittorrent section, comment out the `network_mode` line, and uncomment the ports:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 qbittorrent:
   ports:
     - 8081:8081
@@ -184,7 +184,7 @@ This exposes qBittorrent directly on your host network so it remains accessible 
 
 If you use SABnzbd, make similar changes:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 sabnzbd:
   ports:
     - 8090:8080
@@ -201,7 +201,7 @@ nano [[config_path]]/.env
 
 Set them to empty values:
 
-```bash {filename="config_path/.env"}
+```bash {filename="[[config_path]]/.env"}
 VPN_ENABLED=
 VPN_SERVICE=
 VPN_USER=
