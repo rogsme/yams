@@ -27,9 +27,9 @@ services:
       - /dev/net/tun:/dev/net/tun
     environment:
       - VPN_SERVICE_PROVIDER=${VPN_SERVICE}
+      - VPN_TYPE=${VPN_TYPE}
 
       # openvpn specific settings
-      - VPN_TYPE=${VPN_TYPE}
       - OPENVPN_USER=${VPN_USER}
       - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - OPENVPN_CIPHERS=AES-256-GCM
