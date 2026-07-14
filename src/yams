@@ -54,7 +54,7 @@ show_help() {
     echo "Usage: yams [command] [options]"
     echo
     echo "Commands:"
-    for cmd in "${!COMMANDS[@]}"; do
+    for cmd in start stop restart check-vpn update-containers backup update-cli destroy status --help; do
         printf "%-25s %s\n" "$cmd" "${COMMANDS[$cmd]}"
     done
     echo
@@ -313,32 +313,32 @@ main() {
         --help)
             show_help
             ;;
-        restart)
-            restart_yams "${@:2}"
+        start)
+            start_yams "${@:2}"
             ;;
         stop)
             stop_yams "${@:2}"
             ;;
-        start)
-            start_yams "${@:2}"
-            ;;
-        status)
-            check_yams
+        restart)
+            restart_yams "${@:2}"
             ;;
         check-vpn)
             check_vpn
             ;;
-        destroy)
-            destroy_yams "${@:2}"
+        update-containers)
+            update_containers
             ;;
         backup)
             backup_yams "$destination"
             ;;
-        update-containers)
-            update_containers
-            ;;
         update-cli)
             update_cli
+            ;;
+        destroy)
+            destroy_yams "${@:2}"
+            ;;
+        status)
+            check_yams
             ;;
         *)
             log_error "Unknown command: $command\nRun 'yams --help' for usage information"

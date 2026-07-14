@@ -191,9 +191,12 @@ Do you want YAMS to install docker and docker-compose? [y/N]: y
   - Type `y` and hit `Enter` to let YAMS handle the Docker installation by running the official installation script
   - The script will install both Docker and Docker Compose
   - You may need to enter your `sudo` password
+  - It will take a second!
+
 
 - If you already have Docker:
   - You'll see "docker exists ✅" instead
+  - Permissions will be checked
   - The installer will move to the next step
 
 - If the script has installed Docker or fixed missing Docker permissions, you wil have to refresh these manually
@@ -205,7 +208,7 @@ Do you want YAMS to install docker and docker-compose? [y/N]: y
 User to own the media server files? [your_current_user]:
 ```
 
-- Press Enter to use your current user (recommended) or type a different username
+- Press Enter to use your current user (recommended, you should be in a shell session owned by your YAMS user) or type a different username
 - Remember: Don't use `root`!
 - The user must exist and have sudo privileges
 
@@ -240,7 +243,7 @@ Are you sure your media directory is "[[media_path]]"? (y/N) [Default = n]:
 ```
 
 - Type `y` and press Enter if the path is correct
-- Type `n` or press Enter to abort the script
+- Type `n` or press Enter to abort the script. Make required changes to your system, then re-run the script again.
 
 ### 7. Choose Media Service
 
@@ -250,20 +253,21 @@ Your media service is responsible for serving your files to your network.
 Supported media services:
 - jellyfin (recommended, easier)
 - emby
-- plex (advanced, always online)
+- plex (advanced, best product quality, expensive)
 
 Choose your media service [jellyfin]:
 ```
 
-Pick your streaming service:
-- Press Enter for Jellyfin (recommended for beginners)
-- Type `emby` for Emby
-- Type `plex` for Plex
 
 Each service has its strengths:
 - **Jellyfin**: Free, open-source, easy to set up. Advised for most new or unsure users!
 - **Emby**: Similar to Jellyfin but with premium features
-- **Plex**: Most polished, but requires online account and is more complex to configure. Not advised for new users due to the negative direction the company is taking (it costs). Be aware of these [new limitations](https://www.plex.tv/blog/important-2025-plex-updates/) if you don't have a Plex Pass.
+- **Plex**: Most polished, but requires online account and is more complex to configure. Not advised for new users due to the negative direction the company is taking (required payments for remote streaming). Be aware of these [new limitations](https://www.plex.tv/blog/important-2025-plex-updates/) if you don't have a Plex Pass.
+
+Pick your streaming service:
+- Press Enter for Jellyfin (recommended for most)
+- Type `emby` for Emby
+- Type `plex` for Plex
 
 ### 8. VPN Configuration
 
@@ -275,109 +279,277 @@ Configure VPN? (Y/n) [Default = y]:
 ```
 
 If you want to use a VPN (strongly recommended):
-1. Press Enter or type `y` to configure VPN
+1. Press Enter or type `y` to configure a VPN.
 2. Enter your VPN provider:
    ```bash
    VPN service? (with spaces) [protonvpn]:
    ```
    - Press Enter for ProtonVPN (recommended)
-   - Or type your VPN provider's name
+   - Or enter your VPN provider's name exactly as shown in the Gluetun documentation
 
-   The installer will show you where to find the setup documentation:
+3. Choose your VPN protocol:
    ```bash
-   Please check protonvpn's documentation for specific configuration:
-   https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
-   ```
-   Make sure to check this documentation - it will help you avoid common setup issues!
+   VPN type selection:
+     openvpn:  Default. Works with most providers.
+     wireguard: Only available for some providers. Only pick if you have your WireGuard credentials ready.
 
-   If you are using ProtonVPN:
-   ```bash
-   DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD.
-   ```
-   [Don't say you weren't warned](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md#openvpn-only).
-
-   The installer will then ask:
-   ```bash
-   Are you using a free ProtonVPN account? (y/N) [Default = n]:
-   ```
-   - If you type `y` and press Enter:
-     ```bash
-     ⚠️ ProtonVPN Free Tier Users: If you plan to use a free ProtonVPN account, please be aware that port forwarding is not supported. See our ProtonVPN Free Tier guide here: https://yams.media/docs/advanced/concept-explanations/vpn/#protonvpn-free-tier for more details.
-     ```
-     The installer will automatically configure Gluetun for the free tier (setting `FREE_ONLY=on` and disabling port forwarding). You will **not** need to make manual changes to `docker-compose.yaml` or `.env` for this.
-   - If you type `n` or press Enter (for a paid account):
-     The installer will proceed to the general port forwarding question.
-
-   If you are using Mullvad:
-   ```bash
-   Mullvad is removing OpenVPN support on January 15, 2026.
-   If you plan to use Mullvad, you MUST migrate to WireGuard after installation.
-   Read more: https://mullvad.net/en/blog/removing-openvpn-15th-january-2026
-   WireGuard setup instructions: https://yams.media/docs/advanced/community-guides/gluetun-wireguard/
+   VPN type? (openvpn/wireguard) [Default = openvpn]:
    ```
 
-   Make sure you configure Wireguard **after** finishing the installation.
+   ### Which VPN type should I choose?
 
-3. Configure port forwarding:
-   ```bash
-   Port forwarding allows for better connectivity in certain applications.
-   However, not all VPN providers support this feature.
-   Please check your VPN provider's documentation to see if they support port forwarding.
-   Enable port forwarding? (y/N) [Default = n]:
-   ```
+   #### OpenVPN (Recommended for most users)
 
-4. Enter your credentials:
-   ```bash
-   VPN username (without spaces):
-   VPN password:
-   ```
+   - Supported by nearly every VPN provider
+   - Easier to set up
+   - Uses a username and password
+   - Default option in YAMS
 
-Special notes:
-- For ProtonVPN, the installer handles the `+pmp` suffix for port forwarding automatically if you enabled it in the previous step. Just enter your VPN username.
-- For Mullvad, it will only ask you for your username, since Mullvad doesn't need a password.
-- For other VPN providers, the installer will prompt you about port forwarding before asking for credentials.
+    > [!SUCCESS]
+    >  Choose this unless your VPN provider specifically supports WireGuard and you already have your WireGuard configuration details.
 
-If you don't want to configure VPN now:
-- Type `n` and press Enter
-- You can set it up later, but **always use a VPN when downloading torrents!**
+   #### WireGuard
+
+   - Generally faster than OpenVPN
+   - Lower CPU usage
+   - Requires WireGuard credentials from your VPN provider
+   - Not available from every VPN provider
+
+   Only choose WireGuard if: your VPN provider supports it, and you already have your WireGuard credentials ready (see Gluetun documentation on how to get them)
+
+---
+
+### Read Your Provider Documentation
+
+The installer will display a warning screen and provide a direct link to your provider's documentation:
+
+```bash
+YOUR VPN DOCUMENTATION IS HERE:
+https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md
+```
+
+**Read this documentation before continuing.**
+
+Most VPN setup failures happen because users use the wrong credentials or skip provider-specific requirements.
+
+Press Enter once you have reviewed the documentation:
+
+```bash
+Press ENTER after you've READ the VPN documentation to continue...
+```
+
+---
+
+### ProtonVPN Users
+
+If you selected ProtonVPN, the installer will display:
+
+```bash
+DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD.
+REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD.
+```
+
+**This is the most common VPN setup mistake.**
+
+You must generate OpenVPN/WireGuard credentials from your ProtonVPN account dashboard.
+
+The installer will then ask:
+
+```bash
+Are you using a free ProtonVPN account? (y/N) [Default = n]:
+```
+
+#### ProtonVPN Free Tier
+
+If you answer `y`:
+
+```bash
+⚠️ ProtonVPN Free Tier Users:
+Port forwarding is not supported.
+```
+
+YAMS will automatically:
+
+- Configure Gluetun for the free tier
+- Enable `FREE_ONLY`
+- Disable all port forwarding settings
+
+No manual configuration is required.
+
+#### ProtonVPN Paid Tier
+
+If you answer `n` (or simply press Enter):
+
+- Port forwarding can optionally be enabled
+- The installer will continue to the port forwarding step
+
+
+### WireGuard Setup
+
+> [!WARNING]
+> Ensure you have read the Gluetun documentation for your provider, and have any Wireguard-related required values ready to go.
+
+If you selected:
+
+```bash
+VPN type? (openvpn/wireguard): wireguard
+```
+
+the installer will ask for your WireGuard credentials: `WireGuard private key:`
+
+Enter the private key provided by your VPN provider.
+
+Next: `WireGuard addresses (comma separated):`
+
+Enter the addresses provided by your VPN provider.
+
+
+Finally: `WireGuard preshared key (enter only if your provider uses it, otherwise leave blank):`
+
+Most providers don't require a preshared key. If your provider does not provide/need one, simply press Enter.
+
+
+#### What does YAMS do with these values?
+
+The installer automatically:
+- Configures Gluetun for WireGuard
+- Stores the values in `.env`
+- Disables OpenVPN settings
+- Enables the correct WireGuard environment variables
+
+None of these values are used for anything else or shared externally, YAMS is all about privacy! Don't believe me? Feel free to read through the script yourself 🤷
+
+---
+
+### OpenVPN Credentials
+
+If you selected OpenVPN, the installer will ask: `VPN username (without spaces):`
+
+Then: `VPN password:`
+
+Use the OpenVPN credentials provided by your VPN provider, after reading your provider's Gluetun documentation.
+
+---
+
+### Port Forwarding
+
+Next, the installer will ask:
+
+```bash
+Port forwarding allows for better connectivity in certain applications.
+
+However, not all VPN providers support this feature.
+
+Please check your VPN provider's documentation to see if they support port forwarding.
+
+Enable port forwarding? (y/N) [Default = n]:
+```
+
+Only respond with `y` for yes if you are certain your provider supports it!
+
+Else, just hit enter.
+
+#### ProtonVPN
+
+For paid ProtonVPN accounts, YAMS automatically appends the required `+pmp` suffix to your username when port forwarding is enabled, if it isn't already present.
+
+You do not need to add this yourself.
+
+#### ProtonVPN Free Tier
+
+Port forwarding is automatically disabled and this question is skipped.
+
+---
+
+### Skipping VPN Setup
+
+If you do not want to configure a VPN now:
+
+```bash
+Configure VPN? (Y/n) [Default = y]: n
+```
+
+YAMS will:
+
+- Disable the Gluetun container
+- Connect qBittorrent directly to Docker networking
+- Expose qBittorrent and SABnzbd ports on the host
+
+You can configure a VPN later via manual editing of the `docker-compose.yaml` using our guides.
+
+> **Warning:** Always use a VPN when downloading torrents. Running torrent clients without VPN protection may expose your real IP address.
+
+
+### 9. Container Customisation
+
+YAMS is designed to be a template usable by everyone! However, you may not want to utilise all of the containers within it. Note that all these configuration can be easily changed later via manually editing the `docker-compose.yaml` file utilising our guides. We know things may change as you go along, everything is reversible!
+
+#### Usenet
+Learn more about Usenet [here](ADD LINK). Note that Usenet access mostly relies on having a paid provider, so only enable it if you understand the requirements.
+
+Answer `n` if you only plan to use torrents!
+
+```bash
+Time to set up Usenet.
+Usenet allows you to download content via SABnzbd.
+You can change this later by editing docker-compose.yaml.
+You can skip this if you only plan to use torrents.
+Enable Usenet/SABnzbd? (Y/n) [Default = y]:
+```
+
+
+Lidarr is used to query, add downloads to the download queue and index Music. Enable it if you wish to manage music with your media server. Else, answer `n`.
+```bash
+Time to set up Lidarr.
+Lidarr is used to query, add downloads to the download queue and index Music.
+You can change this later by editing docker-compose.yaml.
+Enable Lidarr? (Y/n) [Default = y]:
+```
 
 ### 9. Installation Process
 
 After you've answered all the questions, you'll see:
 ```bash
-Copying docker-compose.example.yaml to /opt/yams/docker-compose.yaml...
-docker-compose.example.yaml was copied successfuly! ✅
+Configuring the docker-compose file for user "yamstest" in "[[config_path]]"...
 
-Copying .env.example to /opt/yams/.env...
-.env.example was copied successfuly! ✅
+Downloading .env.template to [[config_path]]/.env...
+.env.template downloaded successfully ✅
 
-Copying docker-compose.custom.yaml to /opt/yams/docker-compose.custom.yaml...
-docker-compose.custom.yaml was copied successfuly! ✅
+Downloading docker-compose.custom.yaml to [[config_path]]/docker-compose.custom.yaml...
+docker-compose.custom.yaml downloaded successfully ✅
+
+Downloading docker-compose.template.yaml to [[config_path]]/docker-compose.yaml...
+docker-compose.template.yaml downloaded successfully ✅
+
+Downloading yams to [[config_path]]/yams...
+yams downloaded successfully ✅
+Updating environment configuration...
+Updating docker-compose configuration...
+Configuring VPN settings in .env...
+Updating YAMS CLI configuration...
 Everything installed correctly! 🎉
-Running the server...
-This is going to take a while...
+Starting YAMS services...
+This may take a while...
 ```
 
-The installer will now:
-1. Copy all necessary configuration files
+The installer has:
+1. Downloaded the template YAMS files
 2. Set up your chosen options
-3. Start downloading and configuring Docker containers
+And will now start downloading and configuring Docker containers
 
 You'll then see:
 ```bash
 We need your sudo password to install the YAMS CLI and configure permissions...
 ```
 
-Enter your sudo password to:
-- Install the YAMS command-line tool
-- Set proper permissions on your media folders
+Enter your sudo password to install the YAMS command-line tool and set proper permissions on your media folders.
 
 If everything works, you'll see these success messages:
 ```bash
 YAMS CLI installed successfully ✅
 Media directory ownership and permissions set successfully ✅
 Install directory ownership and permissions set successfully ✅
-Configuration folder "/opt/yams/config" exists ✅
+Configuration folder "[[config_path]]/config" exists ✅
 Configuration folder ownership and permissions set successfully ✅
 ```
 
@@ -403,18 +575,16 @@ When everything's done, you'll see this awesome ASCII art:
 Following this, you'll get a list of all your service URLs:
 ```bash
 Service URLs:
-qBittorrent: http://your.ip.address:8081/
-SABnzbd: http://your.ip.address:8080/
-Radarr: http://your.ip.address:7878/
-Sonarr: http://your.ip.address:8989/
-Lidarr: http://your.ip.address:8686/
-Prowlarr: http://your.ip.address:9696/
-Bazarr: http://your.ip.address:6767/
-Media Service: http://your.ip.address:8096/
-Portainer: http://your.ip.address:9000/
+qBittorrent: http://[[user_ip]]:8081/
+SABnzbd: http://[[user_ip]]:8080/
+Radarr: http://[[user_ip]]:7878/
+Sonarr: http://[[user_ip]]:8989/
+Lidarr: http://[[user_ip]]:8686/
+Prowlarr: http://[[user_ip]]:9696/
+Bazarr: http://[[user_ip]]:6767/
+Media Service: http://[[user_ip]]:8096/
+Portainer: http://[[user_ip]]:9000/
 ```
-
-PERHAPS ADD IP ADDRESS PAST OPTION HERE?
 
 Don't worry about memorizing these - they're saved in `~/yams_services.txt` for easy reference!
 
@@ -433,8 +603,10 @@ Don't worry about memorizing these - they're saved in `~/yams_services.txt` for 
 
 ## What's Next?
 
-Time to configure your media server!
+Time to do some learning, and then configure your media server!
 
-If you are a bit unsure about how everything works, or can't conceptualise what YAMS is, check out the fundamentals section. There are simple explanations of YAMS and its backing technology (torrenting, VPNs, docker) to help you get a broader idea of how everything works together *before* configuration, to assist with debugging.
+If you want to learn about the YAMS CLI (advised), continue onto the next page.
+
+After this, if you are a bit unsure about how everything works or can't conceptualise what YAMS is, continue onto the fundamentals section. There are simple explanations of YAMS and its backing technology (torrenting, VPNs, Docker) to help you get a broader idea of how everything works together *before* configuration, to assist with debugging.
 
 If you are confident or short on time, no worries! Head straight onto the configuration. The YAMS fundamentals will always be there for reference in the future, or as you see fit as you follow the guides.

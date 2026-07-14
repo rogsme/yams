@@ -210,9 +210,9 @@ configure_media_service() {
     log_info "Time to choose your media service."
     log_info "Your media service is responsible for serving your files to your network."
     log_info "Supported media services:"
-    log_info "- jellyfin (recommended, easier)"
+    log_info "- jellyfin (recommended)"
     log_info "- emby"
-    log_info "- plex (advanced, always online, paid)"
+    log_info "- plex"
 
     read -p "Choose your media service [$DEFAULT_MEDIA_SERVICE]: " media_service
     media_service=${media_service:-$DEFAULT_MEDIA_SERVICE}
@@ -241,7 +241,7 @@ configure_vpn() {
     echo
     echo
     log_info "Time to set up the VPN."
-    log_info "Supported VPN providers: https://yams.media/advanced/vpn ENSURE THIS LINK IS CORRECT"
+    log_info "Supported VPN providers: https://yams.media/docs/advanced/concept-explanations/vpn"
 
     read -p "Configure VPN? (Y/n) [Default = y]: " setup_vpn
     setup_vpn=${setup_vpn:-"y"}
@@ -320,13 +320,6 @@ EOF
     read -p "Press ENTER after you've READ the VPN documentation to continue..." -r
 
     echo
-    if [ "$vpn_service" = "mullvad" ]; then
-       log_warning "Mullvad has removed OpenVPN support, the default config YAMS uses."
-       log_warning "If you plan to use Mullvad, you MUST migrate to WireGuard after installation."
-       log_warning "Read more: https://mullvad.net/en/blog/removing-openvpn-15th-january-2026"
-       log_warning "WireGuard setup instructions: https://yams.media/advanced/wireguard/ FIX LINK"
-       echo
-    fi
 
     if [ "$vpn_type" = "wireguard" ]; then
         log_info "WireGuard selected. You will need your private key and addresses."

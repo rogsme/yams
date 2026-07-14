@@ -24,22 +24,23 @@ yams - Yet Another Media Server
 Usage: yams [command] [options]
 
 Commands:
-restart                   restarts yams services (can specify service names)
-stop                      stops all yams services (can specify service names)
-destroy                   destroy yams services so you can start from scratch (can specify service names)
-backup                    backs up yams to the destination location
 start                     starts yams services (can specify service names)
-update-containers         updates all yams containers
---help                    displays this help message
+stop                      stops all yams services (can specify service names)
+restart                   restarts yams services (can specify service names)
 check-vpn                 checks if the VPN is working as expected
+update-containers         updates all yams containers
+backup                    backs up yams to the destination location
+update-cli                updates this CLI tool from the Gitea repository
+destroy                   destroy yams services so you can start from scratch (can specify service names)
 status                    checks yams services status
+--help                    displays this help message
 ```
 
 ## Available Commands
 
 ### `yams start`
 
-Fires up your YAMS services. It’s like pressing the “ON” button for your media server! You can start all services or specify individual ones. The CLI will even show you a nice progress bar and let you know when everything’s up and running (when starting all services).
+Fires up your YAMS services. It's like pressing the "ON" button for your media server! You can start all services or specify individual ones. The CLI will even show you a nice progress bar and let you know when everything's up and running (when starting all services).
 
 Examples:
 
@@ -50,7 +51,7 @@ yams start jellyfin    # Starts only the 'jellyfin' service
 
 ### `yams stop`
 
-Gracefully stops your YAMS services. Think of it as tucking your media server in for a good night’s rest. You can stop all services or specify individual ones. All downloads will be paused, and all services will shut down properly.
+Gracefully stops your YAMS services. Think of it as tucking your media server in for a good night's rest. You can stop all services or specify individual ones. All downloads will be paused, and all services will shut down properly.
 
 Examples:
 
@@ -70,20 +71,15 @@ yams restart             # Restarts all YAMS services
 yams restart sonarr      # Restarts only the 'sonarr' service
 ```
 
-### `yams backup [destination]`
+### `yams check-vpn`
 
-Your safety net! Backs up your entire YAMS configuration to keep your setup safe. Just tell it where to save the backup:
+Your privacy guardian! This command makes sure your VPN is doing its job by:
 
-```
-yams backup ~/my-backups
-```
-
-This will:
-
-- Stop all services (temporarily)
-- Create a timestamped backup file
-- Start everything back up
-- Tell you exactly where your backup is saved
+1. Checking your real IP address
+2. Checking qBittorrent's IP address
+3. Comparing them to make sure they're different
+4. Showing you which countries both IPs are from
+5. If something's wrong and it isn't masking your location, it'll let you know right away!
 
 ### `yams update-containers`
 
@@ -99,22 +95,32 @@ This will:
 > [!INFO]
 > The command will suggest creating a backup first (with `yams backup`) to avoid any data loss if something goes wrong. Always a good idea before updating!
 
-### `yams check-vpn`
+### `yams backup [destination]`
 
-Your privacy guardian! This command makes sure your VPN is doing its job by:
+Your safety net! Backs up your entire YAMS configuration to keep your setup safe. Just tell it where to save the backup:
 
-1. Checking your real IP address
-2. Checking qBittorrent’s IP address
-3. Comparing them to make sure they’re different
-4. Showing you which countries both IPs are from
-5. If something’s wrong and it isn't masking your location, it’ll let you know right away!
+```
+yams backup ~/my-backups
+```
+
+This will:
+
+- Stop all services (temporarily)
+- Create a timestamped backup file
+- Start everything back up
+- Tell you exactly where your backup is saved
+
+### `yams update-cli`
+Every now and then the YAMS CLI gets new features and improvements. To update it without repeating the install process, simply run this command!
+
+It downloads the new YAMS CLI script from the official Gittea repository, and replaces your outdated version whilst keeping your config and media paths saved correctly.
 
 ### `yams destroy`
 
 > [!CAUTION]
 > Do not use this command unless you are aware of its critical affects. It cannot be undone.
 
-This command completely removes YAMS services so you can start fresh. You can destroy all services, or specific ones. But don’t worry - it’ll ask for confirmation first! We don’t want any accidents. 😅
+This command completely removes YAMS services so you can start fresh. You can destroy all services, or specific ones. But don't worry - it'll ask for confirmation first! We don't want any accidents. 😅
 
 Examples:
 
@@ -125,16 +131,6 @@ yams destroy radarr      # Destroys only the 'radarr' service (its container and
 
 ---
 
-## Updating the CLI
-
-Every now and then the YAMS CLI gets new features and improvements. To update it without repeating the install process:
-
-1. Open the `/usr/local/bin/yams` file in a text editor with sudo permissions.
-2. Copy the two lines just below the `# Constants` comment. These lines define the `INSTALL_DIRECTORY` and `DC` variables. You’ll need to keep these lines intact and accessible somewhere else whilst you reset the file!
-3. Replace all of the existing content with the latest version from the Gitlab repository: https://gitlab.com/rogs/yams/-/raw/master/yams?ref_type=heads.
-4. Replace the empty `INSTALL_DIRECTORY` and `DC` variable values with the ones you copied in step 2. This ensures that your CLI continues to work with your existing YAMS installation.
-5. Save and close the file. Your CLI is now updated to the latest version!
-
----
+After this, if you are a bit unsure about how everything works or can't conceptualise what YAMS is, continue onto the fundamentals section. There are simple explanations of YAMS and its backing technology (torrenting, VPNs, Docker) to help you get a broader idea of how everything works together *before* configuration, to assist with debugging.
 
 Perfect. You are now ready to tackle the [main setup](../configure/qbittorrent). I believe in you!
