@@ -1,8 +1,9 @@
 ---
-weight: 1
+weight: 4
 title: Seeding with Qui
 ---
 
+# Seeding with Qui
 
 In general, it is good practice to seed any torrents you download. Seeding is the act of sharing a media file you have downloaded with other users, helping with their downloads.
 
@@ -228,4 +229,4 @@ Be sure to keep checking in on your system every so often to ensure it is workin
 
 ---
 
-*Thanks to [not-first](https://github.com/not-first) on Github for contributing to this guide!*
+*Thanks to Faker on Discord for contributing to this guide!*

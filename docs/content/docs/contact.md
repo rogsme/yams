@@ -3,17 +3,15 @@ title: Contact
 weight: 102
 ---
 
-
-# Let's Connect! 🤝
+# Let's Connect!
 
 Got questions? Suggestions? Just want to say hi? We've got plenty of ways to reach out!
 
 ## Community Hangouts 🏡
+- Discord Server: [YAMS Discord](https://discord.gg/Gwae3tNMST) ![Discord](https://img.shields.io/discord/1168025418243256391?style=plastic)
+- Official Forum: [YAMS Forum](https://forum.yams.media)
 
-- 🎮 Discord Server: [YAMS Discord](https://discord.gg/Gwae3tNMST)
-- Official Forum 📋: [YAMS Forum](https://forum.yams.media)
-
-## Direct Contact 📧
+## Direct Contact
 
 - Email: `[roger at rogs.me]`. Replace `at` with `@` (fuck you, email bots)
 - GPG:
@@ -24,7 +22,7 @@ Got questions? Suggestions? Just want to say hi? We've got plenty of ways to rea
   ```
 - My Website 🌐: [rogs.me](https://rogs.me)
 
-## Ground Rules 📏
+## Ground Rules
 
 Before reaching out, please:
 - Check the [documentation](/) first
@@ -33,24 +31,18 @@ Before reaching out, please:
 - Include relevant logs or screenshots
 - Be patient and kind
 
-## What to Expect 🤔
-
-- Response times vary
-- Community-driven support
-- Friendly, no-nonsense assistance
-- Open-source spirit of collaboration
 
 **Pro Tip:** The more clearly you describe your issue, the faster we can help you! 🚀
 
 ## Reporting Bugs 🐛
 
-Found an issue? Awesome! Head to our [GitLab Issues](https://gitlab.com/rogs/yams/-/issues) and:
+Found an issue? Awesome! Head to our [GitLab Issues](https://gitlab.com/rogs/yams/-/issues) or [Github Issues](https://github.com/rogsme/yams) and:
 - Search existing issues first
 - Provide detailed reproduction steps
 - Include system information
 - Be awesome! 😎
 
-## Social Media? Nope! 🙅‍♂️
+## Social Media? Nope!
 
 We keep things simple. No Twitter, no Facebook, no Instagram. Just good old-fashioned community support!
 

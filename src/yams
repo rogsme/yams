@@ -60,11 +60,11 @@ show_help() {
     echo
     echo "Examples:"
     echo "  yams start              # Start all YAMS services"
-    echo "  yams start jellyfin     # Start the 'jellyfin' service"
-    echo "  yams stop jellyfin      # Stop the 'jellyfin' service"
-    echo "  yams restart jellyfin   # Restart the 'jellyfin' service"
-    echo "  yams destroy jellyfin   # Destroy the 'jellyfin' service"
-    echo "  yams backup /path/to/backup  # Backup YAMS to specified directory"
+    echo "  yams start radarr     # Start the 'radarr' service"
+    echo "  yams stop radarr      # Stop the 'radarr' service"
+    echo "  yams restart radarr   # Restart the 'radarr' service"
+    echo "  yams update-containers      # Update all YAMS containers"
+    echo "  yams backup /path/to/location  # Backup YAMS to specified directory"
 }
 
 wait_for_services() {

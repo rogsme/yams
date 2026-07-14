@@ -12,21 +12,30 @@ Let's talk about something important: supporting the incredible projects and peo
 
 YAMS is built on the shoulders of giants - amazing open-source projects that pour their heart and soul into creating free, powerful tools. Before you even think about donating to YAMS, we want you to support the projects that truly make this possible!
 
-### Top Projects to Support 🌟
+### Top Projects to Support
+
+Each of these projects is crucial to YAMS. If you appreciate what we've built, show some love to these incredible teams:
+
+### Top Projects to Support
 
 Each of these projects is crucial to YAMS. If you appreciate what we've built, show some love to these incredible teams:
 
 1. **LinuxServer.io**: [Donate Here](https://www.linuxserver.io/donate)
 2. **Sonarr** 📺: [Donate Here](https://sonarr.tv/donate)
 3. **Radarr** 🎬: [Donate Here](https://radarr.video/donate)
-4. **Jellyfin** 🍿: [Donate Here](https://opencollective.com/jellyfin)
-5. **qBittorrent** 🌊: [Donate Here](https://www.qbittorrent.org/donate)
-6. **SABnzbd** 📰: [Donate Here](https://sabnzbd.org/donate/)
-7. **Prowlarr** 🔍: [Donate Here](https://prowlarr.com/donate)
-8. **Bazarr** 💬: [Donate Here](https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=XHHRWXT9YB7WE&source=url)
-9. **Gluetun** 🛡️: [Donate Here](https://www.paypal.me/qmcgaw)
+4. **Lidarr** 🎧: [Donate Here](https://opencollective.com/lidarr)
+5. **Jellyfin** 🍿: [Donate Here](https://opencollective.com/jellyfin)
+6. **Emby** 🎞️: [Support via Emby Premiere](https://emby.media/premiere.html) *(Emby does not accept direct donations)*
+7. **Plex** 📽️: [Support via Plex Pass](https://www.plex.tv/plex-pass/) *(Plex does not accept direct donations)*
+8. **qBittorrent** 🌊: [Donate Here](https://www.qbittorrent.org/donate)
+9. **SABnzbd** 📰: [Donate Here](https://sabnzbd.org/donate/)
+10. **Prowlarr** 🔍: [Donate Here](https://prowlarr.com/donate)
+11. **Bazarr** 💬: [Donate Here](https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=XHHRWXT9YB7WE&source=url)
+12. **Gluetun** 🛡️: [Donate Here](https://www.paypal.me/qmcgaw)
+13. **Dozzle** 📋: [Donate Here](https://www.buymeacoffee.com/amirraminfar)
 
-## YAMS Donations: The Very Last Priority 🏆
+## YAMS Donations: The Very Last Priority
+*From Roger - YAMS creator and main maintainer*
 
 Okay, so you REALLY want to support YAMS? First, thank you! But honestly, I'm not doing this for money. YAMS is a passion project I created for myself and my friends. If you've already supported the projects above and still want to chip in, here are some options:
 
