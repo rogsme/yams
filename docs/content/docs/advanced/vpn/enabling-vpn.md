@@ -125,7 +125,7 @@ yams check-vpn
 
 You should see output similar to:
 
-```bash
+```
 Getting your qBittorrent IP...
 <qbittorrent_ip>
 Your country in qBittorrent is XYZ

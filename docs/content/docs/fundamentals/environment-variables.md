@@ -34,7 +34,7 @@ Inside the `environment` section of our docker compose folders, there is another
 
 Instead of writing the same path or ID over and over again in those files, we can just use the *name* of the setting from `.env`, but with a dollar sign (`$`) in front, and wrapped inside curly brackets `{}`. Like this:
 
-```yaml {filename="config_path/docker-compose.yaml"}
+```yaml {filename="[[config_path]]/docker-compose.yaml"}
 # Inside a service definition in docker-compose.yaml...
 environment:
   - PUID=${PUID} # Aha! Use the PUID value from .env
@@ -67,4 +67,4 @@ When you first set up YAMS, your `.env` file comes pre-filled with a few essenti
 
 ---
 
-*Thanks to Airwreck on Discord for contributing to this guide!*
+*Thanks to Airwreck on Discord for contributing this guide!*

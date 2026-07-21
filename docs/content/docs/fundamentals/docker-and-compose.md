@@ -39,9 +39,9 @@ image: lscr.io/linuxserver/sonarr:latest
 
 A **container** is a running instance of an image. It's when you grab the template and start it up so the application gets running!
 
-A running container is like a mini-machine inside your server that represents a running instance of that application. Its a bit like starting up desktop apps on a traditional computer.
+A running container represents a running instance of that application. Its a bit like starting up desktop apps on a traditional computer.
 
-This container is like a mini-machine that the app inside is running on, mostly isolated from its host. The container has its own filesystem and its own ports that do not affect the host.
+This container is like a mini-machine inside your main server that the app inside is running on, mostly isolated from its host. The container has its own filesystem and its own ports that do not affect the host.
 
 ### Volumes
 
@@ -72,13 +72,13 @@ Server folder: [[media_path]] -> Container folder: /data
 ```
 
 > [!INFO]
-> This is why during configuration you often have to enter paths such as `/data/downloads` or `/data/movies` which don't exist on your host. It's because this is the specific container's path!
+> This is why during configuration you often have to enter paths such as `/data/downloads` or `/data/movies` which don't exist on your host. It's because this is the internal container's path!
 
 ### Ports
 
-Ports are how you actually access any of your running applications! A port is a slot your server can serve an application on. You've probably seen them before when having to access applications you run yourself, where you have to type `http://[[user_ip]]:PORT` into your browser.
+Ports are how you actually access any of your running applications! A port is a numbered slot your server can serve an application on. You've probably seen them before when having to access applications you run yourself, where you have to type `http://[[user_ip]]:PORT` into your browser.
 
-Just like each container's own filesystem, each container *also* has its own ports. This means Radarr might be running on port `7878` inside you container, but you can't access it unless you map this port to a port on your host!
+Just like each container's own **filesystem**, each container *also* has its own ports. This means Radarr might be running on port `7878` inside you container, but you can't access it unless you **map** this port to a port on your host (kind of like volumes)!
 
 To make an application accessible on a hosts port, you'll see something like this in your compose:
 ```
@@ -114,9 +114,9 @@ services: # always at the very top, containers go under here
     restart: unless-stopped # restart if anything goes wrong!
 ```
 
-As you can see, its a simple way to describe everything Docker needs to get Radarr running for us in a way we can understand! YAMS gets you started by giving you a starter `docker-compose.yaml` with everything complicated (volume mapping, environment vairables) already figured out. You shouldn't have to edit this main one much.
+As you can see, its a simple way to describe everything Docker needs to get Radarr running for us in a way we can understand. YAMS gets you started by giving you a starter `docker-compose.yaml` with everything complicated (volume mapping, environment vairables) already figured out. You shouldn't have to edit this main one much.
 
-However, YAMS has a `docker-compose.custom.yaml` file ! This is where you add additional container definitions. Don't worry, most application maintainers provide an example Docker compose for getting started. Just remember to correctly alter the volumes to the YAMS paths! See [adding custom containers to YAMS](../advanced/custom-containers/_index).
+However, YAMS has a `docker-compose.custom.yaml` file. This is where you add additional container definitions and expand the containers YAMS includes by default. See the
 
 ### Networking
 
@@ -134,4 +134,32 @@ To learn more, check out [Docker's official page](https://docs.docker.com/get-st
 ---
 # YAMS and Docker
 
-YAMS is based on Docker. EXPAND THIS SECTION talking about how it uses two docker compose files, uses comments to selectively alter, uses profiles to disable, and the CLI just wraps docker commands.
+YAMS is based on Docker. It isn't its own application, it's simply a Docker Compose setup! This means it is easy to learn, and easy to tweak and extend in the future.
+
+This small section will detail exactly how YAMS is structured to ensure you understand your system.
+
+YAMS contains 3 Docker-related files: `docker-compose.yaml`, `docker-compose.custom.yaml` and `.env`.
+
+### `docker-compose.yaml`
+
+- This is the main Docker Compose file. It is created automatically by the installer script and contains the container declarations for all the key services included in YAMS (e.g Radarr, qBitTorrent).
+- Environment variables from your main `.env` file are passed into each of the containers here, along with container-specific variables. (See the [environment variables page](../fundamentals/environment-variables) to learn more).
+- Certain lines may be commented out. This is how the installer modified the file for your setup, and ensures easy tweaking in the future.
+  - For example, the `profile: ["disabled"]` line will be uncommented on any containers you chose to exclude from running in your setup. Commenting this line out is an easy way to enable the container!
+  - Guides on topics such as enabling/disabling the VPN are pretty simply to follow, as you already have the required content in your files already, you just need to shuffle around what is commented.
+- The `yams start` CLI command simply runs `docker compose up` (starts up) the Docker containers in this file behind the scenes.
+
+> [!INFO]
+> This file should remain mostly unchanged, especially if you are unsure about what you are doing. It's the ultimate source of truth for your media server, you don't want to accidentally mess it up! However, if you are confident in your tinkering abilities, do whatever you like. It's **your** media server after all 😅!
+
+### `docker-compose.custom.yaml`
+
+- This is *your* Docker Compose file.
+- It is where you define additional containers to add to your media stack. See [here](../advanced/custom-containers) for how to get started adding additional containers.
+- The `yams start` CLI command simply runs `docker compose up` (starts up) the Docker containers in this file too!
+
+
+### `.env`
+
+- Where you environment variables are stored. Head to the [Environment Variables](../fundamentals/environment-variables) page to learn more.
+

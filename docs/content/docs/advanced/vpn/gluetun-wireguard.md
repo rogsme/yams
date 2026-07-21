@@ -3,15 +3,15 @@ weight: 2
 title: Switching between OpenVPN and Wireguard
 ---
 
-Need to switch between VPN protocols? Whether you're moving to **WireGuard** for faster speeds or back to **OpenVPN** for better compatibility, this guide covers both directions — with a focus on **ProtonVPN**.
+Need to switch between VPN protocols? Whether you're moving to **WireGuard** for faster speeds or back to **OpenVPN** for better compatibility, this guide covers both directions - with a focus on **ProtonVPN**.
 
 ---
 
-## Switching to WireGuard 🚀
+## Switching to WireGuard
 
 WireGuard is a modern VPN protocol that's faster, more efficient, and easier to configure than OpenVPN.
 
-### ProtonVPN Step 1: Get Your WireGuard Private Key 🔑
+### ProtonVPN Step 1: Get Your WireGuard Private Key
 
 > [!INFO]
 > If you do not use ProtonVPN, refer to your respective provider's Gluetun documentation on how to get any required Wireguard values
@@ -34,7 +34,7 @@ PrivateKey = wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
 
 ---
 
-### Step 2: Update Your `.env` File 🛠️
+### Step 2: Update Your `.env` File
 
 Open your `.env` file:
 
@@ -63,7 +63,7 @@ Ensure your `VPN_TYPE` variable is set to `wireguard`.
 
 ---
 
-### Step 3: Update `docker-compose.yaml` 🐳
+### Step 3: Update `docker-compose.yaml`
 
 Find the `gluetun` service's `environment` section. It should currently look like this:
 
@@ -127,7 +127,7 @@ Port forwarding is enabled
 
 ---
 
-## Switching to OpenVPN 🔄
+## Switching to OpenVPN
 
 OpenVPN is the most widely supported VPN protocol and works with nearly every provider. Switch back if you're having compatibility issues or your provider doesn't support WireGuard.
 
@@ -175,7 +175,7 @@ Ensure your `VPN_TYPE` variable is set to `openvpn`.
 
 ---
 
-### Step 3: Update `docker-compose.yaml` 🐳
+### Step 3: Update `docker-compose.yaml`
 
 Find the `gluetun` service's `environment` section. It should currently look like this:
 
@@ -207,7 +207,7 @@ Comment out the WireGuard lines and uncomment the OpenVPN lines so it looks like
 
 ---
 
-### Step 4: Restart YAMS 🔄
+### Step 4: Restart YAMS
 
 Apply the changes:
 
