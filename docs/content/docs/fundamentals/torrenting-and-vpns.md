@@ -63,7 +63,7 @@ You might have heard about port forwarding before, heard about how it speeds up 
 Port forwarding is when you open a specific numbered 'door' in your VPNs digital firewall so that outside computers can connect directly to your device. Normally when you use a VPN, your computer hides behind a wall. It can reach out to the internet but its incoming connections are firewalled. This means that your download client can still make outgoing connections to other peers, and downloads will still work, but some peers won't be able to connect back to you.
 
 A VPN provider that supports port forwarding gives you a dedicated port on their VPN server. This has several benefits for torrenting:
-- Without port forwarding, you can only connect to people who *do* have open ports. With a forwarded port, you can connect to both people with forwarded ports and people. This drastically increases your pool of available peers you can connect to.
+- Without port forwarding, you can only connect to people who *do* have open ports. With a forwarded port, you can connect to both people with forwarded ports and people without. This drastically increases your pool of available peers you can connect to.
   - Your download speeds are faster because you can connect to more seeders.
   - You can seed to a larger pool of leechers, making it easier to hit ratio and seeding requirements on private trackers
 
