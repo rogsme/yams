@@ -532,8 +532,7 @@ update_configuration_files() {
             port_forward_settings="on"
         fi
 
-        sed -i -e "/^VPN_ENABLED=/d" -e "/^VPN_SERVICE=/d" -e "/^VPN_USER=/d" -e "/^VPN_PASSWORD=/d" "$env_file"
-        printf 'VPN_ENABLED=y\n' >> "$env_file"
+        sed -i -e "/^VPN_SERVICE=/d" -e "/^VPN_USER=/d" -e "/^VPN_PASSWORD=/d" "$env_file"
         printf 'VPN_SERVICE=%s\n' "$vpn_service" >> "$env_file"
         printf 'VPN_USER=%s\n' "$vpn_user" >> "$env_file"
         printf 'VPN_PASSWORD=%s\n' "$vpn_password" >> "$env_file"
