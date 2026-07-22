@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '%s\n' "$*" >> "$YAMS_DOCKER_LOG"
+
+case "$*" in
+    "compose version"|"ps")
+        exit 0
+        ;;
+    compose\ -f\ *\ up\ -d)
+        exit "${YAMS_DOCKER_UP_STATUS:-0}"
+        ;;
+esac
+
+echo "Unexpected docker arguments: $*" >&2
+exit 1

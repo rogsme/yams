@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+url=""
+destination=""
+
+while (($#)); do
+    case "$1" in
+        -o)
+            destination="$2"
+            shift 2
+            ;;
+        -*)
+            shift
+            ;;
+        *)
+            url="$1"
+            shift
+            ;;
+    esac
+done
+
+if [[ -z "$url" || -z "$destination" ]]; then
+    echo "Unexpected curl arguments" >&2
+    exit 1
+fi
+
+if [[ "${url##*/}" == "${YAMS_CURL_FAIL:-}" ]]; then
+    exit 1
+fi
+
+cp "$YAMS_FIXTURE_DIR/${url##*/}" "$destination"

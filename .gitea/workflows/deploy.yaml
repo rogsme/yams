@@ -1,0 +1,56 @@
+name: Hugo Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - docs/**
+  pull_request:
+    paths:
+      - docs/**
+
+env:
+  HUGO_VERSION: 0.161.1
+
+jobs:
+  build:
+    name: Build Hugo Site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Install Hugo
+        run: |
+          curl -L https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb -o hugo.deb
+          sudo apt-get update
+          sudo apt-get install -y ./hugo.deb
+
+      - name: Build Hugo site
+        run: hugo --source docs --baseURL https://yams.media/ --minify
+
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Deploy over SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+        run: |
+          eval "$(ssh-agent -s)"
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+          chmod 700 ~/.ssh
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" 'cd repo && git stash && git pull --force origin master && git submodule update --init --recursive && hugo --source docs --destination /var/www/yams.media/ --baseURL https://yams.media/ --minify --cleanDestinationDir --gc'

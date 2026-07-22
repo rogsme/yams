@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${1:-}" == "-I" ]]; then
+    echo "192.0.2.10"
+    exit 0
+fi
+
+exec /bin/hostname "$@"

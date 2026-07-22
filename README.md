@@ -81,6 +81,16 @@ Access your content anywhere:
 
 https://yams.media/
 
+## Testing
+
+The installer test suite runs entirely in Docker. It uses Bats to exercise the interactive installation flow and validates the generated configuration with Docker Compose without starting the media stack.
+
+```bash
+tests/run
+```
+
+Docker is the only local prerequisite. The same command is used by CI.
+
 ## Donations
 
 If you'd like to support YAMS, please consider donating to the underlying projects:

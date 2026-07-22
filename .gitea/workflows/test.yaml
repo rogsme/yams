@@ -1,0 +1,20 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - src/**
+  pull_request:
+    paths:
+      - src/**
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Run tests in Docker
+        run: tests/run

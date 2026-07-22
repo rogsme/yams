@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+image="yams-tests:local"
+
+docker build --file "$repo_dir/tests/Dockerfile" --tag "$image" "$repo_dir"
+docker run --rm --network none "$image"

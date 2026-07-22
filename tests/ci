@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bash -n /repo/src/install.sh /repo/src/yams
+exec bats --formatter tap --print-output-on-failure /repo/tests/install.bats
