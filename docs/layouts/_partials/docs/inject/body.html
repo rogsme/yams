@@ -24,6 +24,10 @@
       return stored !== null && stored !== '';
     }
 
+    function escapeRegExp(value) {
+      return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     function restoreSpans() {
       const spans = pageContainer.querySelectorAll('.ph');
       for (const span of spans) {
@@ -33,44 +37,97 @@
       }
     }
 
-    function processNode(node, originalText) {
-      const joined = PLACEHOLDERS.map(ph => ph.pattern).join('|');
-      const escaped = joined.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
-      const re = new RegExp(`(${escaped})`, 'g');
-      const parts = originalText.split(re);
-      if (parts.length === 1) return;
+    function collectTextNodes() {
+      const walker = document.createTreeWalker(pageContainer, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const parent = node.parentElement;
+          if (!parent) return NodeFilter.FILTER_REJECT;
+          if (parent.closest('script,style,noscript')) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
 
-      const fragment = document.createDocumentFragment();
-      for (const part of parts) {
-        const ph = phMap[part];
-        if (ph) {
-          const span = document.createElement('span');
-          span.className = 'ph';
-          span.dataset.ph = ph.key;
-          span.textContent = getConfiguredValue(ph);
-          fragment.appendChild(span);
+      const nodes = [];
+      let node;
+      while ((node = walker.nextNode())) {
+        nodes.push(node);
+      }
+      return nodes;
+    }
+
+    function buildSegments(nodes) {
+      const segments = [];
+      let offset = 0;
+
+      for (const node of nodes) {
+        const text = node.nodeValue || '';
+        const start = offset;
+        const end = start + text.length;
+        segments.push({ node, start, end });
+        offset = end;
+      }
+
+      return segments;
+    }
+
+    function locateOffset(segments, index) {
+      let low = 0;
+      let high = segments.length - 1;
+
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        const segment = segments[mid];
+        if (index < segment.start) {
+          high = mid - 1;
+        } else if (index >= segment.end) {
+          low = mid + 1;
         } else {
-          fragment.appendChild(document.createTextNode(part));
+          return { node: segment.node, offset: index - segment.start };
         }
       }
-      node.parentNode.replaceChild(fragment, node);
+
+      return null;
+    }
+
+    function replaceMatches() {
+      const textNodes = collectTextNodes();
+      if (textNodes.length === 0) return;
+
+      const segments = buildSegments(textNodes);
+      const fullText = textNodes.map(node => node.nodeValue || '').join('');
+      const matches = [];
+      const pattern = new RegExp(PLACEHOLDERS.map(ph => escapeRegExp(ph.pattern)).join('|'), 'g');
+
+      let match;
+      while ((match = pattern.exec(fullText)) !== null) {
+        const ph = phMap[match[0]];
+        if (ph) {
+          matches.push({ start: match.index, end: match.index + match[0].length, placeholder: ph });
+        }
+      }
+
+      for (const item of matches.reverse()) {
+        const start = locateOffset(segments, item.start);
+        const end = locateOffset(segments, item.end - 1);
+        if (!start || !end) continue;
+
+        const range = document.createRange();
+        range.setStart(start.node, start.offset);
+        range.setEnd(end.node, end.offset + 1);
+
+        const span = document.createElement('span');
+        span.className = 'ph';
+        span.dataset.ph = item.placeholder.key;
+        span.textContent = getConfiguredValue(item.placeholder);
+
+        range.deleteContents();
+        range.insertNode(span);
+      }
     }
 
     function walkAndProcess() {
       restoreSpans();
-
-      const walker = document.createTreeWalker(pageContainer, NodeFilter.SHOW_TEXT, null, false);
-      const nodes = [];
-      let node;
-      while (node = walker.nextNode()) {
-        const text = node.nodeValue;
-        if (text.includes('[[install_path]]') || text.includes('[[media_path]]') || text.includes('[[user_ip]]')) {
-          nodes.push(node);
-        }
-      }
-      for (const n of nodes) {
-        processNode(n, n.nodeValue);
-      }
+      replaceMatches();
     }
 
     window.updatePagePaths = walkAndProcess;
