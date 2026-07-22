@@ -1,11 +1,12 @@
-<div class="interactive-path-panel">
+<div class="interactive-path-panel" id="path-personaliser">
   <div class="panel-header">
     <h3>Personalize This Installation Guide</h3>
     <p>If you are using paths other than the defaults, enter them below to update the commands in this guide
       automatically. If you are unsure or happy to stick with the defaults, leave the fields blank.</p>
     <p>If you are unsure of your server's IP address, you can find it by running
       <code>hostname -I | awk '{print $1}'</code> on your
-      server.</p>
+      server.
+    </p>
   </div>
 
   <div class="panel-grid panel-grid-3">
@@ -34,11 +35,36 @@
 
     if (!configIn || !mediaIn || !useripIn) return;
 
-    configIn.value = localStorage.getItem("install_path") || "";
+    configIn.value = localStorage.getItem("install_path") || localStorage.getItem("INSTALL_PATH") || "";
     mediaIn.value = localStorage.getItem("MEDIA_PATH") || "";
     useripIn.value = localStorage.getItem("USER_IP") || "";
 
+    function focusRequestedInput() {
+      const focusKey = new URLSearchParams(window.location.search).get('focus');
+      const targetMap = {
+        install_path: configIn,
+        media_path: mediaIn,
+        user_ip: useripIn,
+      };
+
+      const target = targetMap[focusKey];
+      if (!target) return;
+
+      const applyFocus = () => {
+        target.focus({ preventScroll: true });
+        if (typeof target.select === 'function') {
+          target.select();
+        } else if (typeof target.setSelectionRange === 'function') {
+          target.setSelectionRange(0, target.value.length);
+        }
+      };
+
+      applyFocus();
+      setTimeout(applyFocus, 50);
+    }
+
     function handleTyping() {
+      localStorage.setItem("install_path", configIn.value.trim());
       localStorage.setItem("INSTALL_PATH", configIn.value.trim());
       localStorage.setItem("MEDIA_PATH", mediaIn.value.trim());
       localStorage.setItem("USER_IP", useripIn.value.trim());
@@ -51,5 +77,7 @@
     configIn.addEventListener('input', handleTyping);
     mediaIn.addEventListener('input', handleTyping);
     useripIn.addEventListener('input', handleTyping);
+
+    requestAnimationFrame(focusRequestedInput);
   })();
 </script>

@@ -3,6 +3,9 @@
     const pageContainer = document.querySelector('.book-page') || document.querySelector('article') || document.body;
     if (!pageContainer) return;
 
+    const INSTALL_PAGE_URL = '/docs/getting-started/installation/';
+    const INSTALL_PAGE_ANCHOR = '#pre-installation-setup';
+
     const PLACEHOLDERS = [
       { pattern: '[[install_path]]', key: 'install_path', storage: 'install_path', fallback: '/opt/yams' },
       { pattern: '[[media_path]]', key: 'media_path', storage: 'MEDIA_PATH', fallback: '/srv/media' },
@@ -17,6 +20,10 @@
     function getConfiguredValue(ph) {
       const stored = localStorage.getItem(ph.storage);
       return stored || ph.fallback;
+    }
+
+    function getPlaceholderTarget(ph) {
+      return `${INSTALL_PAGE_URL}?focus=${encodeURIComponent(ph.key)}${INSTALL_PAGE_ANCHOR}`;
     }
 
     function isCustomized(ph) {
@@ -118,7 +125,22 @@
         const span = document.createElement('span');
         span.className = 'ph';
         span.dataset.ph = item.placeholder.key;
+        span.dataset.target = getPlaceholderTarget(item.placeholder);
+        span.setAttribute('role', 'link');
+        span.setAttribute('tabindex', '0');
+        span.title = 'Open the installation guide for this value';
         span.textContent = getConfiguredValue(item.placeholder);
+
+        span.addEventListener('click', function () {
+          window.location.href = span.dataset.target;
+        });
+
+        span.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            window.location.href = span.dataset.target;
+          }
+        });
 
         range.deleteContents();
         range.insertNode(span);
