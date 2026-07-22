@@ -488,7 +488,7 @@ You can configure a VPN later via manual editing of the `docker-compose.yaml` us
 YAMS is designed to be a template usable by everyone! However, you may not want to utilise all of the containers within it. Note that all these configuration can be easily changed later via manually editing the `docker-compose.yaml` file utilising our guides. We know things may change as you go along, everything is reversible!
 
 #### Usenet
-Learn more about Usenet [here](ADD LINK). Note that Usenet access mostly relies on having a paid provider, so only enable it if you understand the requirements.
+Note that Usenet access mostly relies on having a paid provider, so only enable it if you understand the requirements (and know what it even is 🤣).
 
 Answer `n` if you only plan to use torrents!
 
