@@ -4,86 +4,117 @@ title: Adding Custom Containers
 bookCollapseSection: true
 ---
 
-WRITE ABOUT HOW TO ADD OTHER CONTAINERS< HOW TO ADAPT AN EXAMPLE COMPOSE, UPDATE THIS
-
-# Make YAMS Your Own! 🚀
+# Make YAMS Your Own!
 
 Want to add more containers to your YAMS setup? Maybe a cool new app you found, or something specific for your needs? No problem! YAMS makes it super easy to expand your media server with custom containers.
 
-## The Basics 📚
+## The Basics
 
 When you install YAMS, it creates two important files:
 - `docker-compose.yaml`: This is YAMS's brain! Don't modify this file directly.
 - `docker-compose.custom.yaml`: This is your playground! Add all your custom containers here.
 
-## Getting Started 🎯
+> [!SUCCESS]
+> If you are still unsure about what containers are or how files are organised, make sure to check out our [Docker Fundamentals](/docs/fundamentals/docker-and-compose/) guide for a quick explanation of how YAMS functions.
 
-First, let's find your YAMS install directory. I'll use `/opt/yams` in these examples, but replace it with your actual install directory:
 
-```bash
-cd /opt/yams
-```
+## The Magic Variables
 
-## The Magic Variables ✨
-
-YAMS provides some handy environment variables you can use in your custom containers. These are defined in your central [`.env` settings file](FIX LINK) (learn more about it!) and make it super easy to keep your custom containers working in harmony with YAMS:
+YAMS provides some handy environment variables you can use in your custom containers. These are defined in your central [`.env` settings file](/docs/fundamentals/environment-variables) (learn more about it!) and make it super easy to keep your custom containers working in harmony with YAMS:
 
 ```yaml
 PUID: Your user ID
 PGID: Your group ID
+TZ: Your timezone
 MEDIA_DIRECTORY: Your media folder location
-  INSTALL_DIRECTORY: Your YAMS install directory
+INSTALL_DIRECTORY: Your YAMS install directory
 ```
 
 These make it super easy to keep your custom containers working in harmony with YAMS!
 
-## Let's Add a Container! 🎮
+## How to add a container
 
-Let's walk through an example by adding [Seerr](https://seerr.dev/) - a fantastic request management app for your media server.
+> This specific guide will focus on adding Seerr, but the same principles apply to any container you want to add. Just make sure to check the container's documentation for any specific requirements.
 
-1. First, open `docker-compose.custom.yaml`:
+Let's learn how to adapt a docker compose entry for a new container and add it to your YAMS setup.
+
+Let's walk through adding [Seerr](https://seerr.dev/) - a fantastic request management app for your media server. You don't need to add this if you don't want! Check out the [Other Containers](#other-containers) section for more options, or adapt this section to add your own container.
+
+#### 1. First, open `[[install_path]]/docker-compose.custom.yaml`:
 ```bash
-nano docker-compose.custom.yaml
+nano [[install_path]]/.docker-compose.custom.yaml
 ```
 
-2. If this is your first custom container, you'll need to uncomment the `services:` line. To uncomment you must remove the `#` symbol and the space. Your file should start like this:
+If this is your first custom container, you'll need to uncomment the `services:` line. To uncomment you must remove the `#` symbol and the space. Your file should start like this:
 
 ```yaml
-services:  # Make sure this line is uncommented and there's no spaces around it!
+# Add your custom services here!
+services:  -> When you uncomment, remember to remove the space too! "services:" must be left without any spaces around it
 ```
 
-3. Now let's add Seerr with all the YAMS goodies:
+#### 2. Adapt the Docker Compose entry.
 
-```yaml
-  seerr:
-    image: ghcr.io/seerr-team/seerr:latest
-    container_name: seerr
-    user: ${PUID}:${PGID}
-    init: true
-    environment:
-      - TZ=${TZ}
-    ports:
-      - 5055:5055
-    volumes:
-      - ${INSTALL_DIRECTORY}/config/seerr:/app/config
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
-      start_period: 20s
-      timeout: 3s
-      interval: 15s
-      retries: 3
-    restart: unless-stopped
+Most projects will have an explain Docker Compose entry in their documentation. You can copy this and adapt it to work with YAMS. Let's walk through adapting Seerr's example Docker Compose entry to work with YAMS. **This logic can work with any container!**
+
+Let's take a look at Seerr's example Docker Compose entry:
+
+```yaml {filename="Seerr's example docker-compose.yaml"}
+seerr:
+  image: ghcr.io/seerr-team/seerr:latest
+  init: true
+  container_name: seerr
+  environment:
+    - LOG_LEVEL=debug
+    - TZ=Asia/Tashkent
+    - PORT=5055 #optional
+  ports:
+    - 5055:5055
+  volumes:
+    - /path/to/appdata/config:/app/config
+  restart: unless-stopped
 ```
-4. Before we start the container, let's create the config folder for Seerr to avoid any permission issues. Ensure you are in a shell session, logged in as the same user that runs YAMS.
 
-Then, navigate to your YAMS install directory and create the config folder for Seerr at the path `${INSTALL_DIRECTORY}/config/seerr`.
+The things we want to look for when adapting this to YAMS are:
+- **Environment Variables**: Replace hardcoded values with YAMS environment variables. Add/remove any optional environment variables as needed.
+- **Volume Paths**: Use YAMS-defined paths for config directories.
+- **User IDs**: Use YAMS-defined PUID and PGID.
 
-This command below is an example and will *not work!* You must manually replace the `<INSTALL_DIRECTORY>` placeholder with your actual YAMS installation path (e.g., `/opt/yams`):
+So let's adapt these environment variables:
+- The `TZ` environment variable is already defined in your `.env` file, so we can use `${TZ}` instead of hardcoding it.
+- The `PORT` environment variable is optional, so we can remove it if we want to use the default.
+- The `LOG_LEVEL` environment variable is set to `debug`, which is only needed for troubleshooting. We can remove it for normal operation. *Add it if you are experiencing issues, so you can use Dozzle to see those extra-informative logs!*
+
+Now, lets adapt the volume paths. Remember, the path on the left if the path on our machine. Since YAMS has a standardised config path, we can use `${INSTALL_DIRECTORY}/config/seerr` instead of `/path/to/appdata/config`. The path on the right is the path inside the container, which we will leave as-is.
+
+Finally, lets's fix up user permissions. Most commonly this involves adding the `PUID=${PUID}` and `PGID=${PGID}` environment variables to ensure the container runs with the correct permissions. We can add these to the `environment` section.
+
+> Seerr actually operates a bit differently in terms of user permissions as it is a non-root container, meaning we have to specify the user explicitly using the `user` directive. Always read the documentation for the container you are adding!*
+
+
+```yaml {filename="Adapted docker-compose entry for Seerr"}
+seerr:
+  image: ghcr.io/seerr-team/seerr:latest
+  container_name: seerr
+  user: ${PUID}:${PGID}
+  init: true
+  environment:
+    - TZ=${TZ}
+  ports:
+    - 5055:5055
+  volumes:
+    - ${INSTALL_DIRECTORY}/config/seerr:/app/config
+  restart: unless-stopped
+```
+#### 3. Creating the config folder
+
+Before you start up your new container, it can be a good idea to create the config folder for it to avoid any permission issues. This isn't entirely necessary, but it can help prevent permission issues down the line. Make sure you are in a shell session, logged in as the same user that runs YAMS.
+
+Run this command to create the config folder for Seerr, and set the correct permissions (if you are adding another container remember to change the folder name to match the container you are adding!):
 ```bash
-mkdir -p <INSTALL_DIRECTORY>/config/seerr
+mkdir -p [[install_path]]/config/seerr && chown -R $(id -u):$(id -g) [[install_path]]/config/seerr
 ```
-
-5. Now, it's time to start your new container:
+#### 4. Starting the container
+Now, it's time to start your new container:
 ```bash
 yams start seerr
 ```
@@ -96,17 +127,18 @@ You should see something like:
 
 That's it! Your new container is up and running! 🎉
 
-### Other Containers
+---
 
 Not a fan of Seerr? No worries! Lets take a look at how to add many popular apps into the YAMS system.
 
 Each of these docker compose entries can be added right into your `docker-compose.custom.yaml` file, under the `services` parent item.
 
-> *TIP: Adding a TZ environment varible to your `.env` file can help make adding new services and avoid timezone related issues!*
+> [!SUCCESS]
+> 💡**TIP**: Remember, since all services are run in the same Docker network, references to other services from within an app can be completed using their name and port. For example, need to enter your Radarr URL? Use `http://radarr:7878`! No pesky IPs needed.
 
-Remember, since all services are run in the same Docker network, references to other services from within an app can be completed using their name and port. For example, need to enter your Radarr URL? Use `http://radarr:7878`! No pesky IPs needed.
+---
 
-### Qui
+### Qui 📥
 
 [Qui](https://getqui.com/) is an alternate web interface for qBitTorrent, and provides a simple way to facilitate cross seeding across trackers, and automating torrent workflows.
 
@@ -129,7 +161,7 @@ Keep in mind the torrent automations have the ability to delete downloads and ma
       - ${MEDIA_DIRECTORY}/downloads/torrents:/data/downloads/torrents
 ```
 
-*If you want to jump straight into a guided setup, check out *[Seeding with Qui](/docs/advanced/community-guides/seeding-with-qui)* for a setup where all torrents are seeded whilst the media remains in your server, and then smoothly removed after the item is watched in your streaming application.*
+*If you want to jump straight into a guided setup, check out *[Seeding with Qui](/docs/advanced/custom-containers/qui)* for a setup where all torrents are seeded whilst the media remains in your server, and then smoothly removed after the item is watched in your streaming application.*
 
 
 ### Shelfmark 📚
@@ -154,9 +186,9 @@ Keep in mind the torrent automations have the ability to delete downloads and ma
 ```
 
 ### Profilarr 📖
-[Profilarr](https://dictionarry.dev/) is similar to Recyclarr, but syncs naming conventions, quality profiles and custom formats from the [Dictionarry database](https://github.com/Dictionarry-Hub/database) instead.
+[Profilarr](https://dictionarry.dev/) syncs reliable naming conventions, quality profiles and custom formats from the [Dictionarry database](https://github.com/Dictionarry-Hub/database) to all your systems. **Its a great way to ensure you are fetching good quality media, and keeping your media server organised.**
 
-It is more intuitive to use as it is configured through a handy Web UI!
+It is intuitive to use as it is configured through a handy Web UI!
 
 ```yaml
   profilarr:
@@ -193,11 +225,13 @@ It is more intuitive to use as it is configured through a handy Web UI!
       - ${INSTALL_DIRECTORY}/config/autobrr:/config
 ```
 
-Done! To fully connect Autobrr to your media server's downloads, continue with the full guide [here](/docs/advanced/adding-your-own-containers/autobrr).
+Done! To fully connect Autobrr to your media server's downloads, continue with the full guide [here](/docs/advanced/custom-containers/autobrr).
 
 ### Recyclarr 🗑️
 
-[Recyclarr](https://recyclarr.dev/) is an app to sync Trash Guide's recommended naming conventions, quality profiles and formats straight to your media stack!
+[Recyclarr](https://recyclarr.dev/) is an app to sync [Trash Guide's](https://trash-guides.info/) recommended naming conventions, quality profiles and formats straight to your media stack! It's just like Profilarr but uses the well-known Trash Guide's setup instead of Dictionarry's.
+
+(To be honest, its a little more confusing to configure as it uses text-only configuration files)
 
 ```yaml
   recyclarr:
@@ -218,7 +252,7 @@ Great! Now, check out Recyclarr's docs to customise this configuration file to y
 
 ### Unpackerr 📦
 
-[Unpackerr](https://unpackerr.zip/) is an app that automatically extracts any downloads that are an archive, ensuring Radarr and Sonarr don't get stuck waiting for manual intervention.
+[Unpackerr](https://unpackerr.zip/) is an app that automatically extracts any downloads that are an archive (e.g., .`zip`, `.rar`), ensuring Radarr and Sonarr don't get stuck waiting for manual intervention.
 
 ```yaml
   unpackerr:
@@ -244,6 +278,9 @@ Make sure to add the `SONARR_API_KEY` and `RADARR_API_KEY` environment variables
 
 The power of this app is a double edged sword. It can help you to amazingly automate your media server just how you like, but keep in mind that, if misconfigured, it has the ability to delete downloads and manipulate torrents. Expect to invest some time into learning its decently complicated configuration before reaching your desired state.
 
+> [!INFO]
+> Qui (see above) is a great alternative to qBitManage. Although it is a full qBitTorrent interface replacement, it provides an "Automations" feature which can do similar tasks.
+
 ```yaml
   qbitmanage:
     container_name: qbitmanage
@@ -252,109 +289,45 @@ The power of this app is a double edged sword. It can help you to amazingly auto
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/qbitmanage:/config
     ports:
-      - "8080:8080"  # Web API port (when enabled)
+      - "8085:8085"  # Web API port (when enabled)
     environment:
-      # Web API Configuration
-      - QBT_WEB_SERVER=true     # Set to true to enable web API and web UI
-      - QBT_PORT=8080           # Web API port (default: 8080)
-
-      # Scheduler Configuration
-      - QBT_RUN=false
-      - QBT_SCHEDULE=1440
-      - QBT_CONFIG_DIR=/config
-      - QBT_LOGFILE=qbit_manage.log
-
-      # Command Flags
-      - QBT_RECHECK=false
-      - QBT_CAT_UPDATE=false
-      - QBT_TAG_UPDATE=false
-      - QBT_REM_UNREGISTERED=false
-      - QBT_REM_ORPHANED=false
-      - QBT_TAG_TRACKER_ERROR=false
-      - QBT_TAG_NOHARDLINKS=false
-      - QBT_SHARE_LIMITS=false
-      - QBT_SKIP_CLEANUP=false
-      - QBT_DRY_RUN=false
-      - QBT_STARTUP_DELAY=0
-      - QBT_SKIP_QB_VERSION_CHECK=false
-      - QBT_DEBUG=false
-      - QBT_TRACE=false
-
-      # Logging Configuration
-      - QBT_LOG_LEVEL=INFO
-      - QBT_LOG_SIZE=10
-      - QBT_LOG_COUNT=5
-      - QBT_DIVIDER==
-      - QBT_WIDTH=100
+      # CONSULT QBITMANAGE'S DOCUMENTATION FOR ALL AVAILABLE ENVIRONMENT VARIABLES
+      # CRAFT THESE TO YOUR NEEDS!
 ```
 
 Before you get qBitManage up and running, you'll have to take a deep dive into how it's configured, and how it runs. Configuration is very dependant on the specific environment it operates within, and the requirements of the user. Read the [Docker Installation Guide](https://github.com/StuffAnThings/qbit_manage/wiki/Docker-Installation) in its entirety.
 
-Whilst configuring, ensure you set the `root_directory` option with the `directory` parent to `/data/downloads/torrents`. If you ever have trouble with paths, remember, qBitManage operates from the base level of your YAMS `${MEDIA_DIRECTORY}` variable.
+> [!WARNING]
+> Whilst configuring, ensure you set the `root_directory` option with the `directory` parent to `/data/downloads/torrents`. If you ever have trouble with paths, remember, qBitManage operates from the base level of your YAMS `${MEDIA_DIRECTORY}` variable.
+
+### Others
+
+The container you want not listed here? No worries! You can add any container you want to your YAMS setup. Just make sure to check the container's documentation for any specific requirements, and adapt the Docker Compose entry to work with YAMS's environment variables and volume paths (see above).
+
+Or, if you have added an additional container that you think would be useful for others, please consider contributing it to the YAMS documentation!
 
 ## Pro Tips 🎓
 
-### 1. Container Discovery
-Looking for cool containers to add? Check out:
-- [linuxserver.io fleet](https://fleet.linuxserver.io/) (Highly recommended!)
-- [Docker Hub](https://hub.docker.com/)
-
-### 2. Network Magic 🌐
-All containers in your `docker-compose.custom.yaml` automatically join YAMS's network! This means they can talk to each other using their container names as hostnames.
-
-For example, if you need to connect to Radarr from a custom container, just use `http://radarr:7878` as the URL.
-
-### 3. VPN Access 🔒
-Want your custom container to use YAMS's VPN? Add this to your container config:
+### VPN Access
+Want your custom container to use YAMS's VPN? Remove the port mapping and add this to your container config:
 ```yaml
-    network_mode: "service:gluetun"
+network_mode: "service:gluetun"
 ```
+Now your service will be routed through the YAMS network, and any ports must be added to Gluetuns compose entry to be accessible from outside the VPN.
 
-Check out [Running Prowlarr behind the VPN](/docs/advanced/prowlarr-vpn) for a detailed example!
+> [!INFO]
+> If you application supports utilising a HTTP Proxy, you can simply add Gluetun's proxy settings to your container config (its a lot easier). Check out [Running Prowlarr behind the VPN](/docs/advanced/vpn/prowlarr-vpn) for a detailed example!
 
-### 4. Static IP Address 📍
-For some advanced setups, you might want to assign a static IP address to your custom container within the YAMS network. This can be useful for consistent access or firewall rules.
+### Variable Power
+You can access any environment variable defined in YAMS's [`.env` file](/docs/fundamentals/environment-variables) within your custom containers. Just use the `${VARIABLE_NAME}` syntax! This is great for things like API keys or other settings you want to manage centrally.
 
-To do this, add a `networks` section to your container definition and specify the `yams_network` with an `ipv4_address`:
+## Common Gotchas
 
-```yaml
-  my_custom_container:
-    image: my/image:latest
-    container_name: my_custom_container
-    # ... other configurations ...
-    networks:
-      yams_network:
-        ipv4_address: 172.60.0.X # Replace X with an available IP address (e.g., 21-254)
-```
-
-**Important:**
-- The YAMS network uses the `172.60.0.0/24` subnet.
-- YAMS's core services use IP addresses from `172.60.0.10` to `172.60.0.20`.
-- **Always choose an IP address outside of this range to avoid conflicts**, for example, `172.60.0.21` or higher. You can check the `docker-compose.example.yaml` file for the IPs used by YAMS's services.
-
-### 5. Variable Power 💪
-You can access any environment variable defined in YAMS's [`.env` file](FIX LINK) within your custom containers. Just use the `${VARIABLE_NAME}` syntax! This is great for things like API keys or other settings you want to manage centrally.
-
-## Common Gotchas 🚨
-
-1. **YAML Formatting Errors**: YAML is very sensitive to spacing and indentation. Even a single misplaced space can break your configuration! We highly recommend using a YAML validator like [yamllint.com](https://www.yamllint.com/) to check your syntax before applying changes.
+1. **YAML Formatting Errors**: YAML is very sensitive to spacing and indentation. Even a single misplaced space can break your configuration! We highly recommend using a YAML validator like [yamllint.com](https://www.yamllint.com/) to check your syntax before applying changes, or use an editor with this built in.
 2. **Container Names**: Make sure your custom container names don't conflict with YAMS's built-in containers.
 3. **Port Conflicts**: Double-check that your new containers don't try to use ports that are already taken.
-4. **Permissions**: If your container needs to access media files, remember to use `PUID` and `PGID`!
+4. **Permissions**: If your container needs to access media files, remember to use `PUID` and `PGID` and manually create the necessary directories and set their ownership beforehand!
 
-## Need Ideas? 💡
-
-Here are some popular containers that work great with YAMS:
-
-1. **[Seerr](https://seerr.dev/)** / **[Petio](https://petio.tv/)**: Let users request movies and shows
-2. **[Tautulli](https://tautulli.com/)**: Advanced Plex monitoring and statistics
-3. **[Organizr](https://organizr.app/)**: Create a sleek dashboard for all your services
-
-## Need Help? 🆘
-
-If you run into any issues:
-1. Check our [Common Issues](/docs/faqs/) page
-2. Visit the [YAMS Forum](https://forum.yams.media)
-3. Join our [Discord](https://discord.gg/Gwae3tNMST) chat
+---
 
 Remember: YAMS is all about making your media server work for YOU. Don't be afraid to experiment and make it your own! 😎
