@@ -101,7 +101,7 @@ Considerations when picking a VPN provider:
 - **Perfomance + Reputation:** Make sure whatever provider you pick is generally trusted and has decent performance! The best way to test this out is to search around a little on the web, especially looking at online communities like Reddit. Take every post with a grain of salt, but this can help broadly conceptualise if a provider is a trustwothy option.
 - **Price:** Make sure your provider has a good deal! Realistically, the difference between VPN providers for an everyday user of YAMS will be small. So, make sure to compare the pricing options and check for sales or deals (e.g with influencers) to ensure that no matter the provider you pick, you are optimising how much of your hard earned cash you have to spend. *Keep in mind, this must be balanced with a level of trustworthiness. Sometimes VPNs can be stupidly cheap for a reason - because they are bad* 🫤.
 - **Port forwarding:** Port forwarding is a special feature some VPN providers offers that can improve your connectability and download/upload speeds whilst torrenting. It isn't required, but it can be handy if your provider supports it!
-  - To learn more about how torrenting works and what port forwarding is, check out the port fowarding section [above](../fundamentals/torrenting-and-vpns#port-forwarding)
+  - To learn more about how torrenting works and what port forwarding is, check out the port fowarding section [above](/docs/fundamentals/torrenting-and-vpns/#port-forwarding)
 
 ### YAMS Supported Providers
 
@@ -140,5 +140,5 @@ Here are the rest of the providers that Gluetun also supports. *Providers that a
 
 Want to use a different VPN? You can set up a [custom VPN provider](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/custom.md), but keep in mind this isn't officially supported by YAMS. This is an *advanced* DIY process for experienced server owners who already own a VPN 🛠️!
 
-If you haven't installed YAMS yet and just came to learn more about VPNs, feel free to return to the [installation page](../../getting%20started/installation/#prerequisites).
+If you haven't installed YAMS yet and just came to learn more about VPNs, feel free to return to the [installation page](/docs/getting-started/installation/#prerequisites).
 

@@ -133,4 +133,4 @@ yams destroy radarr      # Destroys only the 'radarr' service (its container and
 
 After this, if you are a bit unsure about how everything works or can't conceptualise what YAMS is, continue onto the fundamentals section. There are simple explanations of YAMS and its backing technology (torrenting, VPNs, Docker) to help you get a broader idea of how everything works together *before* configuration, to assist with debugging.
 
-Perfect. You are now ready to tackle the [main setup](../configure/qbittorrent). I believe in you!
+Perfect. You are now ready to tackle the [main setup](/docs/configure/qbittorrent/). I believe in you!

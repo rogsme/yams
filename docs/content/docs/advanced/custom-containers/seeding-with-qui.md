@@ -26,7 +26,7 @@ Hardlinking is enabled in YAMS by default, **and required for this guide to work
 
 ## What is a Hardlink?
 
-Check out the explanation of a hardlink [here](../../fundamentals/file-structure#what-is-a-hardlink).
+Check out the explanation of a hardlink [here](/docs/fundamentals/file-structure/#what-is-a-hardlink).
 
 ## Why is this helpful?
 

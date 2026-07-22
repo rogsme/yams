@@ -59,7 +59,7 @@ Before you get the script up and running, you'll have to do some thinking about 
 
 - **Some free time**: This guide removes most of the complexity of getting set up with a media server, but it still takes time to follow though. Leave about 1 hour free to follow through the guide, possibly conduct research and (hopefully no) debugging!
 
-- **A config location**: This is where the docker containers will store all their data. Config files, caching, stuff like that. _This is NOT where you shows are movies are stored._ The script defaults to `/opt/yams` but hey, you do you! Just make sure your user can write to wherever you choose.
+- **An install directory**: This is where the docker containers will store all their data. Config files, caching, stuff like that. _This is NOT where your shows or movies are stored._ The script defaults to `/opt/yams` but hey, you do you! Just make sure your user can write to wherever you choose.
 
 - **A media folder**: This is where all your media will be stored (and it can sure take up lots of storage space). For example, if you pick `/srv/media`, the script will create:
 
@@ -81,14 +81,14 @@ Before you get the script up and running, you'll have to do some thinking about 
 
 - **A VPN service (optional but *STRONGLY* recommended)**: First lesson! A VPN is a paid service that encrypts your server's traffic, and masks its public IP address whilst it's sailing the high seas. This hides your activity from cooperations such as your ISP or copyright providers.
   - Note that most of these services are paid but don't worry, they aren't too expensive. (Cheaper than paying for 4 streaming services 😅)
-  - To learn more about VPNs and how to pick a good option, check out the [YAMS VPN page](../advanced/concept%20explanations/vpn)
+  - To learn more about VPNs and how to pick a good option, check out the [YAMS VPN page](/docs/advanced/concept-explanations/vpn/)
   - **Ensure you have an account with your chosen VPN provider before continuing with the installation and guide**
 
 ## Pre-Installation Setup
 
 {{< path-personaliser >}}
 
-#### 1. Setup your install location
+#### 1. Setup your install directory
 
 Remember from before? This is where all the config files and application storage goes! First, create the folder and set up your user permissions if it hasn't been done already.
 

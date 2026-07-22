@@ -22,7 +22,7 @@ Before we dive in, we need to do a bit of setup magic to let Plex work its charm
 $ yams stop
 ```
 
-Now, let's allow your IP range to access Plex. Head to your Plex config folder (I'm assuming your install location is `/opt/yams` - adjust if you used a different path):
+Now, let's allow your IP range to access Plex. Head to your Plex config folder (I'm assuming your install directory is `/opt/yams` - adjust if you used a different path):
 
 ```bash
 $ cd /opt/yams/config/plex/Library/Application\ Support/Plex\ Media\ Server/

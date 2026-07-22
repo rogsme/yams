@@ -18,7 +18,7 @@ When you install YAMS, it creates two important files:
 
 ## Getting Started 🎯
 
-First, let's find your YAMS installation. I'll use `/opt/yams` in these examples, but replace it with your actual install location:
+First, let's find your YAMS install directory. I'll use `/opt/yams` in these examples, but replace it with your actual install directory:
 
 ```bash
 cd /opt/yams
@@ -26,13 +26,13 @@ cd /opt/yams
 
 ## The Magic Variables ✨
 
-YAMS provides some handy environment variables you can use in your custom containers. These are defined in your central [`.env` settings file](link broken) (learn more about it!) and make it super easy to keep your custom containers working in harmony with YAMS:
+YAMS provides some handy environment variables you can use in your custom containers. These are defined in your central [`.env` settings file](FIX LINK) (learn more about it!) and make it super easy to keep your custom containers working in harmony with YAMS:
 
 ```yaml
 PUID: Your user ID
 PGID: Your group ID
 MEDIA_DIRECTORY: Your media folder location
-INSTALL_DIRECTORY: Your YAMS installation location
+  INSTALL_DIRECTORY: Your YAMS install directory
 ```
 
 These make it super easy to keep your custom containers working in harmony with YAMS!
@@ -76,7 +76,7 @@ services:  # Make sure this line is uncommented and there's no spaces around it!
 ```
 4. Before we start the container, let's create the config folder for Seerr to avoid any permission issues. Ensure you are in a shell session, logged in as the same user that runs YAMS.
 
-Then, navigate to your YAMS installation directory and create the config folder for Seerr at the path `${INSTALL_DIRECTORY}/config/seerr`.
+Then, navigate to your YAMS install directory and create the config folder for Seerr at the path `${INSTALL_DIRECTORY}/config/seerr`.
 
 This command below is an example and will *not work!* You must manually replace the `<INSTALL_DIRECTORY>` placeholder with your actual YAMS installation path (e.g., `/opt/yams`):
 ```bash
@@ -333,7 +333,7 @@ To do this, add a `networks` section to your container definition and specify th
 - **Always choose an IP address outside of this range to avoid conflicts**, for example, `172.60.0.21` or higher. You can check the `docker-compose.example.yaml` file for the IPs used by YAMS's services.
 
 ### 5. Variable Power 💪
-You can access any environment variable defined in YAMS's [`.env` file](link broken) within your custom containers. Just use the `${VARIABLE_NAME}` syntax! This is great for things like API keys or other settings you want to manage centrally.
+You can access any environment variable defined in YAMS's [`.env` file](FIX LINK) within your custom containers. Just use the `${VARIABLE_NAME}` syntax! This is great for things like API keys or other settings you want to manage centrally.
 
 ## Common Gotchas 🚨
 

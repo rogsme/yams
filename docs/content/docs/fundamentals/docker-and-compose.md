@@ -58,7 +58,7 @@ volumes:
   - ${INSTALL_DIRECTORY}/config/radarr:/config
 ```
 
-When the environment variables are substituted in (learn more about env vars [here](../fundamentals/environment-variables)) the Docker compose can be imagined like this:
+When the environment variables are substituted in (learn more about env vars [here](/docs/fundamentals/environment-variables/)) the Docker compose can be imagined like this:
 ```yaml
 volumes:
   - [[media_path]]:/data
@@ -143,7 +143,7 @@ YAMS contains 3 Docker-related files: `docker-compose.yaml`, `docker-compose.cus
 ### `docker-compose.yaml`
 
 - This is the main Docker Compose file. It is created automatically by the installer script and contains the container declarations for all the key services included in YAMS (e.g Radarr, qBitTorrent).
-- Environment variables from your main `.env` file are passed into each of the containers here, along with container-specific variables. (See the [environment variables page](../fundamentals/environment-variables) to learn more).
+- Environment variables from your main `.env` file are passed into each of the containers here, along with container-specific variables. (See the [environment variables page](/docs/fundamentals/environment-variables/) to learn more).
 - Certain lines may be commented out. This is how the installer modified the file for your setup, and ensures easy tweaking in the future.
   - For example, the `profile: ["disabled"]` line will be uncommented on any containers you chose to exclude from running in your setup. Commenting this line out is an easy way to enable the container!
   - Guides on topics such as enabling/disabling the VPN are pretty simply to follow, as you already have the required content in your files already, you just need to shuffle around what is commented.
@@ -155,11 +155,11 @@ YAMS contains 3 Docker-related files: `docker-compose.yaml`, `docker-compose.cus
 ### `docker-compose.custom.yaml`
 
 - This is *your* Docker Compose file.
-- It is where you define additional containers to add to your media stack. See [here](../advanced/custom-containers) for how to get started adding additional containers.
+- It is where you define additional containers to add to your media stack. See [here](/docs/advanced/custom-containers/) for how to get started adding additional containers.
 - The `yams start` CLI command simply runs `docker compose up` (starts up) the Docker containers in this file too!
 
 
 ### `.env`
 
-- Where you environment variables are stored. Head to the [Environment Variables](../fundamentals/environment-variables) page to learn more.
+- Where you environment variables are stored. Head to the [Environment Variables](/docs/fundamentals/environment-variables/) page to learn more.
 

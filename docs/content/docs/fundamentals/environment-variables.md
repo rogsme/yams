@@ -28,7 +28,7 @@ See? Just `SETTING_NAME=some_value` on each line. It's incredibly straightforwar
 
 ### How YAMS Uses It (The Magic Part!)
 
-Now, where do these settings get used? Primarily in your `docker-compose.yaml` and `docker-compose-custom.yaml` files. These files tell Docker how to run all the YAMS services (like Radarr, Sonarr, Plex, etc.). *Learn more about them [here](../fundamentals/docker-and-compose)*
+Now, where do these settings get used? Primarily in your `docker-compose.yaml` and `docker-compose-custom.yaml` files. These files tell Docker how to run all the YAMS services (like Radarr, Sonarr, Plex, etc.). *Learn more about them [here](/docs/fundamentals/docker-and-compose/)*
 
 Inside the `environment` section of our docker compose folders, there is another environment variable list! These ones are the variables being passed into the application. So, quick recap: **.env** file has all the common env vars that the docker compose files can use. The `environment` section of each container is how we pass these on!
 

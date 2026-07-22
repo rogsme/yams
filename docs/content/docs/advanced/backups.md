@@ -4,9 +4,9 @@ title: Backing up YAMS
 ---
 # Backing up YAMS
 
-Backups are always important. You never know when something might break, and you are forced to recreate your server. If you have a backup of all your config folder ready to go, this is **much easier** (it saves DAYS).
+Backups are always important. You never know when something might break, and you are forced to recreate your server. If you have a backup of your YAMS install directory ready to go, this is **much easier** (it saves DAYS).
 
-The key item your should backup from your media server is your config folder (`[[install_path]]`). This contains:
+The key item you should backup from your media server is your YAMS install directory (`[[install_path]]`). This contains:
 - All your container data
 - Your YAMS settings
 - Important environment variables
@@ -71,7 +71,7 @@ nano /usr/local/bin/yams
 ```
 
 > [!INFO]
-> If YAMS binary isn't installed yet and you **don't** want to repeat the installation process, check out the instructions on how to [update the CLI](../../getting%20started/cli/#updating-the-cli), and loosely follow them to instead paste the `/usr/local/bin/yams` content from GitLab
+> If YAMS binary isn't installed yet and you **don't** want to repeat the installation process, check out the instructions on how to [update the CLI](/docs/getting-started/cli/#updating-the-cli), and loosely follow them to instead paste the `/usr/local/bin/yams` content from GitLab
 
 
 Find and update these lines:
