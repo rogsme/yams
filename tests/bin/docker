@@ -1,16 +1,81 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-printf '%s\n' "$*" >> "$YAMS_DOCKER_LOG"
+source "$(dirname "$0")/_mock.bash"
+log_command "$YAMS_DOCKER_LOG" docker "$@"
 
-case "$*" in
-    "compose version"|"ps")
+if [[ "${1:-}" == exec && "${2:-}" == qbittorrent && "${3:-}" == curl ]]; then
+    url=${!#}
+    if [[ "$url" == "https://am.i.mullvad.net/country" ]]; then
+        [[ "${YAMS_QBIT_COUNTRY:-Sweden}" == FAIL ]] && exit 1
+        printf '%s\n' "${YAMS_QBIT_COUNTRY:-Sweden}"
+        exit 0
+    fi
+    next_response qbit-ip "${YAMS_QBIT_IP_RESPONSES:-203.0.113.20}"
+    exit $?
+fi
+
+if [[ "${1:-}" == ps ]]; then
+    exit 0
+fi
+
+[[ "${1:-}" == compose ]] || { echo "Unexpected docker arguments" >&2; exit 1; }
+
+action=""
+format=""
+for ((i = 1; i <= $#; i++)); do
+    arg=${!i}
+    case "$arg" in
+        version|ps|up|stop|start|pull|down|rm) action=$arg ;;
+    esac
+    if [[ "$arg" == --format && $i -lt $# ]]; then
+        ((i++))
+        format=${!i}
+    fi
+done
+
+if csv_contains "${YAMS_DOCKER_FAIL_ACTIONS:-}" "$action"; then
+    exit 1
+fi
+
+case "$action" in
+    version)
         exit 0
         ;;
-    compose\ -f\ *\ up\ -d)
+    ps)
+        if [[ -z "$format" ]]; then
+            printf '%s\n' "${YAMS_DOCKER_STATUS_OUTPUT:-mock compose status}"
+            exit 0
+        fi
+
+        counter_file="$YAMS_MOCK_STATE_DIR/compose-ps.count"
+        index=0
+        [[ -f "$counter_file" ]] && read -r index < "$counter_file"
+        IFS=, read -r -a states <<< "${YAMS_DOCKER_PS_STATES:-2/2}"
+        ((index < ${#states[@]})) || index=$((${#states[@]} - 1))
+        state=${states[$index]}
+        running=${state%/*}
+        total=${state#*/}
+
+        if [[ "$format" == '{{.Name}}' ]]; then
+            for ((i = 1; i <= total; i++)); do printf 'service-%s\n' "$i"; done
+        elif [[ "$format" == '{{.Status}}' ]]; then
+            for ((i = 1; i <= running; i++)); do echo 'Up 1 second'; done
+            for ((i = running + 1; i <= total; i++)); do echo 'Exited (1)'; done
+            printf '%s\n' "$((index + 1))" > "$counter_file"
+        else
+            echo "Unexpected compose ps format: $format" >&2
+            exit 1
+        fi
+        ;;
+    up)
         exit "${YAMS_DOCKER_UP_STATUS:-0}"
         ;;
+    stop|start|pull|down|rm)
+        exit 0
+        ;;
+    *)
+        echo "Unexpected docker arguments" >&2
+        exit 1
+        ;;
 esac
-
-echo "Unexpected docker arguments: $*" >&2
-exit 1

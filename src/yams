@@ -67,7 +67,7 @@ wait_for_services() {
         local running_services
 
         total_services=$($DC ps --format '{{.Name}}' | wc -l)
-        running_services=$($DC ps --format '{{.Status}}' | grep -c "Up")
+        running_services=$($DC ps --format '{{.Status}}' | grep -c "Up" || true)
 
         if [ "$total_services" -eq "$running_services" ]; then
             echo
@@ -78,7 +78,7 @@ wait_for_services() {
         # Show progress with count
         echo -n "."
         sleep 1
-        ((wait_time++))
+        ((++wait_time))
 
         # Every 10 seconds, show status
         if [ $((wait_time % 10)) -eq 0 ]; then
@@ -149,11 +149,19 @@ backup_yams() {
 
     # Copy current yams script and create backup
     cp "$(which yams)" "$INSTALL_DIRECTORY" || log_warning "Failed to backup yams script"
-    tar --exclude='transcoding-temp' --exclude='config/jellyfin/cache' -czf "$backup_file" -C "$INSTALL_DIRECTORY" . ||
-        log_error "Failed to create backup archive"
+    local archive_failed=0
+    local old_umask
+    old_umask=$(umask)
+    umask 077
+    tar --exclude='transcoding-temp' --exclude='config/jellyfin/cache' -czf "$backup_file" -C "$INSTALL_DIRECTORY" . || archive_failed=1
+    umask "$old_umask"
 
     echo -e "\nStarting YAMS services..."
-    $DC start > /dev/null 2>&1 || log_warning "Failed to restart services"
+    $DC start > /dev/null 2>&1 || log_error "Failed to restart services"
+
+    if [ "$archive_failed" -eq 1 ]; then
+        log_error "Failed to create backup archive"
+    fi
 
     log_success "Backup completed successfully! 🎉"
     echo "Backup file: $backup_file"
@@ -162,12 +170,11 @@ backup_yams() {
 destroy_yams() {
     # Destroy all services or specific ones
     if [ "$#" -eq 0 ]; then
-        echo -e "\nWARNING: This will destroy all your YAMS services, containers, volumes, and the custom network!"
+        echo -e "\nWARNING: This will destroy all your YAMS services, containers, and volumes!"
         echo "This is not recoverable! ⚠️ 🚨"
         read -p "Are you sure you want to continue? [y/N]: " -r
         if [[ ${REPLY,,} =~ ^y$ ]]; then
-            $DC down || log_error "Failed to destroy services"
-            docker network rm yams_network || log_warning "Failed to remove yams_network. It might not exist or was already removed."
+            $DC down -v || log_error "Failed to destroy services"
             echo -e "\nYAMS services were destroyed. To restart, run: yams start"
         fi
     else
@@ -198,10 +205,12 @@ start_yams() {
 restart_yams() {
     # Restart all services or specific ones
     if [ "$#" -eq 0 ]; then
-        $DC stop && $DC up -d
+        $DC stop || log_error "Failed to stop services"
+        $DC up -d || log_error "Failed to start services"
         wait_for_services
     else
-        $DC stop "$@" && $DC up -d "$@"
+        $DC stop "$@" || log_error "Failed to stop services: $*"
+        $DC up -d "$@" || log_error "Failed to start services"
     fi
 
 }
@@ -236,9 +245,10 @@ update_containers() {
 }
 
 update_cli() {
-    local -r GITEA_URL="https://git.rogs.me/rogs/yams/src/branch/master/yams"
+    local -r UPDATE_URL="https://raw.githubusercontent.com/not-first/yams/v4/src/yams"
     local -r SCRIPT_PATH=$(realpath "$0")
-    local -r TMP_FILE="/tmp/yams_update.sh"
+    local -r TMP_FILE=$(mktemp "${TMPDIR:-/tmp}/yams_update.XXXXXX")
+    trap 'rm -f "$TMP_FILE"' EXIT
 
     echo "Checking for YAMS CLI updates..."
 
@@ -252,22 +262,28 @@ update_cli() {
         log_error "Failed to read current configuration lines from $SCRIPT_PATH."
     fi
 
-    echo "Fetching newest script from Gitea..."
-    if ! curl -sSf -L "$GITEA_URL" -o "$TMP_FILE"; then
-        log_error "Failed to download the update from Gitea. Check your internet connection."
+    echo "Fetching newest script..."
+    if ! curl -sSf -L "$UPDATE_URL" -o "$TMP_FILE"; then
+        log_error "Failed to download the update. Check your internet connection."
+    fi
+
+    if ! grep -q '^readonly DC=' "$TMP_FILE" ||
+       ! grep -q '^readonly INSTALL_DIRECTORY=' "$TMP_FILE" ||
+       ! grep -q 'main "\$@"' "$TMP_FILE"; then
+        log_error "Downloaded script appears corrupted or incomplete. Aborting update."
     fi
 
     sed -i "s|^readonly DC=.*|$current_dc|" "$TMP_FILE"
     sed -i "s|^readonly INSTALL_DIRECTORY=.*|$current_install_dir|" "$TMP_FILE"
 
-    if ! grep -q "main \"\$@\"" "$TMP_FILE"; then
-        rm -f "$TMP_FILE"
+    if ! bash -n "$TMP_FILE"; then
         log_error "Downloaded script appears corrupted or incomplete. Aborting update."
     fi
 
     echo "Applying updates..."
-    mv "$TMP_FILE" "$SCRIPT_PATH"
-    chmod +x "$SCRIPT_PATH"
+    sudo install -m 0755 "$TMP_FILE" "$SCRIPT_PATH" || log_error "Failed to install the CLI update"
+    rm -f "$TMP_FILE"
+    trap - EXIT
 
     log_success "YAMS CLI updated successfully! 🎉"
     exit 0

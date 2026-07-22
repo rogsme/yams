@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '%s\n' "${1:-}" >> "$YAMS_SLEEP_LOG"
