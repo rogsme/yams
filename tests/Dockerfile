@@ -19,7 +19,7 @@ WORKDIR /repo
 COPY --chown=tester:tester src/ /repo/src/
 COPY --chown=tester:tester tests/ /repo/tests/
 
-RUN chmod +x /repo/tests/bin/curl /repo/tests/bin/docker /repo/tests/bin/hostname /repo/tests/ci
+RUN chmod +x /repo/tests/bin/* /repo/tests/ci
 
 USER tester
 

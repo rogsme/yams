@@ -2,4 +2,7 @@
 set -euo pipefail
 
 bash -n /repo/src/install.sh /repo/src/yams
-exec bats --formatter tap --print-output-on-failure /repo/tests/install.bats
+shopt -s globstar nullglob
+tests=(/repo/tests/**/*.bats)
+((${#tests[@]} > 0))
+exec bats --formatter tap --print-output-on-failure "${tests[@]}"

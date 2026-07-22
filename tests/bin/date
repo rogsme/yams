@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "${1:-}" == '+%Y-%m-%d-%s' ]]; then
+    echo '2026-07-22-1721640000'
+else
+    exec /bin/date "$@"
+fi

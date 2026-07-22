@@ -39,7 +39,7 @@ readonly NC='\033[0m' # No Color
 
 # Dependencies
 readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
-readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/v3/src"
+readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/v4/src"
 
 log_success() {
     echo -e "${GREEN}$1${NC}"
@@ -119,7 +119,7 @@ check_dependencies() {
 
         if [ "${install_deps,,}" = "y" ]; then
             echo "Installing missing packages..."
-            if ! sudo apt update && sudo apt install -y "${missing_packages[@]}"; then
+            if ! (sudo apt update && sudo apt install -y "${missing_packages[@]}"); then
                 log_error "Failed to install missing packages. Please install them manually: ${missing_packages[*]}"
             fi
             log_success "Successfully installed missing packages ✅"
@@ -258,6 +258,7 @@ configure_vpn() {
 
     read -p "VPN service? (with spaces) [$DEFAULT_VPN_SERVICE]: " vpn_service
     vpn_service=${vpn_service:-$DEFAULT_VPN_SERVICE}
+    vpn_service=$(echo "$vpn_service" | awk '{print tolower($0)}')
 
     echo
     log_info "VPN type selection:"
@@ -337,8 +338,8 @@ EOF
         vpn_password=""
     else
         read -p "VPN username (without spaces): " vpn_user
-        [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
         vpn_user=$(echo "$vpn_user" | tr -d '[:space:]')
+        [ -z "$vpn_user" ] && log_error "VPN username cannot be empty"
 
         # Handle password input based on VPN service
         if [ "$vpn_service" = "mullvad" ]; then
@@ -503,7 +504,10 @@ update_configuration_files() {
            -e "s|<media_directory>|$media_directory|g" \
            -e "s|<media_service>|$media_service|g" \
            -e "s|<install_directory>|$install_directory|g" \
-           -e "s|vpn_enabled|$setup_vpn|g" "$env_file" || \
+           -e "s|vpn_enabled|$setup_vpn|g" \
+           -e 's|^#WIREGUARD_PRIVATE_KEY=.*|#WIREGUARD_PRIVATE_KEY=|' \
+           -e 's|^#WIREGUARD_PRESHARED_KEY=.*|#WIREGUARD_PRESHARED_KEY=|' \
+           -e 's|^#WIREGUARD_ADDRESSES=.*|#WIREGUARD_ADDRESSES=|' "$env_file" || \
         log_error "Failed to update .env file"
 
     sed -i -e "s|^VPN_TYPE=.*|VPN_TYPE=$selected_vpn_type|g" "$env_file" || \
@@ -613,6 +617,8 @@ update_configuration_files() {
            -e "s|<custom_file_filename>|$install_directory/docker-compose.custom.yaml|g" \
            -e "s|<install_directory>|$install_directory|g" "$yams_script" || \
         log_error "Failed to update YAMS CLI script"
+
+    chmod 600 "$env_file" || log_error "Failed to secure .env file"
 }
 
 install_cli() {
@@ -675,7 +681,11 @@ log_success "Everything installed correctly! 🎉"
 log_info "Starting YAMS services..."
 log_info "This may take a while..."
 
-if ! docker compose -f "$install_directory/docker-compose.yaml" up -d; then
+if ! docker compose \
+    --env-file "$install_directory/.env" \
+    -f "$install_directory/docker-compose.yaml" \
+    -f "$install_directory/docker-compose.custom.yaml" \
+    up -d; then
     log_error "Failed to start YAMS services"
 fi
 

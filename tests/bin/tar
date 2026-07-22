@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source "$(dirname "$0")/_mock.bash"
+log_command "$YAMS_TAR_LOG" tar "$@"
+[[ "${YAMS_TAR_FAIL:-0}" == 1 ]] && exit 1
+exec /bin/tar "$@"

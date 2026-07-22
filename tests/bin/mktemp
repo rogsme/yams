@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+template="$YAMS_MOCK_STATE_DIR/tmp.XXXXXX"
+exec /bin/mktemp "$template"

@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$(dirname "$0")/_mock.bash"
+log_command "$YAMS_CURL_LOG" curl "$@"
+
 url=""
 destination=""
 
@@ -20,13 +23,28 @@ while (($#)); do
     esac
 done
 
-if [[ -z "$url" || -z "$destination" ]]; then
+if [[ -z "$url" ]]; then
     echo "Unexpected curl arguments" >&2
     exit 1
 fi
 
-if [[ "${url##*/}" == "${YAMS_CURL_FAIL:-}" ]]; then
+if [[ "$url" == "${YAMS_CURL_FAIL_URL:-}" || "${url##*/}" == "${YAMS_CURL_FAIL:-}" ]]; then
     exit 1
 fi
 
-cp "$YAMS_FIXTURE_DIR/${url##*/}" "$destination"
+if [[ -n "$destination" ]]; then
+    if [[ "${url##*/}" == yams && -n "${YAMS_CURL_UPDATE_FILE:-}" ]]; then
+        cp "$YAMS_CURL_UPDATE_FILE" "$destination"
+    else
+        cp "$YAMS_FIXTURE_DIR/${url##*/}" "$destination"
+    fi
+    exit 0
+fi
+
+if [[ "$url" == "https://am.i.mullvad.net/country" ]]; then
+    [[ "${YAMS_LOCAL_COUNTRY:-Canada}" == FAIL ]] && exit 1
+    printf '%s\n' "${YAMS_LOCAL_COUNTRY:-Canada}"
+    exit 0
+fi
+
+next_response local-ip "${YAMS_LOCAL_IP_RESPONSES:-198.51.100.10}"
