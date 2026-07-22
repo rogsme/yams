@@ -304,9 +304,9 @@ EOF
        log_warning "DO NOT USE YOUR PROTON ACCOUNT USERNAME AND PASSWORD. REFER TO THE DOCUMENTATION ABOVE TO OBTAIN THE CORRECT VPN USERNAME AND PASSWORD."
        echo
 
-       read -p "Are you using a free ProtonVPN account? (y/N) [Default = n]: " is_protonvpn_free_tier_input
-       is_protonvpn_free_tier_input=${is_protonvpn_free_tier_input:-"n"}
-       is_protonvpn_free_tier=${is_protonvpn_free_tier_input,,}
+       read -p "Are you using a free ProtonVPN account? (y/N) [Default = n]: " reply
+       is_protonvpn_free_tier="${reply:-n}"
+       is_protonvpn_free_tier="${is_protonvpn_free_tier,,}"
 
        if [ "$is_protonvpn_free_tier" = "y" ]; then
            log_warning "⚠️ ProtonVPN Free Tier Users: If you plan to use a free ProtonVPN account, please be aware that port forwarding is not supported. See our ProtonVPN Free Tier guide here: https://yams.media/advanced/vpn/#protonvpn-free-tier for more details."

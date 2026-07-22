@@ -9,9 +9,6 @@ readonly IP_ENDPOINTS=(
     "https://ipinfo.io/ip"
     "https://api.ipify.org"
     "https://checkip.amazonaws.com"
-    "https://tnedi.me"
-    "https://api.myip.la"
-    "https://wtfismyip.com/text"
 )
 
 # Color codes for better readability
@@ -19,20 +16,6 @@ readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
 readonly YELLOW='\033[1;33m'
 readonly NC='\033[0m' # No Color
-
-# Available commands
-declare -A COMMANDS=(
-    ["--help"]="displays this help message"
-    ["restart"]="restarts yams services (can specify service names)"
-    ["stop"]="stops all yams services (can specify service names)"
-    ["start"]="starts yams services (can specify service names)"
-    ["status"]="checks yams services status"
-    ["destroy"]="destroy yams services so you can start from scratch (can specify service names)"
-    ["check-vpn"]="checks if the VPN is working as expected"
-    ["backup"]="backs up yams to the destination location"
-    ["update-containers"]="updates all yams containers"
-    ["update-cli"]="updates this CLI tool from the Gitea repository"
-)
 
 # Functions
 log_success() {
@@ -54,9 +37,16 @@ show_help() {
     echo "Usage: yams [command] [options]"
     echo
     echo "Commands:"
-    for cmd in start stop restart check-vpn update-containers backup update-cli destroy status --help; do
-        printf "%-25s %s\n" "$cmd" "${COMMANDS[$cmd]}"
-    done
+    echo "  --help            displays this help message"
+    echo "  restart           restarts yams services (can specify service names)"
+    echo "  stop              stops all yams services (can specify service names)"
+    echo "  start             starts yams services (can specify service names)"
+    echo "  status            checks yams services status"
+    echo "  destroy           destroy yams services so you can start from scratch (can specify service names)"
+    echo "  check-vpn         checks if the VPN is working as expected"
+    echo "  backup            backs up yams to the destination location"
+    echo "  update-containers updates all yams containers"
+    echo "  update-cli        updates this CLI tool from the Gitea repository"
     echo
     echo "Examples:"
     echo "  yams start              # Start all YAMS services"
@@ -101,31 +91,14 @@ wait_for_services() {
     log_error "Not all services started within ${TIMEOUT_SECONDS} seconds ($running_services/$total_services running)"
 }
 
-find_available_ip_endpoint() {
-    for endpoint in "${IP_ENDPOINTS[@]}"; do
-        if curl -s --connect-timeout 5 "$endpoint" > /dev/null; then
-            echo "$endpoint"
-            return 0
-        fi
-    done
-    return 1
-}
-
 get_ip_with_retries() {
     local context=$1  # "local" or "qbittorrent"
     local cmd_prefix=""
-
-    if [ "$context" = "qbittorrent" ]; then
-        cmd_prefix="docker exec qbittorrent"
-    fi
+    [ "$context" = "qbittorrent" ] && cmd_prefix="docker exec qbittorrent"
 
     for endpoint in "${IP_ENDPOINTS[@]}"; do
         local ip
-        if [ "$context" = "local" ]; then
-            ip=$(curl -s --connect-timeout 5 "$endpoint")
-        else
-            ip=$($cmd_prefix curl -s --connect-timeout 5 "$endpoint")
-        fi
+        ip=$($cmd_prefix curl -s --connect-timeout 5 "$endpoint")
 
         if [ -n "$ip" ] && [[ "$ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "$ip"
