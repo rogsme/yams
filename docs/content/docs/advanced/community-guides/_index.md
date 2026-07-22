@@ -1,6 +1,6 @@
 ---
 title: Community Guides
-weight: 40
+weight: 100
 bookCollapseSection: true
 ---
 

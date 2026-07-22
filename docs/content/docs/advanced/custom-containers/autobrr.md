@@ -115,4 +115,4 @@ Now you have automatic fetching of relevant torrents as soon as they release, en
 
 ---
 
-*Thanks to Faker on Discord for contributing to this guide!*
+*Thanks to `faker` on Discord for contributing to this guide!*

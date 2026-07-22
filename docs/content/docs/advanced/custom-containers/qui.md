@@ -225,4 +225,4 @@ Be sure to keep checking in on your system every so often to ensure it is workin
 
 ---
 
-*Thanks to Faker on Discord for contributing to this guide!*
+*Thanks to `faker` on Discord for contributing to this guide!*
