@@ -8,6 +8,9 @@ Before we get into configuring all our new apps, lets take a quick break and lea
 
 You don't need to run these commands now, just skim through the page to get an idea of what it can do. You can always refer back later!
 
+> [!INFO]
+> The YAMS CLI is simply a minimal bash wrapper around Docker Compose commands. It makes it easier to manage your YAMS services, and adds some extra functionality like checking your VPN connection and backing up your YAMS setup.
+
 ## Getting Started
 
 To see what your YAMS CLI can do, just type:

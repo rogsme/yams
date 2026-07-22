@@ -108,15 +108,15 @@ Considerations when picking a VPN provider:
 YAMS works with tons of VPN providers! If Gluetun supports it, YAMS does too. Here's the full list, with direct links to their setup guides (search them up for their pricing and main pages!):
 
 Here are some of the most popular choices for torrenting that support port forwarding:
-- [{{< icon "logos/proton-vpn" >}} ProtonVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md) (Recommended by the YAMS creator! Easy to set up and great privacy)
-- [{{< icon "logos/private-internet-access" >}} Private Internet Access (PIA)](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/private-internet-access.md) (Can be very good value if you purchase a long time up front)
-- [{{< icon "logos/air-vpn" >}} AirVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/airvpn.md)
+- {{< icon "logos/proton-vpn" >}} [ProtonVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md) (Recommended by the YAMS creator! Easy to set up and great privacy)
+- {{< icon "logos/private-internet-access" >}} [Private Internet Access (PIA)](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/private-internet-access.md) (Can be very good value if you purchase a long time up front)
+- {{< icon "logos/air-vpn" >}} [AirVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/airvpn.md)
 
 Some popular options that do *not* have port forwarding capabilities are:
-- [{{< icon "logos/mullvad-vpn" >}} Mullvad](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/mullvad.md)
-- [{{< icon "logos/surfshark" >}} Surfshark](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/surfshark.md)
-- [{{< icon "logos/nord-vpn" >}} NordVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/nordvpn.md)
-- [{{< icon "logos/express-vpn" >}} ExpressVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/expressvpn.md)
+- {{< icon "logos/mullvad-vpn" >}} [Mullvad](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/mullvad.md)
+- {{< icon "logos/surfshark" >}} [Surfshark](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/surfshark.md)
+- {{< icon "logos/nord-vpn" >}} [NordVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/nordvpn.md)
+- {{< icon "logos/express-vpn" >}} [ExpressVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/expressvpn.md)
 
 ### Other Options 📋
 Here are the rest of the providers that Gluetun also supports. *Providers that also support port forwarding are indicated.*
@@ -142,3 +142,8 @@ Want to use a different VPN? You can set up a [custom VPN provider](https://gith
 
 If you haven't installed YAMS yet and just came to learn more about VPNs, feel free to return to the [installation page](/docs/getting-started/installation/#prerequisites).
 
+
+# SUBSTITUTION TESTING
+```bash
+[[install_path]]/docker-compose.yaml
+```
