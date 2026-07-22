@@ -4,11 +4,7 @@ on:
   push:
     branches:
       - master
-    paths:
-      - docs/**
   pull_request:
-    paths:
-      - docs/**
 
 env:
   HUGO_VERSION: 0.161.1
