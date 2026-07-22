@@ -52,7 +52,7 @@ If your VPN check failed, head over to [VPN Configuration](/docs/advanced/concep
 
 Let's get qBittorrent configured! In your terminal, check the qBittorrent logs to get your initial login credentials:
 
-```sh
+```bash
 docker logs qbittorrent
 ```
 
@@ -68,7 +68,7 @@ qbittorrent  | Connection to localhost (::1) 8081 port [tcp/tproxy] succeeded!
 
 In your browser, go to [http://{your-ip-address}:8081/]() and you'll see qBittorrent's admin page. Log in with:
 
-```sh
+```bash
 username: admin
 password: your-temporary-password-from-the-logs
 ```

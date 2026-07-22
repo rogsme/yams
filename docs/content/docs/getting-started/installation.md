@@ -16,7 +16,7 @@ YAMS can be installed within an unprivileged Proxmox LXC container, but this req
 1. Log into your Proxmox server via SSH or use the web UI’s shell access for the node (not the LXC console).
 2. Open the configuration file specific to the LXC container where you intend to install YAMS. Replace <container-ID> with the actual numeric ID of your LXC container.
 
-```sh
+```bash
 nano /etc/pve/lxc/<container-ID>.conf
 ```
 
@@ -92,7 +92,7 @@ Before you get the script up and running, you'll have to do some thinking about 
 
 Remember from before? This is where all the config files and application storage goes! First, create the folder and set up your user permissions if it hasn't been done already.
 
-```
+```bash
 sudo mkdir -p [[install_path]]
 sudo chown -R $USER:$USER [[install_path]]
 ```
@@ -102,7 +102,7 @@ sudo chown -R $USER:$USER [[install_path]]
 This is where your media files are stored (make sure it has tons of space).
 If your media directory doesn’t exist yet, you’ll need to create it and set the correct permissions.
 
-```
+```bash
 sudo mkdir -p [[media_path]]
 sudo chown -R $USER:$USER [[media_path]]
 ```

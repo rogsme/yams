@@ -74,7 +74,7 @@ You can even start watching right from your browser, with subtitles and everythi
 
 Curious about how everything's organized? Check out your `/mediafolder/media/movies` folder:
 
-```sh
+```bash
 roger@debian:/srv/media/movies$ tree .
 .
 ├── The Godfather (1972)
