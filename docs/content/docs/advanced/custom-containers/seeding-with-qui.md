@@ -26,17 +26,13 @@ Hardlinking is enabled in YAMS by default, **and required for this guide to work
 
 ## What is a Hardlink?
 
-When you download a torrent, the file is downloaded into your YAMS torrent folder. Without hardlinking, when Radarr/Sonarr import this file, it would **copy** it to your server's media directory - meaning you'd have two copies taking up double the storage space.
-
-A **hardlink** is different, and it's purpose is in the name: 'link'. Instead of copying the file, it creates a second reference to the same data on your disk. Think of there being two 'links' on your disk, one in your torrents folder and one in your media folder, both pointing to the same data on disk.
-
-This allows the file to essentially exist in two places in your media server, all whilst only taking up the storage space of one copy.
+Check out the explanation of a hardlink [here](../../fundamentals/file-structure#what-is-a-hardlink).
 
 ## Why is this helpful?
 
 With hardlinks enabled:
 - qBitTorrent can continue seeding the torrent from the downloads folder
-- Jellyfin/Plex can stream the same file from the library folder
+- Jellyfin/Emby/Plex can stream the same file from the library folder
 
 Not only this, each 'link' has equal ownership over the data on disk. This means that data will persist on the disk until ALL references to it are deleted, regardless of their order of creation.
 

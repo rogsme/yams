@@ -64,14 +64,17 @@ Before you get the script up and running, you'll have to do some thinking about 
 - **A media folder**: This is where all your media will be stored (and it can sure take up lots of storage space). For example, if you pick `/srv/media`, the script will create:
 
 ```
-.
-└── srv/media/
-    ├── tvshows
-    ├── movies
-    ├── music
-    ├── books
-    ├── downloads
-    └── blackhole
+[[media_path]]
+  ├── blackhole/
+  ├── books/
+  ├── downloads/
+  │   ├── torrents/
+  │   └── usenet/
+  │       ├── complete/
+  │       └── incomplete/
+  ├── movies/
+  ├── music/
+  └── tvshows/
 ```
 
 - **A regular user to run and own the media files**: Don’t use `root` (I mean, I can’t stop you, but come on! 😬). Make sure you are in a shell session owned by that user so you are ready to go.
@@ -90,8 +93,8 @@ Before you get the script up and running, you'll have to do some thinking about 
 Remember from before? This is where all the config files and application storage goes! First, create the folder and set up your user permissions if it hasn't been done already.
 
 ```
-sudo mkdir -p [[config_path]]
-sudo chown -R $USER:$USER [[config_path]]
+sudo mkdir -p [[install_path]]
+sudo chown -R $USER:$USER [[install_path]]
 ```
 
 #### 2. Setup your media directory
@@ -219,7 +222,7 @@ Installation directory? [/opt/yams]:
 ```
 
 - Press Enter to use the default `/opt/yams` or type a different path if you want to install somewhere else.
-  - Based on your configuration of this guide, you should type `[[config_path]]`
+  - Based on your configuration of this guide, you should type `[[install_path]]`
 
 > [!WARNING]
 > You must use an absolute path (e.g., `/mnt/yams`). Docker does not expand `~` to your home directory, so avoid using something like `~/yams`
@@ -510,18 +513,18 @@ Enable Lidarr? (Y/n) [Default = y]:
 
 After you've answered all the questions, you'll see:
 ```bash
-Configuring the docker-compose file for user "yamstest" in "[[config_path]]"...
+Configuring the docker-compose file for user "yamstest" in "[[install_path]]"...
 
-Downloading .env.template to [[config_path]]/.env...
+Downloading .env.template to [[install_path]]/.env...
 .env.template downloaded successfully ✅
 
-Downloading docker-compose.custom.yaml to [[config_path]]/docker-compose.custom.yaml...
+Downloading docker-compose.custom.yaml to [[install_path]]/docker-compose.custom.yaml...
 docker-compose.custom.yaml downloaded successfully ✅
 
-Downloading docker-compose.template.yaml to [[config_path]]/docker-compose.yaml...
+Downloading docker-compose.template.yaml to [[install_path]]/docker-compose.yaml...
 docker-compose.template.yaml downloaded successfully ✅
 
-Downloading yams to [[config_path]]/yams...
+Downloading yams to [[install_path]]/yams...
 yams downloaded successfully ✅
 Updating environment configuration...
 Updating docker-compose configuration...
@@ -549,7 +552,7 @@ If everything works, you'll see these success messages:
 YAMS CLI installed successfully ✅
 Media directory ownership and permissions set successfully ✅
 Install directory ownership and permissions set successfully ✅
-Configuration folder "[[config_path]]/config" exists ✅
+Configuration folder "[[install_path]]/config" exists ✅
 Configuration folder ownership and permissions set successfully ✅
 ```
 

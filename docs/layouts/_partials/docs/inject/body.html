@@ -4,7 +4,7 @@
     if (!pageContainer) return;
 
     const PLACEHOLDERS = [
-      { pattern: '[[config_path]]', key: 'config_path', storage: 'CONFIG_PATH', fallback: '/opt/yams' },
+      { pattern: '[[install_path]]', key: 'install_path', storage: 'install_path', fallback: '/opt/yams' },
       { pattern: '[[media_path]]', key: 'media_path', storage: 'MEDIA_PATH', fallback: '/srv/media' },
       { pattern: '[[user_ip]]', key: 'user_ip', storage: 'USER_IP', fallback: 'YOUR_IP' },
     ];
@@ -64,7 +64,7 @@
       let node;
       while (node = walker.nextNode()) {
         const text = node.nodeValue;
-        if (text.includes('[[config_path]]') || text.includes('[[media_path]]') || text.includes('[[user_ip]]')) {
+        if (text.includes('[[install_path]]') || text.includes('[[media_path]]') || text.includes('[[user_ip]]')) {
           nodes.push(node);
         }
       }
@@ -76,7 +76,7 @@
     window.updatePagePaths = walkAndProcess;
 
     window.addEventListener('storage', function (e) {
-      if (e.key === 'CONFIG_PATH' || e.key === 'MEDIA_PATH' || e.key === 'USER_IP') {
+      if (e.key === 'install_path' || e.key === 'MEDIA_PATH' || e.key === 'USER_IP') {
         walkAndProcess();
       }
     });

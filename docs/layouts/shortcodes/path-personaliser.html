@@ -3,7 +3,8 @@
     <h3>Personalize This Installation Guide</h3>
     <p>If you are using paths other than the defaults, enter them below to update the commands in this guide
       automatically. If you are unsure or happy to stick with the defaults, leave the fields blank.</p>
-    <p>If you are unsure of your server's IP address, you can find it by running <code>hostname -I | awk '{print $1}'</code> on your
+    <p>If you are unsure of your server's IP address, you can find it by running
+      <code>hostname -I | awk '{print $1}'</code> on your
       server.</p>
   </div>
 
@@ -33,12 +34,12 @@
 
     if (!configIn || !mediaIn || !useripIn) return;
 
-    configIn.value = localStorage.getItem("CONFIG_PATH") || "";
+    configIn.value = localStorage.getItem("install_path") || "";
     mediaIn.value = localStorage.getItem("MEDIA_PATH") || "";
     useripIn.value = localStorage.getItem("USER_IP") || "";
 
     function handleTyping() {
-      localStorage.setItem("CONFIG_PATH", configIn.value.trim());
+      localStorage.setItem("INSTALL_PATH", configIn.value.trim());
       localStorage.setItem("MEDIA_PATH", mediaIn.value.trim());
       localStorage.setItem("USER_IP", useripIn.value.trim());
 

@@ -6,7 +6,7 @@ title: Backing up YAMS
 
 Backups are always important. You never know when something might break, and you are forced to recreate your server. If you have a backup of all your config folder ready to go, this is **much easier** (it saves DAYS).
 
-The key item your should backup from your media server is your config folder (`[[config_path]]`). This contains:
+The key item your should backup from your media server is your config folder (`[[install_path]]`). This contains:
 - All your container data
 - Your YAMS settings
 - Important environment variables

@@ -39,12 +39,12 @@ PrivateKey = wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
 Open your `.env` file:
 
 ```
-nano [[config_path]]/.env
+nano [[install_path]]/.env
 ```
 
 Comment out the OpenVPN lines and uncomment the WireGuard lines:
 
-```env {filename="[[config_path]]/.env"}
+```env {filename="[[install_path]]/.env"}
 VPN_TYPE=wireguard
 
 # openvpn specific settings
@@ -150,12 +150,12 @@ If you're using a different provider, check their documentation for the correct 
 Open your `.env` file:
 
 ```
-nano [[config_path]]/.env
+nano [[install_path]]/.env
 ```
 
 Comment out the WireGuard lines and uncomment the OpenVPN lines:
 
-```env {filename="[[config_path]]/.env"}
+```env {filename="[[install_path]]/.env"}
 VPN_TYPE=openvpn
 
 # openvpn specific settings

@@ -62,7 +62,7 @@ When the environment variables are substituted in (learn more about env vars [he
 ```yaml
 volumes:
   - [[media_path]]:/data
-  - [[config_path]]/config/radarr:/config
+  - [[install_path]]/config/radarr:/config
 ```
 
 What this means is that the **host** directory of `[[media_path]]` is being mapped into the Radarr container, but inside the container its path is `/data`. When data writes into the `/data` folder inside its little container, it *actually* is writing to your host `[[media_path]]` directory!

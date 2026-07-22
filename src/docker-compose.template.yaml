@@ -6,9 +6,9 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
+      - TZ=${TZ}
       - VERSION=docker
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/${MEDIA_SERVICE}:/config
     #network_mode: host # plex
