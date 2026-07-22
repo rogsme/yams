@@ -6,6 +6,9 @@ on:
       - master
     paths:
       - src/**
+  pull_request:
+    paths:
+      - src/**
 
 jobs:
   test:
