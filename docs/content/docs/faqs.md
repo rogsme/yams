@@ -1,6 +1,6 @@
 ---
 title: FAQs
-weight: 100
+weight: 1000
 ---
 
 # Frequently Asked Questions 🤔

@@ -1,5 +1,5 @@
 ---
-weight: 6
+weight: 60
 title: Backing up YAMS
 ---
 # Backing up YAMS

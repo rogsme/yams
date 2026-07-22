@@ -1,5 +1,5 @@
 ---
-weight: 7
+weight: 80
 title: Jellyfin
 ---
 

@@ -1,6 +1,6 @@
 ---
-weight: 4
-title: Seeding with Qui
+weight: 40
+title: Qui
 ---
 
 # Seeding with Qui

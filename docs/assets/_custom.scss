@@ -3,10 +3,6 @@
 // @import "plugins/numbered";
 // @import "plugins/scrollbars";
 
-a[target="_blank"]::after {
-  content: "↗";
-}
-
 *,
 html {
   scrollbar-width: thin;
@@ -41,16 +37,6 @@ html {
     width: auto;
   }
 }
-
-// Forces all theme hints/admonitions to have completely sharp edges
-//.book-hint {
-//  border-radius: 0 !important;
-//}
-
-//details,
-//summary {
-//  border-radius: 0 !important;
-//}
 
 // Remove border-radius from EVERYTHING site-wide
 *,

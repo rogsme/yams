@@ -1,6 +1,6 @@
 ---
 title: Advanced
-weight: 4
+weight: 40
 params:
   bookFlatSection: true
 bookIcon: graduation-cap

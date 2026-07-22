@@ -1,6 +1,6 @@
 ---
 title: Contact
-weight: 102
+weight: 1020
 ---
 
 # Let's Connect!
@@ -25,22 +25,23 @@ Got questions? Suggestions? Just want to say hi? We've got plenty of ways to rea
 ## Ground Rules
 
 Before reaching out, please:
-- Check the [documentation](/) first
+- Check the documentation first
 - Review [Common Issues](/docs/faqs/)
 - Be specific about your problem
 - Include relevant logs or screenshots
 - Be patient and kind
 
+> [!SUCCESS]
+> **Pro Tip:** The more clearly you describe your issue, the faster we can help you! 🚀
 
-**Pro Tip:** The more clearly you describe your issue, the faster we can help you! 🚀
-
-## Reporting Bugs 🐛
+## Reporting Bugs
 
 Found an issue? Awesome! Head to our [GitLab Issues](https://gitlab.com/rogs/yams/-/issues) or [Github Issues](https://github.com/rogsme/yams) and:
 - Search existing issues first
 - Provide detailed reproduction steps
 - Include system information
 - Be awesome! 😎
+
 
 ## Social Media? Nope!
 

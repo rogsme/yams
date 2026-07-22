@@ -1,5 +1,5 @@
 ---
-weight: 3
+weight: 30
 title: Torrenting and VPNs
 ---
 
@@ -142,8 +142,3 @@ Want to use a different VPN? You can set up a [custom VPN provider](https://gith
 
 If you haven't installed YAMS yet and just came to learn more about VPNs, feel free to return to the [installation page](/docs/getting-started/installation/#prerequisites).
 
-
-# SUBSTITUTION TESTING
-```bash
-[[install_path]]/docker-compose.yaml
-```

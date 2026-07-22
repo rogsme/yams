@@ -1,5 +1,5 @@
 ---
-weight: 3
+weight: 30
 title: Running Prowlarr behind a VPN
 ---
 

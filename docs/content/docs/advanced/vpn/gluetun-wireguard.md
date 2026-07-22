@@ -1,5 +1,5 @@
 ---
-weight: 2
+weight: 20
 title: Switching between OpenVPN and Wireguard
 ---
 

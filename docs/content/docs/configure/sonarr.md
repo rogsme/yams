@@ -1,5 +1,5 @@
 ---
-weight: 4
+weight: 40
 title: Sonarr
 ---
 

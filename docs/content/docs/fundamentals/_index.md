@@ -1,6 +1,6 @@
 ---
 title: YAMS Fundamentals
-weight: 2
+weight: 20
 params:
   bookFlatSection: true
 bookIcon: lightbulb

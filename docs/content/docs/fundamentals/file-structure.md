@@ -1,5 +1,5 @@
 ---
-weight: 4
+weight: 40
 title: File Structure and Hardlinking
 ---
 
@@ -33,7 +33,7 @@ The media directory is the main storage directory for your Docker containers. It
 
 Media files can take up a lot of space, especially if you have a lot of them! However, YAMS provides a filesystem setup that allows Radarr and Sonarr to use something called **hardlinking** to prevent unnecessary storage usage.
 
-#### What is a Hardlink?
+#### What is a Hardlink? 🖇️
 
 When you download a torrent, the file is downloaded into your YAMS torrent folder. Without hardlinking, when Radarr/Sonarr import this file, it would **copy** it to your server's media directory - meaning you'd have two copies taking up double the storage space.
 

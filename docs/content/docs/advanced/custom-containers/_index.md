@@ -1,10 +1,10 @@
 ---
-weight: 1
+weight: 10
 title: Adding Custom Containers
 bookCollapseSection: true
 ---
 
-WRITE ABOUT HOW TO ADD OTHER CONTAINERS< HOW TO ADAPT AN EXAMPLE COMPOSE
+WRITE ABOUT HOW TO ADD OTHER CONTAINERS< HOW TO ADAPT AN EXAMPLE COMPOSE, UPDATE THIS
 
 # Make YAMS Your Own! 🚀
 

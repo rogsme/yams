@@ -1,8 +1,7 @@
 ---
-weight: 2
+weight: 50
 title: Lidarr
 ---
-
 
 # What is Lidarr?
 

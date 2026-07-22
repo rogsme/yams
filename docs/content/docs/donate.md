@@ -1,20 +1,16 @@
 ---
 title: Donate
-weight: 101
+weight: 1010
 ---
 
 
 # Support the Awesome People Behind YAMS 💖
 
-Let's talk about something important: supporting the incredible projects and people that make YAMS possible! 🚀
+Let's talk about something important: supporting the incredible projects and people that make YAMS possible!
 
 ## Give Love to the Real Heroes 🦸‍♀️🦸‍♂️
 
 YAMS is built on the shoulders of giants - amazing open-source projects that pour their heart and soul into creating free, powerful tools. Before you even think about donating to YAMS, we want you to support the projects that truly make this possible!
-
-### Top Projects to Support
-
-Each of these projects is crucial to YAMS. If you appreciate what we've built, show some love to these incredible teams:
 
 ### Top Projects to Support
 
@@ -46,7 +42,7 @@ Okay, so you REALLY want to support YAMS? First, thank you! But honestly, I'm no
 - BTC: [`bc1qn092rw6q5nwha093qau6xryk6u3g9uwvy4tgdu`](/pics/btc.png)
 - XMR: [`8B2QC3RPEqEhbUKKL96CGzZBqoDq8kjzd5uUVCTHvyG8fACh5up3Svz4iNKiGEoZTqUXt4cJHqC4EeaTmrbVVHXfRrrRcBq`](/pics/xmr.png)
 
-## Special Thanks 🙌
+## Special Thanks
 
 YAMS wouldn't exist without:
 - The amazing open-source community
