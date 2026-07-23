@@ -105,19 +105,22 @@ EOF
     [ "$(grep -c '^VPN_USER=' "$INSTALL_DIR/.env")" -eq 1 ]
     grep -Fxq '      - PORT_FORWARD_ONLY=on' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fxq '      - VPN_PORT_FORWARDING=on' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq '      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq '      - VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
 }
 
-@test "normalizes the VPN provider before applying provider behavior" {
+@test "defaults Mullvad to WireGuard" {
     run_installer \
-        "" "$INSTALL_DIR" "$MEDIA_DIR" y jellyfin \
-        y MULLVAD openvpn "" account-number n y y
+        "" "$INSTALL_DIR" "$MEDIA_DIR" y emby \
+        y MULLVAD "" private-key 10.0.0.2/32 "" y y y
 
     [ "$status" -eq 0 ]
-    assert_valid_install jellyfin
+    assert_valid_install emby
     grep -Fxq 'VPN_SERVICE=mullvad' "$INSTALL_DIR/.env"
-    grep -Fxq 'VPN_USER=account-number' "$INSTALL_DIR/.env"
-    grep -Fxq 'VPN_PASSWORD=account-number' "$INSTALL_DIR/.env"
-    assert_output_contains 'Using Mullvad username as password'
+    grep -Fxq 'VPN_TYPE=wireguard' "$INSTALL_DIR/.env"
+    grep -Fxq 'WIREGUARD_PRIVATE_KEY=private-key' "$INSTALL_DIR/.env"
+    grep -Fxq 'WIREGUARD_ADDRESSES=10.0.0.2/32' "$INSTALL_DIR/.env"
+    assert_output_contains 'Mullvad requires WireGuard'
 }
 
 @test "installs WireGuard and transforms only WireGuard settings" {

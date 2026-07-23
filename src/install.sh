@@ -260,16 +260,30 @@ configure_vpn() {
     vpn_service=${vpn_service:-$DEFAULT_VPN_SERVICE}
     vpn_service=$(echo "$vpn_service" | awk '{print tolower($0)}')
 
+    local default_vpn_type="openvpn"
+    if [ "$vpn_service" = "mullvad" ]; then
+        default_vpn_type="wireguard"
+    fi
+
     echo
     log_info "VPN type selection:"
-    log_info "  openvpn:  Default. Works with most providers."
-    log_warning "  wireguard: Only available for some providers. Only pick if you have your WireGuard credentials ready."
-    read -p "VPN type? (openvpn/wireguard) [Default = openvpn]: " vpn_type
-    vpn_type=${vpn_type:-"openvpn"}
+    if [ "$vpn_service" = "mullvad" ]; then
+        log_info "  openvpn:  Unsupported by Mullvad."
+        log_info "  wireguard: Required for Mullvad."
+    else
+        log_info "  openvpn:  Default. Works with most providers."
+        log_warning "  wireguard: Only available for some providers. Only pick if you have your WireGuard credentials ready."
+    fi
+    read -p "VPN type? (openvpn/wireguard) [Default = $default_vpn_type]: " vpn_type
+    vpn_type=${vpn_type:-"$default_vpn_type"}
     vpn_type=$(echo "$vpn_type" | awk '{print tolower($0)}')
 
     if [ "$vpn_type" != "openvpn" ] && [ "$vpn_type" != "wireguard" ]; then
         log_error "Invalid VPN type. Choose \"openvpn\" or \"wireguard\""
+    fi
+
+    if [ "$vpn_service" = "mullvad" ] && [ "$vpn_type" != "wireguard" ]; then
+        log_error "Mullvad requires WireGuard. Choose \"wireguard\"."
     fi
 
     wg_private_key=""

@@ -14,7 +14,7 @@ This is not only "YAMS moved to `src`, website moved to `docs`." It also changes
 
 `src/docker-compose.template.yaml:165-176` publishes Dozzle on every interface, enables shell access and container actions, mounts `docker.sock` read-write, and configures no authentication. Dozzle's documentation explicitly treats socket access as host-root equivalent. Anyone reaching port `8777` can execute commands in containers and control them.
 
-### 2. Fresh installs break on the first CLI lifecycle command
+### 2. ~~Fresh installs break on the first CLI lifecycle command~~ (***FIXED PREVIOUSLY***)
 
 The installer starts only `docker-compose.yaml` at `src/install.sh:675-681`, creating the implicit `yams_default` network. The CLI always adds `docker-compose.custom.yaml` at `src/yams:5`, which requires an external `yams_network` at `src/docker-compose.custom.yaml:1-4`. Nothing creates it. Consequently, `yams start`, `restart`, and `update-containers` fail on fresh installs. Existing v2 hosts may hide this because they already have `yams_network`. Reproduced via Compose dry run.
 
@@ -38,7 +38,7 @@ The installer starts only `docker-compose.yaml` at `src/install.sh:675-681`, cre
 
 SABnzbd is exposed on host port `8090` at `src/docker-compose.template.yaml:49-51`, but the installation, SABnzbd, Radarr, and Sonarr guides all use `8080`. Portainer was replaced by Dozzle but remains advertised in `README.md:74` and `installation.md:586`. The Lidarr guide uses nonexistent `/music/` instead of its `/data` mount at `docs/content/docs/advanced/custom-containers/lidarr.md:27-31`.
 
-### 7. "Automatic port forwarding" is not implemented
+### 7. ~~"Automatic port forwarding" is not implemented~~ (***FIXED***)
 
 `src/docker-compose.template.yaml:42-43` enables Gluetun port allocation, but nothing updates qBittorrent's listening port. The current live website includes `VPN_PORT_FORWARDING_UP_COMMAND` and `DOWN_COMMAND`; v3 drops these while still promising automatic forwarding at `docs/content/docs/configure/qbittorrent.md:120-124`.
 
@@ -50,7 +50,7 @@ SABnzbd is exposed on host port `8090` at `src/docker-compose.template.yaml:49-5
 
 `docs/content/docs/advanced/custom-containers/_index.md:318-333` instructs users to attach to `yams_network` with static `172.60.0.x` addresses. The main Compose template no longer defines that network or subnet, and the custom file exposes only the key `default`. The example will not work as written.
 
-### 10. Mullvad's default path is now invalid
+### 10. ~~Mullvad's default path is now invalid~~ (***FIXED***)
 
 `src/install.sh:263-267` defaults every provider to OpenVPN. Mullvad removed OpenVPN on January 15, 2026, and v3 removed master's Mullvad-specific warning. Selecting Mullvad and accepting the default now guarantees VPN failure.
 
