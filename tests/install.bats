@@ -109,6 +109,19 @@ EOF
     grep -Fq '      - VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
 }
 
+@test "comments out port forwarding callbacks when port forwarding is disabled" {
+    run_installer \
+        "" "$INSTALL_DIR" "$MEDIA_DIR" y jellyfin \
+        y protonvpn openvpn n "" vpn-user vpn-password n y y
+
+    [ "$status" -eq 0 ]
+    assert_valid_install jellyfin
+    grep -Fxq '      - PORT_FORWARD_ONLY=off' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '      - VPN_PORT_FORWARDING=off' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq '      #- VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq '      #- VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
+}
+
 @test "defaults Mullvad to WireGuard" {
     run_installer \
         "" "$INSTALL_DIR" "$MEDIA_DIR" y emby \
@@ -161,6 +174,8 @@ EOF
     assert_valid_install jellyfin
     grep -Fq -- '- FREE_ONLY=true' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fq 'VPN_PORT_FORWARDING=off # ProtonVPN Free Tier unsupported' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq '      #- VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq '      #- VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
     ! grep -q '^VPN_USER=.*+pmp$' "$INSTALL_DIR/.env"
 }
 
