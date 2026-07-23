@@ -141,6 +141,9 @@ Its go time! If you have completed all the pre-installation steps above, its tim
 > [!SUCCESS]
 > Note that the installation script can be rerun if it fails or exits. If you realise you have set up your system wrong or the script itself reports a problem, you can simply rerun it and it will still work fine!
 
+> [!DANGER]
+> Do *NOT* re-run the installer if you have fully completed you configuration and have a functioning media server. This will overwrite your configuration files and you will lose your settings and credentials.
+
 ### 1. Download the installer script
 
 First, let's use `curl` to download the main installer script into the current directory:
