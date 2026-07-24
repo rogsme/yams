@@ -560,24 +560,9 @@ update_configuration_files() {
             sed -i 's|#- FREE_ONLY=true|- FREE_ONLY=true|' "$filename"
             sed -i "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=off|g" "$filename"
             sed -i "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=off # ProtonVPN Free Tier unsupported|g" "$filename"
-            sed -i \
-                -e 's|^      - VPN_PORT_FORWARDING_UP_COMMAND=|      #- VPN_PORT_FORWARDING_UP_COMMAND=|' \
-                -e 's|^      - VPN_PORT_FORWARDING_DOWN_COMMAND=|      #- VPN_PORT_FORWARDING_DOWN_COMMAND=|' \
-                "$filename"
-        else
+            else
             sed -i "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=$port_forward_settings|g" "$filename"
             sed -i "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=$port_forward_settings|g" "$filename"
-            if [ "$port_forward_settings" = "on" ]; then
-                sed -i \
-                    -e 's|^      #- VPN_PORT_FORWARDING_UP_COMMAND=|      - VPN_PORT_FORWARDING_UP_COMMAND=|' \
-                    -e 's|^      #- VPN_PORT_FORWARDING_DOWN_COMMAND=|      - VPN_PORT_FORWARDING_DOWN_COMMAND=|' \
-                    "$filename"
-            else
-                sed -i \
-                    -e 's|^      - VPN_PORT_FORWARDING_UP_COMMAND=|      #- VPN_PORT_FORWARDING_UP_COMMAND=|' \
-                    -e 's|^      - VPN_PORT_FORWARDING_DOWN_COMMAND=|      #- VPN_PORT_FORWARDING_DOWN_COMMAND=|' \
-                    "$filename"
-            fi
         fi
 
         # Apply WireGuard settings if selected
