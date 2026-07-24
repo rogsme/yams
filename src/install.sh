@@ -39,7 +39,7 @@ readonly NC='\033[0m' # No Color
 
 # Dependencies
 readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
-readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/v4/src"
+readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/faker-dev-v4/src"
 
 log_success() {
     echo -e "${GREEN}$1${NC}"
@@ -645,6 +645,21 @@ install_cli() {
     fi
 }
 
+setup_dozzle_users() {
+    local dozzle_config_dir="$install_directory/config/dozzle"
+    mkdir -p "$dozzle_config_dir"
+    cat > "$dozzle_config_dir/users.yml" << 'YAMLEOF'
+users:
+    yams:
+        email: ""
+        name: ""
+        password: $2a$11$l1qPwNA5CQPsa/Z15ZEM0e6wWNO.1rXs5NqBfDHKw4wv12WbuWnIa
+        filter: ""
+        roles: none
+YAMLEOF
+    log_success "Dozzle users.yml created ✅"
+}
+
 set_permissions() {
     local dirs=("$media_directory" "$install_directory" "$install_directory/config")
 
@@ -688,6 +703,9 @@ log_info "Configuring the docker-compose file for user \"$username\" in \"$insta
 # Copy and update configuration files
 copy_configuration_files
 update_configuration_files
+
+# Setup initial Dozzle user
+setup_dozzle_users
 
 log_success "Everything installed correctly! 🎉"
 
