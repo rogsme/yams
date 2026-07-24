@@ -172,8 +172,11 @@ services:
     container_name: dozzle
     environment:
       - DOZZLE_ENABLE_ACTIONS=true
+      - DOZZLE_ENABLE_SHELL=true
+      - DOZZLE_AUTH_PROVIDER=simple
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ${INSTALL_DIRECTORY}/config/dozzle:/data
     ports:
       - 8777:8080
     restart: unless-stopped
