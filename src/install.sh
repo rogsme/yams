@@ -372,6 +372,9 @@ EOF
     if [ "$is_protonvpn_free_tier" = "y" ]; then
         log_warning "Port forwarding is automatically disabled for ProtonVPN Free Tier accounts"
         enable_port_forwarding="n"
+    elif [ "$vpn_service" = "mullvad" ]; then
+        log_warning "Port forwarding is not supported by Mullvad and has been disabled"
+        enable_port_forwarding="n"
     else
         echo
         log_info "Port forwarding allows for better connectivity in certain applications."

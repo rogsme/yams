@@ -145,10 +145,10 @@ EOF
     grep -Fq "      #- 'VPN_PORT_FORWARDING_DOWN_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
 }
 
-@test "defaults Mullvad to WireGuard" {
+@test "defaults Mullvad to WireGuard and disables port forwarding" {
     run_installer \
         "" "$INSTALL_DIR" "$MEDIA_DIR" y emby \
-        y MULLVAD "" "" private-key 10.0.0.2/32 "" n y y
+        y MULLVAD "" "" private-key 10.0.0.2/32 "" y y
 
     [ "$status" -eq 0 ]
     assert_valid_install emby
@@ -156,6 +156,9 @@ EOF
     grep -Fxq 'VPN_TYPE=wireguard' "$INSTALL_DIR/.env"
     grep -Fxq 'WIREGUARD_PRIVATE_KEY=private-key' "$INSTALL_DIR/.env"
     grep -Fxq 'WIREGUARD_ADDRESSES=10.0.0.2/32' "$INSTALL_DIR/.env"
+    grep -Fxq '      - PORT_FORWARD_ONLY=off' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '      - VPN_PORT_FORWARDING=off' "$INSTALL_DIR/docker-compose.yaml"
+    assert_output_contains 'Port forwarding is not supported by Mullvad and has been disabled'
 }
 
 @test "installs WireGuard and transforms only WireGuard settings" {
