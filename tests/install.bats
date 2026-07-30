@@ -107,7 +107,7 @@ EOF
     grep -Fxq 'plex: http://192.0.2.10:32400/web' "$HOME/yams_services.txt"
 }
 
-@test "installs OpenVPN and adds ProtonVPN port forwarding suffix once" {
+@test "installs OpenVPN with valid optional port forwarding callbacks" {
     run_installer \
         "" "$INSTALL_DIR" "$MEDIA_DIR" y jellyfin \
         y protonvpn openvpn n "" vpn-user vpn-password y y y
@@ -121,8 +121,12 @@ EOF
     [ "$(grep -c '^VPN_USER=' "$INSTALL_DIR/.env")" -eq 1 ]
     grep -Fxq '      - PORT_FORWARD_ONLY=on' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fxq '      - VPN_PORT_FORWARDING=on' "$INSTALL_DIR/docker-compose.yaml"
-    grep -Fq '      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
-    grep -Fq '      - VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
+    sed -i '/VPN_PORT_FORWARDING_\(UP\|DOWN\)_COMMAND/s|^      #- |      - |' "$INSTALL_DIR/docker-compose.yaml"
+    QBITTORRENT_API_KEY=test /usr/bin/docker compose \
+        --env-file "$INSTALL_DIR/.env" \
+        -f "$INSTALL_DIR/docker-compose.yaml" \
+        -f "$INSTALL_DIR/docker-compose.custom.yaml" \
+        config --quiet
 }
 
 @test "comments out port forwarding callbacks when port forwarding is disabled" {
