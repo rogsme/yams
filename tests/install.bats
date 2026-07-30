@@ -204,8 +204,7 @@ EOF
 
     [ "$status" -eq 0 ]
     [ "$(wc -l < "$YAMS_CURL_LOG")" -eq 4 ]
-    [ "$(grep -Fc 'https://raw.githubusercontent.com/not-first/yams/v4/src/' "$YAMS_CURL_LOG")" -eq 4 ]
-    ! grep -Fq '/not-first/yams/v3/' "$YAMS_CURL_LOG"
+    [ "$(grep -Fc 'https://raw.githubusercontent.com/rogsme/yams/v4/src/' "$YAMS_CURL_LOG")" -eq 4 ]
 }
 
 @test "rejects execution as root before creating files" {

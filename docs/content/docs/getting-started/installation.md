@@ -149,7 +149,7 @@ Its go time! If you have completed all the pre-installation steps above, its tim
 First, let's use `curl` to download the main installer script into the current directory:
 
 ```bash
-curl -fsSL -o install.sh https://raw.githubusercontent.com/not-first/yams/v3/src/install.sh
+curl -fsSL -o install.sh https://raw.githubusercontent.com/rogsme/yams/v4/src/install.sh
 ```
 
 ### 2. Start the installer

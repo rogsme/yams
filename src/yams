@@ -247,7 +247,7 @@ update_containers() {
 }
 
 update_cli() {
-    local -r UPDATE_URL="https://raw.githubusercontent.com/not-first/yams/v4/src/yams"
+    local -r UPDATE_URL="https://raw.githubusercontent.com/rogsme/yams/v4/src/yams"
     local -r SCRIPT_PATH=$(realpath "$0")
     local -r TMP_FILE=$(mktemp "${TMPDIR:-/tmp}/yams_update.XXXXXX")
     trap 'rm -f "$TMP_FILE"' EXIT

@@ -40,7 +40,7 @@ readonly NC='\033[0m' # No Color
 
 # Dependencies
 readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
-readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/faker-dev-v4/src"
+readonly REPO_RAW_URL="https://raw.githubusercontent.com/rogsme/yams/v4/src"
 
 log_success() {
     echo -e "${GREEN}$1${NC}"
