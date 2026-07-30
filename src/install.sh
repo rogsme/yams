@@ -30,6 +30,7 @@ readonly SUPPORTED_MEDIA_SERVICES=("jellyfin" "emby" "plex")
 readonly DEFAULT_MEDIA_SERVICE="jellyfin"
 readonly DEFAULT_VPN_SERVICE="protonvpn"
 readonly MEDIA_SUBDIRS=("tvshows" "movies" "music" "books" "downloads/usenet/complete" "downloads/usenet/incomplete" "downloads/torrents" "blackhole")
+dozzle_bootstrap_password=""
 
 # Color codes
 readonly RED='\033[0;31m'
@@ -647,20 +648,20 @@ install_cli() {
 
 setup_dozzle_users() {
     local dozzle_config_dir="$install_directory/config/dozzle"
+    local dozzle_users_file="$dozzle_config_dir/users.yml"
     mkdir -p "$dozzle_config_dir"
 
-    # bcrypt hash of a throwaway 64-char random string.
-    local dummy_hash='$2b$11$P53Rt1sTmI3ibBv2obK9beZVLy5GSISImwPc.uw933EGX4WlbfN0.'
+    if [ -s "$dozzle_users_file" ]; then
+        log_info "Keeping existing Dozzle users.yml"
+        return
+    fi
 
-    cat > "$dozzle_config_dir/users.yml" << YAMLEOF
-users:
-  yams:
-    email: ""
-    name: ""
-    password: $dummy_hash
-    filter: ""
-    roles: none
-YAMLEOF
+    dozzle_bootstrap_password="yams-$(< /proc/sys/kernel/random/uuid)"
+    if ! docker run --rm amir20/dozzle:latest generate yams \
+        --password "$dozzle_bootstrap_password" --user-roles none > "$dozzle_users_file"; then
+        log_error "Failed to create Dozzle bootstrap user"
+    fi
+    chmod 600 "$dozzle_users_file" || log_error "Failed to secure Dozzle users.yml"
 
     log_success "Dozzle users.yml created ✅"
 }
@@ -752,6 +753,11 @@ EOF
 
 log_success "All done!✅  Enjoy YAMS!"
 log_info "You can check the installation in $install_directory"
+if [ -n "$dozzle_bootstrap_password" ]; then
+    log_info "Dozzle bootstrap username: yams"
+    log_info "Dozzle bootstrap password: $dozzle_bootstrap_password"
+    log_warning "Replace the Dozzle bootstrap user after signing in."
+fi
 log_info "========================================================"
 log_info "Everything should be running now! To check everything running, go to:"
 echo

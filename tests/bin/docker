@@ -19,6 +19,28 @@ if [[ "${1:-}" == ps ]]; then
     exit 0
 fi
 
+if [[ "${1:-}" == run && "${2:-}" == --rm && "${4:-}" == generate ]]; then
+    username=${5:-}
+    password=""
+    for ((i = 6; i <= $#; i++)); do
+        if [[ "${!i}" == --password && $i -lt $# ]]; then
+            ((i++))
+            password=${!i}
+        fi
+    done
+    checksum=$(printf '%s' "$password" | cksum)
+    cat <<EOF
+users:
+    $username:
+        email: ""
+        name: ""
+        password: \$2a\$11\$mock-${checksum%% *}
+        filter: ""
+        roles: none
+EOF
+    exit 0
+fi
+
 [[ "${1:-}" == compose ]] || { echo "Unexpected docker arguments" >&2; exit 1; }
 
 action=""

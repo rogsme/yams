@@ -67,6 +67,22 @@ EOF
     grep -Fxq 'Dozzle: http://192.0.2.10:8777/' "$HOME/yams_services.txt"
 }
 
+@test "creates unique Dozzle bootstrap credentials" {
+    install_without_vpn
+
+    [ "$status" -eq 0 ]
+    first_install=$INSTALL_DIR
+    grep -Fxq '        roles: none' "$first_install/config/dozzle/users.yml"
+    assert_output_contains 'Dozzle bootstrap username: yams'
+    assert_output_contains 'Dozzle bootstrap password: yams-'
+
+    INSTALL_DIR="$BATS_TEST_TMPDIR/install-two"
+    install_without_vpn
+
+    [ "$status" -eq 0 ]
+    ! cmp -s "$first_install/config/dozzle/users.yml" "$INSTALL_DIR/config/dozzle/users.yml"
+}
+
 @test "keeps the custom Compose template unchanged and uses it at startup" {
     install_without_vpn
 
