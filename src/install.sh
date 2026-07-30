@@ -803,7 +803,7 @@ running_services_location > ~/yams_services.txt
 log_info "========================================================"
 echo
 log_info "To configure YAMS, check out the documentation at"
-log_info "https://yams.media/config ENSURE THIS LINK IS CORRECT"
+log_info "https://yams.media/docs/configure/dozzle/"
 echo
 log_info "Make sure to enter your server's local IP, config and media directories into the documentation for the best experience"
 log_info "========================================================"

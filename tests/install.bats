@@ -68,6 +68,7 @@ EOF
     grep -Fxq 'jellyfin: http://192.0.2.10:8096/' "$HOME/yams_services.txt"
     grep -Fxq 'qBittorrent: http://192.0.2.10:8081/' "$HOME/yams_services.txt"
     grep -Fxq 'Dozzle: http://192.0.2.10:8777/' "$HOME/yams_services.txt"
+    assert_output_contains 'https://yams.media/docs/configure/dozzle/'
 }
 
 @test "creates unique Dozzle bootstrap credentials" {
@@ -94,6 +95,7 @@ EOF
 
     [ "$status" -eq 0 ]
     cmp /repo/src/docker-compose.custom.yaml "$INSTALL_DIR/docker-compose.custom.yaml"
+    grep -Fxq '# services:' "$INSTALL_DIR/docker-compose.custom.yaml"
     assert_command "$YAMS_DOCKER_LOG" docker compose \
         --env-file "$INSTALL_DIR/.env" \
         -f "$INSTALL_DIR/docker-compose.yaml" \
