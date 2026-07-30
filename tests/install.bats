@@ -127,6 +127,7 @@ EOF
     [ "$(grep -c '^VPN_USER=' "$INSTALL_DIR/.env")" -eq 1 ]
     grep -Fxq '      - PORT_FORWARD_ONLY=on' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fxq '      - VPN_PORT_FORWARDING=on' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '      #- HTTPPROXY=on' "$INSTALL_DIR/docker-compose.yaml"
     sed -i '/VPN_PORT_FORWARDING_\(UP\|DOWN\)_COMMAND/s|^      #- |      - |' "$INSTALL_DIR/docker-compose.yaml"
     QBITTORRENT_API_KEY=test /usr/bin/docker compose \
         --env-file "$INSTALL_DIR/.env" \
