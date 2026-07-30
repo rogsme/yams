@@ -77,6 +77,8 @@ EOF
     first_install=$INSTALL_DIR
     grep -Fxq '        roles: none' "$first_install/config/dozzle/users.yml"
     [ "$(stat -c %a "$first_install/config/dozzle/bootstrap-password.txt")" = 600 ]
+    assert_command "$YAMS_DOCKER_LOG" docker run --rm amir20/dozzle:latest generate yams \
+        --password "$(< "$first_install/config/dozzle/bootstrap-password.txt")" --user-roles none
     assert_output_contains 'Dozzle bootstrap username: yams'
     assert_output_contains "Dozzle bootstrap password: $(< "$first_install/config/dozzle/bootstrap-password.txt")"
 
