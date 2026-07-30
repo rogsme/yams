@@ -40,6 +40,9 @@ VPN_PASSWORD=
 #WIREGUARD_PRESHARED_KEY=
 #WIREGUARD_ADDRESSES=
 
+# service secrets (remember to uncomment when using them!)
+#QBITTORRENT_API_KEY=qbt_your_api_key
+
 EOF
     ) "$INSTALL_DIR/.env"
 }
@@ -65,6 +68,26 @@ EOF
     grep -Fxq 'jellyfin: http://192.0.2.10:8096/' "$HOME/yams_services.txt"
     grep -Fxq 'qBittorrent: http://192.0.2.10:8081/' "$HOME/yams_services.txt"
     grep -Fxq 'Dozzle: http://192.0.2.10:8777/' "$HOME/yams_services.txt"
+    assert_output_contains 'https://yams.media/docs/configure/dozzle/'
+}
+
+@test "creates unique Dozzle bootstrap credentials" {
+    install_without_vpn
+
+    [ "$status" -eq 0 ]
+    first_install=$INSTALL_DIR
+    grep -Fxq '        roles: none' "$first_install/config/dozzle/users.yml"
+    [ "$(stat -c %a "$first_install/config/dozzle/bootstrap-password.txt")" = 600 ]
+    assert_command "$YAMS_DOCKER_LOG" docker run --rm amir20/dozzle:latest generate yams \
+        --password "$(< "$first_install/config/dozzle/bootstrap-password.txt")" --user-roles none
+    assert_output_contains 'Dozzle bootstrap username: yams'
+    assert_output_contains "Dozzle bootstrap password: $(< "$first_install/config/dozzle/bootstrap-password.txt")"
+
+    INSTALL_DIR="$BATS_TEST_TMPDIR/install-two"
+    install_without_vpn
+
+    [ "$status" -eq 0 ]
+    ! cmp -s "$first_install/config/dozzle/users.yml" "$INSTALL_DIR/config/dozzle/users.yml"
 }
 
 @test "keeps the custom Compose template unchanged and uses it at startup" {
@@ -72,6 +95,7 @@ EOF
 
     [ "$status" -eq 0 ]
     cmp /repo/src/docker-compose.custom.yaml "$INSTALL_DIR/docker-compose.custom.yaml"
+    grep -Fxq '# services:' "$INSTALL_DIR/docker-compose.custom.yaml"
     assert_command "$YAMS_DOCKER_LOG" docker compose \
         --env-file "$INSTALL_DIR/.env" \
         -f "$INSTALL_DIR/docker-compose.yaml" \
@@ -91,7 +115,7 @@ EOF
     grep -Fxq 'plex: http://192.0.2.10:32400/web' "$HOME/yams_services.txt"
 }
 
-@test "installs OpenVPN and adds ProtonVPN port forwarding suffix once" {
+@test "installs OpenVPN with valid optional port forwarding callbacks" {
     run_installer \
         "" "$INSTALL_DIR" "$MEDIA_DIR" y jellyfin \
         y protonvpn openvpn n "" vpn-user vpn-password y y y
@@ -105,19 +129,42 @@ EOF
     [ "$(grep -c '^VPN_USER=' "$INSTALL_DIR/.env")" -eq 1 ]
     grep -Fxq '      - PORT_FORWARD_ONLY=on' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fxq '      - VPN_PORT_FORWARDING=on' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '      #- HTTPPROXY=on' "$INSTALL_DIR/docker-compose.yaml"
+    sed -i '/VPN_PORT_FORWARDING_\(UP\|DOWN\)_COMMAND/s|^      #- |      - |' "$INSTALL_DIR/docker-compose.yaml"
+    QBITTORRENT_API_KEY=test /usr/bin/docker compose \
+        --env-file "$INSTALL_DIR/.env" \
+        -f "$INSTALL_DIR/docker-compose.yaml" \
+        -f "$INSTALL_DIR/docker-compose.custom.yaml" \
+        config --quiet
 }
 
-@test "normalizes the VPN provider before applying provider behavior" {
+@test "comments out port forwarding callbacks when port forwarding is disabled" {
     run_installer \
         "" "$INSTALL_DIR" "$MEDIA_DIR" y jellyfin \
-        y MULLVAD openvpn "" account-number n y y
+        y protonvpn openvpn n "" vpn-user vpn-password n y y
 
     [ "$status" -eq 0 ]
     assert_valid_install jellyfin
+    grep -Fxq '      - PORT_FORWARD_ONLY=off' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '      - VPN_PORT_FORWARDING=off' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq "      #- 'VPN_PORT_FORWARDING_UP_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq "      #- 'VPN_PORT_FORWARDING_DOWN_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
+}
+
+@test "defaults Mullvad to WireGuard and disables port forwarding" {
+    run_installer \
+        "" "$INSTALL_DIR" "$MEDIA_DIR" y emby \
+        y MULLVAD "" "" private-key 10.0.0.2/32 "" y y
+
+    [ "$status" -eq 0 ]
+    assert_valid_install emby
     grep -Fxq 'VPN_SERVICE=mullvad' "$INSTALL_DIR/.env"
-    grep -Fxq 'VPN_USER=account-number' "$INSTALL_DIR/.env"
-    grep -Fxq 'VPN_PASSWORD=account-number' "$INSTALL_DIR/.env"
-    assert_output_contains 'Using Mullvad username as password'
+    grep -Fxq 'VPN_TYPE=wireguard' "$INSTALL_DIR/.env"
+    grep -Fxq 'WIREGUARD_PRIVATE_KEY=private-key' "$INSTALL_DIR/.env"
+    grep -Fxq 'WIREGUARD_ADDRESSES=10.0.0.2/32' "$INSTALL_DIR/.env"
+    grep -Fxq '      - PORT_FORWARD_ONLY=off' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '      - VPN_PORT_FORWARDING=off' "$INSTALL_DIR/docker-compose.yaml"
+    assert_output_contains 'Port forwarding is not supported by Mullvad and has been disabled'
 }
 
 @test "installs WireGuard and transforms only WireGuard settings" {
@@ -158,6 +205,8 @@ EOF
     assert_valid_install jellyfin
     grep -Fq -- '- FREE_ONLY=true' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fq 'VPN_PORT_FORWARDING=off # ProtonVPN Free Tier unsupported' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq "      #- 'VPN_PORT_FORWARDING_UP_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq "      #- 'VPN_PORT_FORWARDING_DOWN_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
     ! grep -q '^VPN_USER=.*+pmp$' "$INSTALL_DIR/.env"
 }
 
@@ -166,8 +215,7 @@ EOF
 
     [ "$status" -eq 0 ]
     [ "$(wc -l < "$YAMS_CURL_LOG")" -eq 4 ]
-    [ "$(grep -Fc 'https://raw.githubusercontent.com/not-first/yams/v4/src/' "$YAMS_CURL_LOG")" -eq 4 ]
-    ! grep -Fq '/not-first/yams/v3/' "$YAMS_CURL_LOG"
+    [ "$(grep -Fc 'https://raw.githubusercontent.com/rogsme/yams/v4/src/' "$YAMS_CURL_LOG")" -eq 4 ]
 }
 
 @test "rejects execution as root before creating files" {
@@ -194,6 +242,22 @@ EOF
     [ ! -e "$MEDIA_DIR" ]
 }
 
+@test "does not overwrite existing configuration without confirmation" {
+    mkdir -p "$INSTALL_DIR"
+    for file in .env docker-compose.yaml docker-compose.custom.yaml yams; do
+        printf 'keep-%s\n' "$file" > "$INSTALL_DIR/$file"
+    done
+
+    run_installer "" "$INSTALL_DIR" n
+
+    [ "$status" -eq 1 ]
+    assert_output_contains 'Installation cancelled without changing the existing configuration'
+    for file in .env docker-compose.yaml docker-compose.custom.yaml yams; do
+        grep -Fxq "keep-$file" "$INSTALL_DIR/$file"
+    done
+    [ ! -e "$MEDIA_DIR" ]
+}
+
 @test "rejects an unsupported media service" {
     run_installer "" "$INSTALL_DIR" "$MEDIA_DIR" y kodi
 
@@ -213,7 +277,7 @@ EOF
 @test "rejects an OpenVPN username containing only whitespace" {
     run_installer \
         "" "$INSTALL_DIR" "$MEDIA_DIR" y jellyfin \
-        y mullvad openvpn "" '   '
+        y protonvpn openvpn n "" '   '
 
     [ "$status" -eq 1 ]
     assert_output_contains 'VPN username cannot be empty'
@@ -265,6 +329,8 @@ EOF
 
     [ "$status" -eq 1 ]
     assert_output_contains 'Failed to start YAMS services'
+    [ -s "$INSTALL_DIR/config/dozzle/bootstrap-password.txt" ]
+    assert_output_contains "Dozzle bootstrap password: $(< "$INSTALL_DIR/config/dozzle/bootstrap-password.txt")"
     [ ! -e "$YAMS_SYSTEM_BIN/yams" ]
     [ ! -e "$HOME/yams_services.txt" ]
 }

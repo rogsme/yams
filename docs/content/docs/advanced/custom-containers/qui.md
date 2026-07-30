@@ -89,17 +89,13 @@ Then, run `yams start qui` in your terminal to get it up and running! Access the
 
 First, open up the Qui web UI, and create an new account. Make sure to save your login details!
 
-> Now, before we get started, lets make qBitTorrent allow connections from Qui by ***optionally*** bypassing authentication within the YAMS network. Jump over the this section from the [YAMS docs](/docs/configure/qbittorrent/#configuring-web-ui-settings) and ensure *in addition* to your local IP, you also add a new line with the YAMS subnet: `172.60.0.0/24`. Make sure to save, and then say goodbye to the qBitTorrent web UI - you might not need it again!
-
-> This bypass is safe only because qBitTorrent is running in your home server and not directly exposed to the internet. Do not use this if you expose qBitTorrent's port externally. If you do, simply use your qBitTorrent username and password when connecting Qui to qBitTorrent in the next steps.
-
 You should see a 'Dashboard' page. From here, click on the 'Add Instance' button in the center.
 
 Enter the following details:
 - A name for the instance, e.g. 'Server'
 - Your qBitTorrent URL. If you are running qBitTorrent behind your vpn, its URL will be `http://gluetun:8081`. Otherwise, it will be `http://qbittorrent:8081`.
 - Turn on 'Local Filesystem Access' - this is required for hardlink detection to work.
-- If you added the YAMS subnet to qBitTorrent's web UI settings, you can turn off authentication by toggling 'Bypass Authentication'. If not, enter your qBitTorrent username and password.
+- Enter your qBitTorrent username and password.
 
 {{< image src="/pics/qui/qui-1.png" alt="" title="" loading="auto" >}}
 

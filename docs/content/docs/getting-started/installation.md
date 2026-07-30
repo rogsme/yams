@@ -13,7 +13,7 @@ Your machine _must_ be running Debian 13 (recommended) or Ubuntu 24.04 on bare m
 {{% details "ℹ️ Proxmox LXC Users" %}}
 YAMS can be installed within an unprivileged Proxmox LXC container, but this requires specific configuration on the Proxmox host before you run the YAMS installation script inside the container. Please follow the steps below to ensure Docker and the VPN component (Gluetun) can function correctly within the LXC environment by providing access to the necessary TUN device.
 
-1. Log into your Proxmox server via SSH or use the web UI’s shell access for the node (not the LXC console).
+1. Log into your Proxmox server via SSH or use the web UI’s shell access for the **node** (not the LXC console).
 2. Open the configuration file specific to the LXC container where you intend to install YAMS. Replace <container-ID> with the actual numeric ID of your LXC container.
 
 ```bash
@@ -141,12 +141,15 @@ Its go time! If you have completed all the pre-installation steps above, its tim
 > [!SUCCESS]
 > Note that the installation script can be rerun if it fails or exits. If you realise you have set up your system wrong or the script itself reports a problem, you can simply rerun it and it will still work fine!
 
+> [!DANGER]
+> Do *NOT* re-run the installer if you have fully completed you configuration and have a functioning media server. This will overwrite your configuration files and you will lose your settings and credentials.
+
 ### 1. Download the installer script
 
 First, let's use `curl` to download the main installer script into the current directory:
 
 ```bash
-curl -fsSL -o install.sh https://raw.githubusercontent.com/not-first/yams/v3/src/install.sh
+curl -fsSL -o install.sh https://raw.githubusercontent.com/rogsme/yams/v4/src/install.sh
 ```
 
 ### 2. Start the installer
@@ -288,7 +291,11 @@ If you want to use a VPN (strongly recommended):
    VPN service? (with spaces) [protonvpn]:
    ```
    - Press Enter for ProtonVPN (recommended)
-   - Or enter your VPN provider's name exactly as shown in the Gluetun documentation
+   - Or:
+     - Head to the YAMS [Torrenting and VPNs](/docs/fundamentals/torrenting-and-vpns/) page to see a list of supported providers
+     - Click on your provider to see the Gluetun documentation for it
+     - Enter your VPN provider's name **exactly** as shown in the Gluetun documentation as the value of `VPN_SERVICE_PROVIDER` in the Gluetun example compose file
+       - For example, if I see `VPN_SERVICE_PROVIDER=private internet access` in the Gluetun documentation, I would enter `private internet access` here.
 
 3. Choose your VPN protocol:
    ```bash
@@ -440,11 +447,8 @@ Next, the installer will ask:
 
 ```bash
 Port forwarding allows for better connectivity in certain applications.
-
 However, not all VPN providers support this feature.
-
 Please check your VPN provider's documentation to see if they support port forwarding.
-
 Enable port forwarding? (y/N) [Default = n]:
 ```
 

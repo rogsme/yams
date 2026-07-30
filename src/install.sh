@@ -30,6 +30,7 @@ readonly SUPPORTED_MEDIA_SERVICES=("jellyfin" "emby" "plex")
 readonly DEFAULT_MEDIA_SERVICE="jellyfin"
 readonly DEFAULT_VPN_SERVICE="protonvpn"
 readonly MEDIA_SUBDIRS=("tvshows" "movies" "music" "books" "downloads/usenet/complete" "downloads/usenet/incomplete" "downloads/torrents" "blackhole")
+dozzle_bootstrap_password=""
 
 # Color codes
 readonly RED='\033[0;31m'
@@ -39,7 +40,7 @@ readonly NC='\033[0m' # No Color
 
 # Dependencies
 readonly REQUIRED_COMMANDS=("curl" "sed" "awk")
-readonly REPO_RAW_URL="https://raw.githubusercontent.com/not-first/yams/v4/src"
+readonly REPO_RAW_URL="https://raw.githubusercontent.com/rogsme/yams/v4/src"
 
 log_success() {
     echo -e "${GREEN}$1${NC}"
@@ -74,6 +75,22 @@ create_and_verify_directory() {
     if [ ! -w "$dir" ] || [ ! -r "$dir" ]; then
         log_error "Directory \"$dir\" is not writable or readable. Check permissions ❌"
     fi
+}
+
+confirm_configuration_overwrite() {
+    local install_dir="$1"
+    local file
+
+    for file in .env docker-compose.yaml docker-compose.custom.yaml yams; do
+        if [ -e "$install_dir/$file" ]; then
+            log_warning "Existing YAMS configuration found in $install_dir."
+            read -p "Overwrite the existing configuration? (y/N) [Default = n]: " overwrite_configuration
+            overwrite_configuration=${overwrite_configuration:-"n"}
+            [ "${overwrite_configuration,,}" = "y" ] || \
+                log_error "Installation cancelled without changing the existing configuration"
+            return
+        fi
+    done
 }
 
 setup_directory_structure() {
@@ -260,16 +277,30 @@ configure_vpn() {
     vpn_service=${vpn_service:-$DEFAULT_VPN_SERVICE}
     vpn_service=$(echo "$vpn_service" | awk '{print tolower($0)}')
 
+    local default_vpn_type="openvpn"
+    if [ "$vpn_service" = "mullvad" ]; then
+        default_vpn_type="wireguard"
+    fi
+
     echo
     log_info "VPN type selection:"
-    log_info "  openvpn:  Default. Works with most providers."
-    log_warning "  wireguard: Only available for some providers. Only pick if you have your WireGuard credentials ready."
-    read -p "VPN type? (openvpn/wireguard) [Default = openvpn]: " vpn_type
-    vpn_type=${vpn_type:-"openvpn"}
+    if [ "$vpn_service" = "mullvad" ]; then
+        log_info "  openvpn:  Unsupported by Mullvad."
+        log_info "  wireguard: Required for Mullvad."
+    else
+        log_info "  openvpn:  Default. Works with most providers."
+        log_warning "  wireguard: Only available for some providers. Only pick if you have your WireGuard credentials ready."
+    fi
+    read -p "VPN type? (openvpn/wireguard) [Default = $default_vpn_type]: " vpn_type
+    vpn_type=${vpn_type:-"$default_vpn_type"}
     vpn_type=$(echo "$vpn_type" | awk '{print tolower($0)}')
 
     if [ "$vpn_type" != "openvpn" ] && [ "$vpn_type" != "wireguard" ]; then
         log_error "Invalid VPN type. Choose \"openvpn\" or \"wireguard\""
+    fi
+
+    if [ "$vpn_service" = "mullvad" ] && [ "$vpn_type" != "wireguard" ]; then
+        log_error "Mullvad requires WireGuard. Choose \"wireguard\"."
     fi
 
     wg_private_key=""
@@ -356,6 +387,9 @@ EOF
     # Port forwarding configuration
     if [ "$is_protonvpn_free_tier" = "y" ]; then
         log_warning "Port forwarding is automatically disabled for ProtonVPN Free Tier accounts"
+        enable_port_forwarding="n"
+    elif [ "$vpn_service" = "mullvad" ]; then
+        log_warning "Port forwarding is not supported by Mullvad and has been disabled"
         enable_port_forwarding="n"
     else
         echo
@@ -449,6 +483,7 @@ get_installation_paths() {
     read -p "Installation directory? [$DEFAULT_INSTALL_DIR]: " install_directory
     install_directory=${install_directory:-$DEFAULT_INSTALL_DIR}
     create_and_verify_directory "$install_directory" "installation"
+    confirm_configuration_overwrite "$install_directory"
 
     read -p "Media directory? [$DEFAULT_MEDIA_DIR]: " media_directory
     media_directory=${media_directory:-$DEFAULT_MEDIA_DIR}
@@ -546,7 +581,7 @@ update_configuration_files() {
             sed -i 's|#- FREE_ONLY=true|- FREE_ONLY=true|' "$filename"
             sed -i "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=off|g" "$filename"
             sed -i "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=off # ProtonVPN Free Tier unsupported|g" "$filename"
-        else
+            else
             sed -i "s|PORT_FORWARD_ONLY=on|PORT_FORWARD_ONLY=$port_forward_settings|g" "$filename"
             sed -i "s|VPN_PORT_FORWARDING=on|VPN_PORT_FORWARDING=$port_forward_settings|g" "$filename"
         fi
@@ -631,6 +666,39 @@ install_cli() {
     fi
 }
 
+setup_dozzle_users() {
+    local dozzle_config_dir="$install_directory/config/dozzle"
+    local dozzle_users_file="$dozzle_config_dir/users.yml"
+    local dozzle_password_file="$dozzle_config_dir/bootstrap-password.txt"
+    mkdir -p "$dozzle_config_dir"
+
+    if [ -s "$dozzle_users_file" ]; then
+        if [ -r "$dozzle_password_file" ]; then
+            dozzle_bootstrap_password=$(< "$dozzle_password_file")
+        fi
+        log_info "Keeping existing Dozzle users.yml"
+        return
+    fi
+
+    dozzle_bootstrap_password="yams-$(< /proc/sys/kernel/random/uuid)"
+    if ! docker run --rm amir20/dozzle:latest generate yams \
+        --password "$dozzle_bootstrap_password" --user-roles none > "$dozzle_users_file"; then
+        log_error "Failed to create Dozzle bootstrap user"
+    fi
+    printf '%s\n' "$dozzle_bootstrap_password" > "$dozzle_password_file"
+    chmod 600 "$dozzle_users_file" "$dozzle_password_file" || \
+        log_error "Failed to secure Dozzle bootstrap credentials"
+
+    log_success "Dozzle users.yml created ✅"
+}
+
+show_dozzle_bootstrap_credentials() {
+    [ -n "$dozzle_bootstrap_password" ] || return 0
+    log_info "Dozzle bootstrap username: yams"
+    log_info "Dozzle bootstrap password: $dozzle_bootstrap_password"
+    log_warning "Replace the bootstrap user, then remove $install_directory/config/dozzle/bootstrap-password.txt"
+}
+
 set_permissions() {
     local dirs=("$media_directory" "$install_directory" "$install_directory/config")
 
@@ -675,6 +743,10 @@ log_info "Configuring the docker-compose file for user \"$username\" in \"$insta
 copy_configuration_files
 update_configuration_files
 
+# Setup initial Dozzle user
+setup_dozzle_users
+show_dozzle_bootstrap_credentials
+
 log_success "Everything installed correctly! 🎉"
 
 # Start services
@@ -715,6 +787,7 @@ EOF
 
 log_success "All done!✅  Enjoy YAMS!"
 log_info "You can check the installation in $install_directory"
+show_dozzle_bootstrap_credentials
 log_info "========================================================"
 log_info "Everything should be running now! To check everything running, go to:"
 echo
@@ -730,7 +803,7 @@ running_services_location > ~/yams_services.txt
 log_info "========================================================"
 echo
 log_info "To configure YAMS, check out the documentation at"
-log_info "https://yams.media/config ENSURE THIS LINK IS CORRECT"
+log_info "https://yams.media/docs/configure/dozzle/"
 echo
 log_info "Make sure to enter your server's local IP, config and media directories into the documentation for the best experience"
 log_info "========================================================"

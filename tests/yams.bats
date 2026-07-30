@@ -342,7 +342,7 @@ make_update_fixture() {
     grep -Fxq "$expected_install" "$CLI"
     [ -x "$CLI" ]
     bash -n "$CLI"
-    grep -Fq 'https://raw.githubusercontent.com/not-first/yams/v4/src/yams' "$YAMS_CURL_LOG"
+    grep -Fq 'https://raw.githubusercontent.com/rogsme/yams/v4/src/yams' "$YAMS_CURL_LOG"
     grep -Fq $'sudo\tinstall\t' "$YAMS_SUDO_LOG"
     [ ! -e /tmp/yams_update.sh ]
 }

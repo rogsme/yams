@@ -107,6 +107,10 @@ While you're here, change that temporary password to something more secure:
 
 {{< image src="/pics/qbittorrent/qbittorrent-7.png" alt="" title="" loading="auto" >}}
 
+If you want YAMS to keep qBittorrent's port updated automatically, also generate a qBittorrent API key here and copy it into your YAMS `.env` file as `QBITTORRENT_API_KEY`. Then uncomment the qBittorrent port-forwarding lines in `docker-compose.yaml`.
+
+The API key lives under the "API Key" section in Web UI settings and is used by Gluetun to authenticate the automatic request to change the port.
+
 ### Configuring Network Settings
 
 On the "Advanced" tab, make sure your Network interface is set to `tun0`. This ensures qBittorrent always uses the VPN connection and stops if the VPN goes down.
@@ -120,6 +124,8 @@ Finally, scroll to the bottom and click "Save".
 ### Port Forwarding 🚀
 
 Want faster downloads? YAMS supports automatic port forwarding! Check out our [Port Forwarding Guide](/docs/advanced/concept-explanations/vpn/) to supercharge your download speeds.
+
+This requires `QBITTORRENT_API_KEY` in your `.env` file and the qBittorrent port-forwarding callback lines uncommented in `docker-compose.yaml`.
 
 {{< image src="/pics/qbittorrent/advanced-port-forwarding-1.png" alt="" title="" loading="auto" >}}
 
