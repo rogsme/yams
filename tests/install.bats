@@ -76,8 +76,9 @@ EOF
     [ "$status" -eq 0 ]
     first_install=$INSTALL_DIR
     grep -Fxq '        roles: none' "$first_install/config/dozzle/users.yml"
+    [ "$(stat -c %a "$first_install/config/dozzle/bootstrap-password.txt")" = 600 ]
     assert_output_contains 'Dozzle bootstrap username: yams'
-    assert_output_contains 'Dozzle bootstrap password: yams-'
+    assert_output_contains "Dozzle bootstrap password: $(< "$first_install/config/dozzle/bootstrap-password.txt")"
 
     INSTALL_DIR="$BATS_TEST_TMPDIR/install-two"
     install_without_vpn
@@ -323,6 +324,8 @@ EOF
 
     [ "$status" -eq 1 ]
     assert_output_contains 'Failed to start YAMS services'
+    [ -s "$INSTALL_DIR/config/dozzle/bootstrap-password.txt" ]
+    assert_output_contains "Dozzle bootstrap password: $(< "$INSTALL_DIR/config/dozzle/bootstrap-password.txt")"
     [ ! -e "$YAMS_SYSTEM_BIN/yams" ]
     [ ! -e "$HOME/yams_services.txt" ]
 }

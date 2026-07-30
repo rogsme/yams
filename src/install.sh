@@ -669,9 +669,13 @@ install_cli() {
 setup_dozzle_users() {
     local dozzle_config_dir="$install_directory/config/dozzle"
     local dozzle_users_file="$dozzle_config_dir/users.yml"
+    local dozzle_password_file="$dozzle_config_dir/bootstrap-password.txt"
     mkdir -p "$dozzle_config_dir"
 
     if [ -s "$dozzle_users_file" ]; then
+        if [ -r "$dozzle_password_file" ]; then
+            dozzle_bootstrap_password=$(< "$dozzle_password_file")
+        fi
         log_info "Keeping existing Dozzle users.yml"
         return
     fi
@@ -681,9 +685,18 @@ setup_dozzle_users() {
         --password "$dozzle_bootstrap_password" --user-roles none > "$dozzle_users_file"; then
         log_error "Failed to create Dozzle bootstrap user"
     fi
-    chmod 600 "$dozzle_users_file" || log_error "Failed to secure Dozzle users.yml"
+    printf '%s\n' "$dozzle_bootstrap_password" > "$dozzle_password_file"
+    chmod 600 "$dozzle_users_file" "$dozzle_password_file" || \
+        log_error "Failed to secure Dozzle bootstrap credentials"
 
     log_success "Dozzle users.yml created ✅"
+}
+
+show_dozzle_bootstrap_credentials() {
+    [ -n "$dozzle_bootstrap_password" ] || return 0
+    log_info "Dozzle bootstrap username: yams"
+    log_info "Dozzle bootstrap password: $dozzle_bootstrap_password"
+    log_warning "Replace the bootstrap user, then remove $install_directory/config/dozzle/bootstrap-password.txt"
 }
 
 set_permissions() {
@@ -732,6 +745,7 @@ update_configuration_files
 
 # Setup initial Dozzle user
 setup_dozzle_users
+show_dozzle_bootstrap_credentials
 
 log_success "Everything installed correctly! 🎉"
 
@@ -773,11 +787,7 @@ EOF
 
 log_success "All done!✅  Enjoy YAMS!"
 log_info "You can check the installation in $install_directory"
-if [ -n "$dozzle_bootstrap_password" ]; then
-    log_info "Dozzle bootstrap username: yams"
-    log_info "Dozzle bootstrap password: $dozzle_bootstrap_password"
-    log_warning "Replace the Dozzle bootstrap user after signing in."
-fi
+show_dozzle_bootstrap_credentials
 log_info "========================================================"
 log_info "Everything should be running now! To check everything running, go to:"
 echo
