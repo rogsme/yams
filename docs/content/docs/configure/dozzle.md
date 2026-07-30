@@ -22,7 +22,7 @@ Dozzle is a simple log viewer for Docker containers. It allows you to view the l
 
 ### Creating a user
 
-Since Dozzle can perform actions on containers, YAMS creates it with authentication enabled by default, as well as providing an initial user to log in with (`username=yams, password=password`). However, you **should really create your own user** for security reasons (the yams one is just so Dozzle doesn't get locked out).
+Since Dozzle can perform actions on containers, YAMS creates it with authentication enabled by default. A bootstrap `yams` user with a random, unknown password is created so Dozzle doesn't get stuck in a restart loop. You **must create your own user** to access Dozzle.
 
 ADD DYNAMIC COMMAND GENERATOR HERE
 
@@ -46,13 +46,13 @@ Perfect. Open up the Dozzle `users.yml` file in your favorite text editor:
 ```
 nano [[install_path]]/config/dozzle/users.yml
 ```
-and replace **all** the contents with the output from the command above. Save and exit.
+and delete  **all** the contents and replace it with the output from the command above. Save and exit.
 
 Now its time to use the YAMS CLI for the first time: lets restart Dozzle with the new user. Run this command:
 ```bash
 yams restart dozzle
 ```
-Once its fully start again, you are good to go.
+Once its fully started again, you are good to go.
 
 ---
 
@@ -60,7 +60,7 @@ Once its fully start again, you are good to go.
 
 Now the user has been created, we can safely sign in and check Dozzle out!!
 
-THESE LINKS DON"T WORK YET, NEED TO FIGURE OUT HOW TO USE PLACEHOLDERS IN MARKDOWN LINKS
+THESE LINKS DONT WORK YET, NEED TO FIGURE OUT HOW TO USE PLACEHOLDERS IN MARKDOWN LINKS
 Open up your Dozzle interface by using this link: [http://your_ip:8777](http://localhost:8777)
 
 You will see a sign in screen.

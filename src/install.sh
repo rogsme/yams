@@ -648,15 +648,20 @@ install_cli() {
 setup_dozzle_users() {
     local dozzle_config_dir="$install_directory/config/dozzle"
     mkdir -p "$dozzle_config_dir"
-    cat > "$dozzle_config_dir/users.yml" << 'YAMLEOF'
+
+    # bcrypt hash of a throwaway 64-char random string.
+    local dummy_hash='$2b$11$P53Rt1sTmI3ibBv2obK9beZVLy5GSISImwPc.uw933EGX4WlbfN0.'
+
+    cat > "$dozzle_config_dir/users.yml" << YAMLEOF
 users:
-    yams:
-        email: ""
-        name: ""
-        password: $2a$11$l1qPwNA5CQPsa/Z15ZEM0e6wWNO.1rXs5NqBfDHKw4wv12WbuWnIa
-        filter: ""
-        roles: none
+  yams:
+    email: ""
+    name: ""
+    password: $dummy_hash
+    filter: ""
+    roles: none
 YAMLEOF
+
     log_success "Dozzle users.yml created ✅"
 }
 
