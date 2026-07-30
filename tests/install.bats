@@ -40,6 +40,9 @@ VPN_PASSWORD=
 #WIREGUARD_PRESHARED_KEY=
 #WIREGUARD_ADDRESSES=
 
+# service secrets (remember to uncomment when using them!)
+#QBITTORRENT_API_KEY=qbt_your_api_key
+
 EOF
     ) "$INSTALL_DIR/.env"
 }
@@ -138,14 +141,14 @@ EOF
     assert_valid_install jellyfin
     grep -Fxq '      - PORT_FORWARD_ONLY=off' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fxq '      - VPN_PORT_FORWARDING=off' "$INSTALL_DIR/docker-compose.yaml"
-    grep -Fq '      #- VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
-    grep -Fq '      #- VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq "      #- 'VPN_PORT_FORWARDING_UP_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq "      #- 'VPN_PORT_FORWARDING_DOWN_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
 }
 
 @test "defaults Mullvad to WireGuard" {
     run_installer \
         "" "$INSTALL_DIR" "$MEDIA_DIR" y emby \
-        y MULLVAD "" private-key 10.0.0.2/32 "" y y y
+        y MULLVAD "" "" private-key 10.0.0.2/32 "" n y y
 
     [ "$status" -eq 0 ]
     assert_valid_install emby
@@ -153,7 +156,6 @@ EOF
     grep -Fxq 'VPN_TYPE=wireguard' "$INSTALL_DIR/.env"
     grep -Fxq 'WIREGUARD_PRIVATE_KEY=private-key' "$INSTALL_DIR/.env"
     grep -Fxq 'WIREGUARD_ADDRESSES=10.0.0.2/32' "$INSTALL_DIR/.env"
-    assert_output_contains 'Mullvad requires WireGuard'
 }
 
 @test "installs WireGuard and transforms only WireGuard settings" {
@@ -194,8 +196,8 @@ EOF
     assert_valid_install jellyfin
     grep -Fq -- '- FREE_ONLY=true' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fq 'VPN_PORT_FORWARDING=off # ProtonVPN Free Tier unsupported' "$INSTALL_DIR/docker-compose.yaml"
-    grep -Fq '      #- VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
-    grep -Fq '      #- VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq "      #- 'VPN_PORT_FORWARDING_UP_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fq "      #- 'VPN_PORT_FORWARDING_DOWN_COMMAND=" "$INSTALL_DIR/docker-compose.yaml"
     ! grep -q '^VPN_USER=.*+pmp$' "$INSTALL_DIR/.env"
 }
 
@@ -250,7 +252,7 @@ EOF
 @test "rejects an OpenVPN username containing only whitespace" {
     run_installer \
         "" "$INSTALL_DIR" "$MEDIA_DIR" y jellyfin \
-        y mullvad openvpn "" '   '
+        y protonvpn openvpn n "" '   '
 
     [ "$status" -eq 1 ]
     assert_output_contains 'VPN username cannot be empty'
