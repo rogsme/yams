@@ -77,6 +77,22 @@ create_and_verify_directory() {
     fi
 }
 
+confirm_configuration_overwrite() {
+    local install_dir="$1"
+    local file
+
+    for file in .env docker-compose.yaml docker-compose.custom.yaml yams; do
+        if [ -e "$install_dir/$file" ]; then
+            log_warning "Existing YAMS configuration found in $install_dir."
+            read -p "Overwrite the existing configuration? (y/N) [Default = n]: " overwrite_configuration
+            overwrite_configuration=${overwrite_configuration:-"n"}
+            [ "${overwrite_configuration,,}" = "y" ] || \
+                log_error "Installation cancelled without changing the existing configuration"
+            return
+        fi
+    done
+}
+
 setup_directory_structure() {
     local media_dir="$1"
 
@@ -467,6 +483,7 @@ get_installation_paths() {
     read -p "Installation directory? [$DEFAULT_INSTALL_DIR]: " install_directory
     install_directory=${install_directory:-$DEFAULT_INSTALL_DIR}
     create_and_verify_directory "$install_directory" "installation"
+    confirm_configuration_overwrite "$install_directory"
 
     read -p "Media directory? [$DEFAULT_MEDIA_DIR]: " media_directory
     media_directory=${media_directory:-$DEFAULT_MEDIA_DIR}

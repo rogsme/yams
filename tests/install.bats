@@ -236,6 +236,22 @@ EOF
     [ ! -e "$MEDIA_DIR" ]
 }
 
+@test "does not overwrite existing configuration without confirmation" {
+    mkdir -p "$INSTALL_DIR"
+    for file in .env docker-compose.yaml docker-compose.custom.yaml yams; do
+        printf 'keep-%s\n' "$file" > "$INSTALL_DIR/$file"
+    done
+
+    run_installer "" "$INSTALL_DIR" n
+
+    [ "$status" -eq 1 ]
+    assert_output_contains 'Installation cancelled without changing the existing configuration'
+    for file in .env docker-compose.yaml docker-compose.custom.yaml yams; do
+        grep -Fxq "keep-$file" "$INSTALL_DIR/$file"
+    done
+    [ ! -e "$MEDIA_DIR" ]
+}
+
 @test "rejects an unsupported media service" {
     run_installer "" "$INSTALL_DIR" "$MEDIA_DIR" y kodi
 
