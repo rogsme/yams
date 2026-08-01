@@ -71,23 +71,18 @@ EOF
     assert_output_contains 'https://yams.media/docs/configure/dozzle/'
 }
 
-@test "creates unique Dozzle bootstrap credentials" {
+@test "creates an unusable Dozzle bootstrap user" {
     install_without_vpn
 
     [ "$status" -eq 0 ]
-    first_install=$INSTALL_DIR
-    grep -Fxq '        roles: none' "$first_install/config/dozzle/users.yml"
-    [ "$(stat -c %a "$first_install/config/dozzle/bootstrap-password.txt")" = 600 ]
-    assert_command "$YAMS_DOCKER_LOG" docker run --rm amir20/dozzle:latest generate yams \
-        --password "$(< "$first_install/config/dozzle/bootstrap-password.txt")" --user-roles none
-    assert_output_contains 'Dozzle bootstrap username: yams'
-    assert_output_contains "Dozzle bootstrap password: $(< "$first_install/config/dozzle/bootstrap-password.txt")"
-
-    INSTALL_DIR="$BATS_TEST_TMPDIR/install-two"
-    install_without_vpn
-
-    [ "$status" -eq 0 ]
-    ! cmp -s "$first_install/config/dozzle/users.yml" "$INSTALL_DIR/config/dozzle/users.yml"
+    grep -Fxq '  yams:' "$INSTALL_DIR/config/dozzle/users.yml"
+    grep -Fxq '    password: $2b$11$YaGI90TS5NAFFNM94LyGSeTxh4bXrmd4o2MU.blnaN8.d51YWTVJC' \
+        "$INSTALL_DIR/config/dozzle/users.yml"
+    grep -Fxq '    roles: none' "$INSTALL_DIR/config/dozzle/users.yml"
+    [ "$(stat -c %a "$INSTALL_DIR/config/dozzle/users.yml")" = 600 ]
+    [ ! -e "$INSTALL_DIR/config/dozzle/bootstrap-password.txt" ]
+    ! grep -Fq 'Dozzle bootstrap password:' <<<"$output"
+    ! grep -Fq $'\tdocker\trun\t' "$YAMS_DOCKER_LOG"
 }
 
 @test "keeps the custom Compose template unchanged and uses it at startup" {
@@ -329,8 +324,8 @@ EOF
 
     [ "$status" -eq 1 ]
     assert_output_contains 'Failed to start YAMS services'
-    [ -s "$INSTALL_DIR/config/dozzle/bootstrap-password.txt" ]
-    assert_output_contains "Dozzle bootstrap password: $(< "$INSTALL_DIR/config/dozzle/bootstrap-password.txt")"
+    [ ! -e "$INSTALL_DIR/config/dozzle/bootstrap-password.txt" ]
+    ! grep -Fq 'Dozzle bootstrap password:' <<<"$output"
     [ ! -e "$YAMS_SYSTEM_BIN/yams" ]
     [ ! -e "$HOME/yams_services.txt" ]
 }
