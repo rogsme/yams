@@ -1,3 +1,46 @@
+# YAMS v4 TODO
+- [ ] Finalise installer script and templates
+- [ ] Website
+  - [ ] Website content
+    - [ ] Main guide
+      - [ ] Dozzle
+      - [ ] qBittorrent
+      - [ ] SABnzbd
+      - [ ] Radarr
+      - [ ] Sonarr
+      - [ ] Lidarr
+      - [ ] Prowlarr
+      - [ ] Bazarr
+      - [ ] Jellyfin
+      - [ ] Emby
+      - [ ] Plex
+      - [ ] Running everything together
+      - [ ] Recommendations
+    - [ ] Write guide on moving location
+    - [ ] Update remote access guide
+    - [ ] Update portainer guide
+    - [ ] Update Prowlarr guide to use http proxy
+    - [ ] Write port forwarding page
+  - [ ] Website functionality
+    - [ ] Film asciinema of setup process for use
+    - [ ] Create new landing page
+    - [ ] Add dark theme
+    - [ ] Finalise layout
+      - [ ] Reposition links to be better
+      - [ ] Fix colours and structure
+    - [ ] Add unami analytics
+    - [ ] Finalise placeholders
+      - [ ] Allow use in markdown links to open in new tab
+      - [ ] Allow clicking to edit
+    - [ ] Add dynamic dozzle user generation command + any other interactive components
+- [ ] Add proper website deploying
+- [ ] Simplify/update main REPO readme
+- [ ] Clean up old PRs and issues on main repos
+- [ ] Get community feedback!
+
+
+
+---
 # YAMS: Yet Another Media Server
 
 <img src="https://visitor-badge.laobi.icu/badge?page_id=rogs.yams" alt="visitor badge"/>
