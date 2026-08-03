@@ -14,29 +14,31 @@
       - [ ] Jellyfin
       - [ ] Emby
       - [ ] Plex
-      - [ ] Running everything together
-      - [ ] Recommendations
-    - [ ] Write guide on moving location
-    - [ ] Update remote access guide
-    - [ ] Update portainer guide
+      - [ ] Update running everything together
+      - [ ] Revamp recommendations
+    - [ ] Write guide on moving install/media location
+    - [ ] Change wording of remote access guide
+    - [ ] Update portainer guide to account for the fact it is now an optional addon
     - [ ] Update Prowlarr guide to use http proxy
-    - [ ] Write port forwarding page
+    - [ ] Write port forwarding page (how to enable/disable it, how to automatically change the forwarded port)
   - [ ] Website functionality
-    - [ ] Film asciinema of setup process for use
+    - [ ] Film asciinema of setup process for use on landing + what is YAMS page
     - [ ] Create new landing page
     - [ ] Add dark theme
     - [ ] Finalise layout
-      - [ ] Reposition links to be better
-      - [ ] Fix colours and structure
-    - [ ] Add unami analytics
-    - [ ] Finalise placeholders
-      - [ ] Allow use in markdown links to open in new tab
-      - [ ] Allow clicking to edit
+      - [ ] Reposition links to be in a better spot
+      - [ ] Fix colours and structure to be a true YAMS-like theme
+    - [ ] Add Unami analytics
+    - [ ] Finalise placeholder functionality
+      - [ ] Allow use in markdown links to open in new tab (use these for service/dozzle links directly in docs)
+      - [ ] Allow clicking to redirect to editing box
     - [ ] Add dynamic dozzle user generation command + any other interactive components
 - [ ] Add proper website deploying
 - [ ] Simplify/update main REPO readme
-- [ ] Clean up old PRs and issues on main repos
+- [ ] Update CONTRIBUTING.md + CODE_OF_CONDUCT.md if needed
 - [ ] Get community feedback!
+- [ ] Consider/clean up old outdated PRs and issues on main repos
+
 
 
 
