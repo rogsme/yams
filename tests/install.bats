@@ -345,3 +345,13 @@ EOF
     assert_command "$YAMS_SUDO_LOG" sudo apt update
     refute_command "$YAMS_SUDO_LOG" sudo apt install -y awk
 }
+
+@test "revalidates commands after dependency installation" {
+    export YAMS_MISSING_COMMAND=awk
+    run_installer y
+
+    [ "$status" -eq 1 ]
+    assert_output_contains 'Package installation completed, but required command "awk" is still unavailable'
+    assert_command "$YAMS_SUDO_LOG" sudo apt update
+    assert_command "$YAMS_SUDO_LOG" sudo apt install -y awk
+}
