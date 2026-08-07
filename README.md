@@ -1,3 +1,74 @@
+# YAMS v4 TODO
+- [ ] Finalise installer script and templates
+- [ ] Website
+  - [ ] Website content
+    - [ ] Main guide
+      - [ ] Dozzle
+      - [ ] qBittorrent
+      - [ ] SABnzbd
+      - [ ] Radarr
+      - [ ] Sonarr
+      - [ ] Lidarr
+      - [ ] Prowlarr
+      - [ ] Bazarr
+      - [ ] Jellyfin
+      - [ ] Emby
+      - [ ] Plex
+      - [ ] Update running everything together
+      - [ ] Revamp recommendations
+    - [ ] Write guide on moving install/media location
+    - [ ] Change wording of remote access guide
+    - [ ] Update portainer guide to account for the fact it is now an optional addon
+    - [ ] Update Prowlarr guide to use http proxy
+    - [ ] Write port forwarding page (how to enable/disable it, how to automatically change the forwarded port)
+  - [ ] Website functionality
+    - [ ] Film asciinema of setup process for use on landing + what is YAMS page
+    - [ ] Create new landing page
+    - [ ] Add dark theme
+    - [ ] Finalise layout
+      - [ ] Reposition links to be in a better spot
+      - [ ] Fix colours and structure to be a true YAMS-like theme
+    - [ ] Add Unami analytics
+    - [ ] Finalise placeholder functionality
+      - [ ] Allow use in markdown links to open in new tab (use these for service/dozzle links directly in docs)
+      - [ ] Allow clicking to redirect to editing box
+    - [ ] Add dynamic dozzle user generation command + any other interactive components
+    - [ ] Add copy button to command code blocks
+- [ ] Add proper website deploying
+- [ ] Simplify/update main REPO readme
+- [ ] Update CONTRIBUTING.md + CODE_OF_CONDUCT.md if needed
+- [ ] Get community feedback!
+- [ ] Consider/clean up old outdated PRs and issues on main repos
+
+## Changelog
+
+- Combined guide and script repositories into one, with docs inside `/docs` and installer-related files inside of `/src`
+- Installer script related changes:
+  - Now the official Docker installation script is utilised for Docker installation
+  - Full repository no longer required to be locally cloned to run installer, only the main script is needed
+  - Lidarr + Sabnzbd can be disabled in the installer script
+  - New `TZ` variable is created and fed to containers instead
+  - Wireguard can be enabled inside the installer itself instead of only OpenVPN
+- CLI changes
+  - Added update comment to update the CLI from source
+  -
+- Stack changes
+  - Removal of an explicitly defined YAMS network and IPs, simplifying the compose greatly
+  - Dozzle is now utilised instead of Portainer
+  - "Prowlarr behind Gluetun" recommendation now uses Gluetun's HTTP proxy instead of network bind
+  - Added `TZ` variable which is used instead of a localtime mount
+  - Wireguard and port forwarding support in the *default* YAMS installer + env files
+- Guide
+  - New Hugo theme allowing better code blocks, and a layout more friendly to YAM's expanding guides!
+  - New 'Fundamentals' section detailing basics of underlying technologies
+  - **Every page** has been updated
+    - Main setup guides have had their steps and screenshots updated
+    - Advanced section has been grouped into sections and updated for the Docker differences
+    - Clearer descriptions of what YAMS actually is on main pages
+  - New 'placeholder' feature allowing the guide to adapt to the media and installation paths of each user, allowing direct copying of commands and follow of steps!
+
+
+---
 # YAMS: Yet Another Media Server
 
 <img src="https://visitor-badge.laobi.icu/badge?page_id=rogs.yams" alt="visitor badge"/>

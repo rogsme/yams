@@ -137,6 +137,13 @@ check_dependencies() {
             if ! (sudo apt update && sudo apt install -y "${missing_packages[@]}"); then
                 log_error "Failed to install missing packages. Please install them manually: ${missing_packages[*]}"
             fi
+
+            for pkg in "${missing_packages[@]}"; do
+                if ! command -v "$pkg" &> /dev/null; then
+                    log_error "Package installation completed, but required command \"$pkg\" is still unavailable. Please install it manually."
+                fi
+            done
+
             log_success "Successfully installed missing packages ✅"
         else
             log_error "Please install the required packages manually: ${missing_packages[*]}"
