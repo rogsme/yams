@@ -667,6 +667,7 @@ install_cli() {
     echo
     log_info "Installing YAMS CLI..."
     if sudo cp "$install_directory/yams" /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
+        sudo rm -f "$install_directory/yams"  # remove the original file in the installation directory since it has been installed succesfully
         log_success "YAMS CLI installed successfully ✅"
     else
         log_error "Failed to install YAMS CLI. Check permissions ❌"
