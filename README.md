@@ -16,7 +16,7 @@
       - [ ] Plex
       - [ ] Update running everything together
       - [ ] Revamp recommendations
-    - [ ] Write guide on moving install/media location
+    - [x] Write guide on moving install/media location
     - [ ] Change wording of remote access guide
     - [ ] Update portainer guide to account for the fact it is now an optional addon
     - [ ] Update Prowlarr guide to use http proxy
