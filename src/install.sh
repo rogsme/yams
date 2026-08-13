@@ -544,7 +544,6 @@ update_configuration_files() {
            -e "s|<your_PGID>|$pgid|g" \
            -e "s|<your_timezone>|$tz|g" \
            -e "s|<media_directory>|$media_directory|g" \
-           -e "s|<media_service>|$media_service|g" \
            -e "s|<install_directory>|$install_directory|g" \
            -e "s|vpn_enabled|$setup_vpn|g" \
            -e 's|^#WIREGUARD_PRIVATE_KEY=.*|#WIREGUARD_PRIVATE_KEY=|' \
@@ -563,9 +562,9 @@ update_configuration_files() {
     # Handle Plex-Specific Networking
     if [ "$media_service" == "plex" ]; then
         log_info "Configuring Plex-specific settings..."
-        sed -i -e 's|#network_mode: host # plex|network_mode: host # plex|g' \
-               -e 's|ports: # comment out if using plex|#ports: # comment out if using plex|g' \
-               -e 's|- 8096:8096 # plex|#- 8096:8096 # plex|g' "$filename" || \
+        sed -i -e 's|# network_mode: host # only required for Plex|network_mode: host # required for Plex|g' \
+               -e 's|ports: # not needed for Plex|# ports: # not needed for Plex|g' \
+               -e 's|      - 8096:8096 # required for Jellyfin and Emby|    # - 8096:8096 # not needed for Plex|g' "$filename" || \
             log_error "Failed to configure Plex settings"
     fi
 

@@ -25,7 +25,6 @@ PGID=$(id -g)
 TZ=UTC
 MEDIA_DIRECTORY=$MEDIA_DIR
 INSTALL_DIRECTORY=$INSTALL_DIR
-MEDIA_SERVICE=jellyfin
 
 # VPN configuration
 VPN_SERVICE=
@@ -42,7 +41,6 @@ VPN_PASSWORD=
 
 # service secrets (remember to uncomment when using them!)
 #QBITTORRENT_API_KEY=qbt_your_api_key
-
 EOF
     ) "$INSTALL_DIR/.env"
 }
@@ -108,11 +106,26 @@ EOF
 
     [ "$status" -eq 0 ]
     assert_valid_install plex
-    grep -Fxq '    network_mode: host # plex' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '    network_mode: host # required for Plex' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fxq '    #network_mode: "service:gluetun"' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '    image: lscr.io/linuxserver/plex' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '    container_name: plex' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '    # ports: # not needed for Plex' "$INSTALL_DIR/docker-compose.yaml"
     [ "$(grep -c 'profiles: \["disabled"\]' "$INSTALL_DIR/docker-compose.yaml")" -eq 3 ]
     ! grep -Eq '^[[:space:]]+- 8096:8096' "$INSTALL_DIR/docker-compose.yaml"
     grep -Fxq 'plex: http://192.0.2.10:32400/web' "$HOME/yams_services.txt"
+}
+
+@test "installs Jellyfin with media service ports and without host networking" {
+    install_without_vpn
+
+    [ "$status" -eq 0 ]
+    assert_valid_install jellyfin
+    grep -Fxq '    image: lscr.io/linuxserver/jellyfin' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '    container_name: jellyfin' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '    # network_mode: host # only required for Plex' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '    ports: # not needed for Plex' "$INSTALL_DIR/docker-compose.yaml"
+    grep -Fxq '      - 8096:8096 # required for Jellyfin and Emby' "$INSTALL_DIR/docker-compose.yaml"
 }
 
 @test "installs OpenVPN with valid optional port forwarding callbacks" {
