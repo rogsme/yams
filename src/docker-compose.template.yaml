@@ -1,8 +1,8 @@
 services:
   # <media_service> is used to serve your media to the client devices
   <media_service>:
-    image: lscr.io/linuxserver/${MEDIA_SERVICE}
-    container_name: ${MEDIA_SERVICE}
+    image: lscr.io/linuxserver/<media_service>
+    container_name: <media_service>
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -10,10 +10,10 @@ services:
       - VERSION=docker
     volumes:
       - ${MEDIA_DIRECTORY}:/data
-      - ${INSTALL_DIRECTORY}/config/${MEDIA_SERVICE}:/config
-    #network_mode: host # plex
-    ports: # comment out if using plex
-      - 8096:8096 # plex
+      - ${INSTALL_DIRECTORY}/config/<media_service>:/config
+    # network_mode: host # only required for Plex
+    ports: # not needed for Plex
+      - 8096:8096 # required for Jellyfin and Emby
     restart: unless-stopped
 
   # Gluetun is our VPN client
