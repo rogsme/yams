@@ -65,7 +65,6 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - WEBUI_PORT=8081
-      #- QBITTORRENT_API_KEY=${QBITTORRENT_API_KEY}
     volumes:
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
