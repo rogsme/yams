@@ -50,6 +50,9 @@
           const parent = node.parentElement;
           if (!parent) return NodeFilter.FILTER_REJECT;
           if (parent.closest('script,style,noscript')) return NodeFilter.FILTER_REJECT;
+          // Placeholders inside links are handled separately so their click
+          // event continues to follow the destination link.
+          if (parent.closest('a')) return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         }
       });
@@ -96,6 +99,78 @@
       return null;
     }
 
+    function createPlaceholderSpan(ph, interactive) {
+      const span = document.createElement('span');
+      span.className = 'ph';
+      span.dataset.ph = ph.key;
+      span.textContent = getConfiguredValue(ph);
+      span.title = interactive
+        ? 'Open the installation guide for this value'
+        : 'Uses your configured value';
+
+      if (!interactive) return span;
+
+      span.dataset.target = getPlaceholderTarget(ph);
+      span.setAttribute('role', 'link');
+      span.setAttribute('tabindex', '0');
+
+      span.addEventListener('click', function () {
+        window.location.href = span.dataset.target;
+      });
+
+      span.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          window.location.href = span.dataset.target;
+        }
+      });
+
+      return span;
+    }
+
+    function replaceTextNodePlaceholders(node, interactive) {
+      const text = node.nodeValue || '';
+      const pattern = new RegExp(PLACEHOLDERS.map(ph => escapeRegExp(ph.pattern)).join('|'), 'g');
+      const fragment = document.createDocumentFragment();
+      let lastIndex = 0;
+      let match;
+      let found = false;
+
+      while ((match = pattern.exec(text)) !== null) {
+        found = true;
+        if (match.index > lastIndex) {
+          fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+        }
+        fragment.appendChild(createPlaceholderSpan(phMap[match[0]], interactive));
+        lastIndex = match.index + match[0].length;
+      }
+
+      if (!found) return;
+      if (lastIndex < text.length) {
+        fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+      }
+      node.parentNode.replaceChild(fragment, node);
+    }
+
+    function processLinkPlaceholders() {
+      const pattern = new RegExp(PLACEHOLDERS.map(ph => escapeRegExp(ph.pattern)).join('|'), 'g');
+
+      for (const link of pageContainer.querySelectorAll('a[href]')) {
+        if (!link.dataset.placeholderHref) {
+          link.dataset.placeholderHref = link.getAttribute('href');
+        }
+
+        const template = link.dataset.placeholderHref;
+        link.setAttribute('href', template.replace(pattern, match => getConfiguredValue(phMap[match])));
+
+        const walker = document.createTreeWalker(link, NodeFilter.SHOW_TEXT);
+        const textNodes = [];
+        let node;
+        while ((node = walker.nextNode())) textNodes.push(node);
+        for (const textNode of textNodes) replaceTextNodePlaceholders(textNode, false);
+      }
+    }
+
     function replaceMatches() {
       const textNodes = collectTextNodes();
       if (textNodes.length === 0) return;
@@ -122,26 +197,7 @@
         range.setStart(start.node, start.offset);
         range.setEnd(end.node, end.offset + 1);
 
-        const span = document.createElement('span');
-        span.className = 'ph';
-        span.dataset.ph = item.placeholder.key;
-        span.dataset.target = getPlaceholderTarget(item.placeholder);
-        span.setAttribute('role', 'link');
-        span.setAttribute('tabindex', '0');
-        span.title = 'Open the installation guide for this value';
-        span.textContent = getConfiguredValue(item.placeholder);
-
-        span.addEventListener('click', function () {
-          window.location.href = span.dataset.target;
-        });
-
-        span.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            window.location.href = span.dataset.target;
-          }
-        });
-
+        const span = createPlaceholderSpan(item.placeholder, true);
         range.deleteContents();
         range.insertNode(span);
       }
@@ -149,6 +205,7 @@
 
     function walkAndProcess() {
       restoreSpans();
+      processLinkPlaceholders();
       replaceMatches();
     }
 

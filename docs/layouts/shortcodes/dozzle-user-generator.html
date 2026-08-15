@@ -1,0 +1,65 @@
+<div class="interactive-path-panel dozzle-user-panel" id="dozzle-user-generator">
+  <div class="panel-header">
+    <h3>Generate Your Dozzle User</h3>
+    <p>Enter the details for your new Dozzle user. The command updates as you type!</p>
+  </div>
+
+  <div class="panel-grid panel-grid-3">
+    <div class="input-container">
+      <label for="dozzle-username-input">Username:</label>
+      <input type="text" id="dozzle-username-input" value="admin" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="input-container">
+      <label for="dozzle-password-input">Password:</label>
+      <input type="text" id="dozzle-password-input" value="password" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="input-container">
+      <label for="dozzle-display-name-input">Display Name:</label>
+      <input type="text" id="dozzle-display-name-input" value="Name" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+
+  <div class="dozzle-command-row">
+    <code id="dozzle-command-output"></code>
+    <button type="button" id="dozzle-copy-command">Copy</button>
+  </div>
+  <span class="dozzle-copy-status" id="dozzle-copy-status" role="status" aria-live="polite"></span>
+</div>
+
+<script>
+  (function () {
+    const username = document.getElementById('dozzle-username-input');
+    const password = document.getElementById('dozzle-password-input');
+    const displayName = document.getElementById('dozzle-display-name-input');
+    const output = document.getElementById('dozzle-command-output');
+    const copyButton = document.getElementById('dozzle-copy-command');
+    const copyStatus = document.getElementById('dozzle-copy-status');
+
+    if (!username || !password || !displayName || !output || !copyButton) return;
+
+    const shellQuote = value => `'${value.replaceAll("'", "'\\''")}'`;
+
+    function updateCommand() {
+      const user = username.value.trim() || 'admin';
+      const pass = password.value.trim() || 'password';
+      const name = displayName.value.trim() || 'Name';
+      output.textContent = `docker run -it --rm amir20/dozzle generate ${shellQuote(user)} --password ${shellQuote(pass)} --name ${shellQuote(name)}`;
+    }
+
+    [username, password, displayName].forEach(input => input.addEventListener('input', updateCommand));
+
+    copyButton.addEventListener('click', async function () {
+      try {
+        await navigator.clipboard.writeText(output.textContent);
+        copyStatus.textContent = 'Copied';
+        setTimeout(() => { copyStatus.textContent = ''; }, 1500);
+      } catch (error) {
+        copyStatus.textContent = 'Select the command and copy it manually.';
+      }
+    });
+
+    updateCommand();
+  })();
+</script>

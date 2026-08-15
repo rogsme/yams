@@ -185,6 +185,45 @@ pre,
   }
 }
 
+.dozzle-command-row {
+  display: flex;
+  align-items: stretch;
+  margin-top: 1rem;
+  border: 1px solid var(--gray-200);
+  background: var(--body-background);
+
+  code {
+    flex: 1;
+    padding: 0.65rem 0.75rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  button {
+    border: 0;
+    border-left: 1px solid var(--gray-200);
+    padding: 0.5rem 0.75rem;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-weight: bold;
+
+    &:hover,
+    &:focus {
+      color: var(--color-link);
+    }
+  }
+}
+
+.dozzle-copy-status {
+  display: block;
+  min-height: 1.2em;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
 // ── Placeholder substitution indicator ──
 .ph {
   text-decoration: underline dotted;
