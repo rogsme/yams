@@ -30,8 +30,6 @@ readonly SUPPORTED_MEDIA_SERVICES=("jellyfin" "emby" "plex")
 readonly DEFAULT_MEDIA_SERVICE="jellyfin"
 readonly DEFAULT_VPN_SERVICE="protonvpn"
 readonly MEDIA_SUBDIRS=("tvshows" "movies" "music" "books" "downloads/usenet/complete" "downloads/usenet/incomplete" "downloads/torrents" "blackhole")
-dozzle_bootstrap_password=""
-
 # Color codes
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
@@ -675,34 +673,29 @@ install_cli() {
 setup_dozzle_users() {
     local dozzle_config_dir="$install_directory/config/dozzle"
     local dozzle_users_file="$dozzle_config_dir/users.yml"
-    local dozzle_password_file="$dozzle_config_dir/bootstrap-password.txt"
     mkdir -p "$dozzle_config_dir"
 
     if [ -s "$dozzle_users_file" ]; then
-        if [ -r "$dozzle_password_file" ]; then
-            dozzle_bootstrap_password=$(< "$dozzle_password_file")
-        fi
         log_info "Keeping existing Dozzle users.yml"
         return
     fi
 
-    dozzle_bootstrap_password="yams-$(< /proc/sys/kernel/random/uuid)"
-    if ! docker run --rm amir20/dozzle:latest generate yams \
-        --password "$dozzle_bootstrap_password" --user-roles none > "$dozzle_users_file"; then
-        log_error "Failed to create Dozzle bootstrap user"
-    fi
-    printf '%s\n' "$dozzle_bootstrap_password" > "$dozzle_password_file"
-    chmod 600 "$dozzle_users_file" "$dozzle_password_file" || \
+    # bcrypt hash generated from a random 64 character string
+    local dummy_hash='$2b$11$8HxXT0N1zo5yE4Gdkh7Flu0dIj2vo.D9lqpduBpg/frXkySMjb7g6'
+
+    cat > "$dozzle_users_file" << YAMLEOF
+users:
+  yams:
+    email: ""
+    name: ""
+    password: $dummy_hash
+    filter: ""
+    roles: none
+YAMLEOF
+    chmod 600 "$dozzle_users_file" || \
         log_error "Failed to secure Dozzle bootstrap credentials"
 
     log_success "Dozzle users.yml created ✅"
-}
-
-show_dozzle_bootstrap_credentials() {
-    [ -n "$dozzle_bootstrap_password" ] || return 0
-    log_info "Dozzle bootstrap username: yams"
-    log_info "Dozzle bootstrap password: $dozzle_bootstrap_password"
-    log_warning "Replace the bootstrap user, then remove $install_directory/config/dozzle/bootstrap-password.txt"
 }
 
 set_permissions() {
@@ -751,7 +744,6 @@ update_configuration_files
 
 # Setup initial Dozzle user
 setup_dozzle_users
-show_dozzle_bootstrap_credentials
 
 log_success "Everything installed correctly! 🎉"
 
@@ -793,7 +785,6 @@ EOF
 
 log_success "All done!✅  Enjoy YAMS!"
 log_info "You can check the installation in $install_directory"
-show_dozzle_bootstrap_credentials
 log_info "========================================================"
 log_info "Everything should be running now! To check everything running, go to:"
 echo
