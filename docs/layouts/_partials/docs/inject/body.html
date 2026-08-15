@@ -3,9 +3,6 @@
     const pageContainer = document.querySelector('.book-page') || document.querySelector('article') || document.body;
     if (!pageContainer) return;
 
-    const INSTALL_PAGE_URL = '/docs/getting-started/installation/';
-    const INSTALL_PAGE_ANCHOR = '#pre-installation-setup';
-
     const PLACEHOLDERS = [
       { pattern: '[[install_path]]', key: 'install_path', storage: 'install_path', fallback: '/opt/yams' },
       { pattern: '[[media_path]]', key: 'media_path', storage: 'MEDIA_PATH', fallback: '/srv/media' },
@@ -20,10 +17,6 @@
     function getConfiguredValue(ph) {
       const stored = localStorage.getItem(ph.storage);
       return stored || ph.fallback;
-    }
-
-    function getPlaceholderTarget(ph) {
-      return `${INSTALL_PAGE_URL}?focus=${encodeURIComponent(ph.key)}${INSTALL_PAGE_ANCHOR}`;
     }
 
     function isCustomized(ph) {
@@ -99,36 +92,16 @@
       return null;
     }
 
-    function createPlaceholderSpan(ph, interactive) {
+    function createPlaceholderSpan(ph) {
       const span = document.createElement('span');
       span.className = 'ph';
       span.dataset.ph = ph.key;
       span.textContent = getConfiguredValue(ph);
-      span.title = interactive
-        ? 'Open the installation guide for this value'
-        : 'Uses your configured value';
-
-      if (!interactive) return span;
-
-      span.dataset.target = getPlaceholderTarget(ph);
-      span.setAttribute('role', 'link');
-      span.setAttribute('tabindex', '0');
-
-      span.addEventListener('click', function () {
-        window.location.href = span.dataset.target;
-      });
-
-      span.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          window.location.href = span.dataset.target;
-        }
-      });
-
+      span.title = 'Uses your configured value';
       return span;
     }
 
-    function replaceTextNodePlaceholders(node, interactive) {
+    function replaceTextNodePlaceholders(node) {
       const text = node.nodeValue || '';
       const pattern = new RegExp(PLACEHOLDERS.map(ph => escapeRegExp(ph.pattern)).join('|'), 'g');
       const fragment = document.createDocumentFragment();
@@ -141,7 +114,7 @@
         if (match.index > lastIndex) {
           fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
         }
-        fragment.appendChild(createPlaceholderSpan(phMap[match[0]], interactive));
+        fragment.appendChild(createPlaceholderSpan(phMap[match[0]]));
         lastIndex = match.index + match[0].length;
       }
 
@@ -167,7 +140,7 @@
         const textNodes = [];
         let node;
         while ((node = walker.nextNode())) textNodes.push(node);
-        for (const textNode of textNodes) replaceTextNodePlaceholders(textNode, false);
+        for (const textNode of textNodes) replaceTextNodePlaceholders(textNode);
       }
     }
 
@@ -197,7 +170,7 @@
         range.setStart(start.node, start.offset);
         range.setEnd(end.node, end.offset + 1);
 
-        const span = createPlaceholderSpan(item.placeholder, true);
+        const span = createPlaceholderSpan(item.placeholder);
         range.deleteContents();
         range.insertNode(span);
       }

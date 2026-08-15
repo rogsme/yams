@@ -230,5 +230,9 @@ pre,
   text-underline-offset: 2px;
   text-decoration-color: var(--color-link);
   text-decoration-thickness: 1px;
-  cursor: help;
+  cursor: alias;
+}
+
+a .ph {
+  cursor: pointer;
 }
