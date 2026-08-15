@@ -693,7 +693,7 @@ users:
     roles: none
 YAMLEOF
     chmod 600 "$dozzle_users_file" || \
-        log_error "Failed to secure Dozzle bootstrap credentials"
+        log_error "Failed to secure Dozzle users.yml"
 
     log_success "Dozzle users.yml created ✅"
 }
@@ -742,7 +742,7 @@ log_info "Configuring the docker-compose file for user \"$username\" in \"$insta
 copy_configuration_files
 update_configuration_files
 
-# Setup initial Dozzle user
+# Create locked Dozzle placeholder user so simple auth can boot
 setup_dozzle_users
 
 log_success "Everything installed correctly! 🎉"
