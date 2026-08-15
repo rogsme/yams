@@ -27,7 +27,8 @@
     - [x] Add dark theme
     - [ ] Finalise layout
       - [ ] Reposition links to be in a better spot
-      - [ ] Fix colours and structure to be a true YAMS-like theme
+      - [x] Fix colours
+      - [ ] Alter structure of YAMS icon/anything else to feel better
     - [ ] Add Unami analytics
     - [ ] Finalise placeholder functionality
       - [x] Allow use in markdown links to open in new tab (use these for service/dozzle links directly in docs)
