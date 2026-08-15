@@ -24,7 +24,7 @@
   - [ ] Website functionality
     - [ ] Film asciinema of setup process for use on landing + what is YAMS page
     - [ ] Create new landing page
-    - [ ] Add dark theme
+    - [x] Add dark theme
     - [ ] Finalise layout
       - [ ] Reposition links to be in a better spot
       - [ ] Fix colours and structure to be a true YAMS-like theme

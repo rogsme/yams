@@ -45,7 +45,7 @@
           if (parent.closest('script,style,noscript')) return NodeFilter.FILTER_REJECT;
           // Placeholders inside links are handled separately so their click
           // event continues to follow the destination link.
-          if (parent.closest('a')) return NodeFilter.FILTER_REJECT;
+          if (parent.closest('a[href]')) return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         }
       });
