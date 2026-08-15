@@ -30,9 +30,9 @@
       - [ ] Fix colours and structure to be a true YAMS-like theme
     - [ ] Add Unami analytics
     - [ ] Finalise placeholder functionality
-      - [ ] Allow use in markdown links to open in new tab (use these for service/dozzle links directly in docs)
-      - [ ] Allow clicking to redirect to editing box
-    - [ ] Add dynamic dozzle user generation command + any other interactive components
+      - [x] Allow use in markdown links to open in new tab (use these for service/dozzle links directly in docs)
+      - [ ] Think of and implement a good way to edit these values
+    - [x] Add dynamic dozzle user generation command + any other interactive components
     - [ ] Add copy button to command code blocks
 - [ ] Add proper website deploying
 - [ ] Simplify/update main REPO readme

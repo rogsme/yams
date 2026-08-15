@@ -23,9 +23,7 @@
 
   <div class="dozzle-command-row">
     <code id="dozzle-command-output"></code>
-    <button type="button" id="dozzle-copy-command">Copy</button>
   </div>
-  <span class="dozzle-copy-status" id="dozzle-copy-status" role="status" aria-live="polite"></span>
 </div>
 
 <script>
@@ -34,10 +32,8 @@
     const password = document.getElementById('dozzle-password-input');
     const displayName = document.getElementById('dozzle-display-name-input');
     const output = document.getElementById('dozzle-command-output');
-    const copyButton = document.getElementById('dozzle-copy-command');
-    const copyStatus = document.getElementById('dozzle-copy-status');
 
-    if (!username || !password || !displayName || !output || !copyButton) return;
+    if (!username || !password || !displayName || !output) return;
 
     const shellQuote = value => `'${value.replaceAll("'", "'\\''")}'`;
 
@@ -49,16 +45,6 @@
     }
 
     [username, password, displayName].forEach(input => input.addEventListener('input', updateCommand));
-
-    copyButton.addEventListener('click', async function () {
-      try {
-        await navigator.clipboard.writeText(output.textContent);
-        copyStatus.textContent = 'Copied';
-        setTimeout(() => { copyStatus.textContent = ''; }, 1500);
-      } catch (error) {
-        copyStatus.textContent = 'Select the command and copy it manually.';
-      }
-    });
 
     updateCommand();
   })();

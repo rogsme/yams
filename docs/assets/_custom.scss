@@ -195,33 +195,82 @@ pre,
   code {
     flex: 1;
     padding: 0.65rem 0.75rem;
+    padding-right: 3.25rem;
     overflow-x: auto;
     white-space: pre-wrap;
     word-break: break-word;
   }
+}
 
-  button {
-    border: 0;
-    border-left: 1px solid var(--gray-200);
-    padding: 0.5rem 0.75rem;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    font-weight: bold;
+.book-copy-container {
+  position: relative;
+}
 
-    &:hover,
-    &:focus {
-      color: var(--color-link);
+pre.book-copy-container {
+  padding-right: 3.25rem;
+}
+
+.book-copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.35rem;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent;
+  box-shadow: none !important;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.55;
+
+  img {
+    width: 1.1rem;
+    height: 1.1rem;
+    opacity: 0.85;
+  }
+
+  &.is-copied {
+    opacity: 1;
+
+    img {
+      opacity: 1;
+      filter: invert(56%) sepia(55%) saturate(650%) hue-rotate(85deg)
+        brightness(92%) contrast(90%);
+      animation: copy-success-in 120ms ease-out forwards;
+    }
+
+    &.is-copy-fading img {
+      animation: copy-success-out 120ms ease-in forwards;
     }
   }
 }
 
-.dozzle-copy-status {
-  display: block;
-  min-height: 1.2em;
-  margin-top: 0.35rem;
-  font-size: 0.8rem;
-  opacity: 0.7;
+@keyframes copy-success-in {
+  from {
+    transform: scale(0.65);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes copy-success-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.65);
+    opacity: 0;
+  }
 }
 
 // ── Placeholder substitution indicator ──
