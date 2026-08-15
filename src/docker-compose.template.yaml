@@ -65,7 +65,6 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - WEBUI_PORT=8081
-      #- QBITTORRENT_API_KEY=${QBITTORRENT_API_KEY}
     volumes:
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
@@ -110,7 +109,6 @@ services:
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
