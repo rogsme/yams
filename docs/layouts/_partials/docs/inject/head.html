@@ -1,0 +1,10 @@
+<script>
+  (function () {
+    const savedTheme = localStorage.getItem('yams-theme');
+    const theme = savedTheme === 'dark' || savedTheme === 'light'
+      ? savedTheme
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  })();
+</script>

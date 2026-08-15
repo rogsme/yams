@@ -16,7 +16,7 @@
       - [ ] Plex
       - [ ] Update running everything together
       - [ ] Revamp recommendations
-    - [ ] Write guide on moving install/media location
+    - [x] Write guide on moving install/media location
     - [ ] Change wording of remote access guide
     - [ ] Update portainer guide to account for the fact it is now an optional addon
     - [ ] Update Prowlarr guide to use http proxy
@@ -33,7 +33,7 @@
       - [x] Allow use in markdown links to open in new tab (use these for service/dozzle links directly in docs)
       - [ ] Think of and implement a good way to edit these values
     - [x] Add dynamic dozzle user generation command + any other interactive components
-    - [ ] Add copy button to command code blocks
+    - [x] Add copy button to command code blocks
 - [ ] Add proper website deploying
 - [ ] Simplify/update main REPO readme
 - [ ] Update CONTRIBUTING.md + CODE_OF_CONDUCT.md if needed
