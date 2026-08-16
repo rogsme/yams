@@ -30,8 +30,6 @@ readonly SUPPORTED_MEDIA_SERVICES=("jellyfin" "emby" "plex")
 readonly DEFAULT_MEDIA_SERVICE="jellyfin"
 readonly DEFAULT_VPN_SERVICE="protonvpn"
 readonly MEDIA_SUBDIRS=("tvshows" "movies" "music" "books" "downloads/usenet/complete" "downloads/usenet/incomplete" "downloads/torrents" "blackhole")
-dozzle_bootstrap_password=""
-
 # Color codes
 readonly RED='\033[0;31m'
 readonly GREEN='\033[0;32m'
@@ -544,7 +542,6 @@ update_configuration_files() {
            -e "s|<your_PGID>|$pgid|g" \
            -e "s|<your_timezone>|$tz|g" \
            -e "s|<media_directory>|$media_directory|g" \
-           -e "s|<media_service>|$media_service|g" \
            -e "s|<install_directory>|$install_directory|g" \
            -e "s|vpn_enabled|$setup_vpn|g" \
            -e 's|^#WIREGUARD_PRIVATE_KEY=.*|#WIREGUARD_PRIVATE_KEY=|' \
@@ -563,9 +560,9 @@ update_configuration_files() {
     # Handle Plex-Specific Networking
     if [ "$media_service" == "plex" ]; then
         log_info "Configuring Plex-specific settings..."
-        sed -i -e 's|#network_mode: host # plex|network_mode: host # plex|g' \
-               -e 's|ports: # comment out if using plex|#ports: # comment out if using plex|g' \
-               -e 's|- 8096:8096 # plex|#- 8096:8096 # plex|g' "$filename" || \
+        sed -i -e 's|# network_mode: host # only required for Plex|network_mode: host # required for Plex|g' \
+               -e 's|ports: # not needed for Plex|# ports: # not needed for Plex|g' \
+               -e 's|      - 8096:8096 # required for Jellyfin and Emby|    # - 8096:8096 # not needed for Plex|g' "$filename" || \
             log_error "Failed to configure Plex settings"
     fi
 
@@ -676,34 +673,29 @@ install_cli() {
 setup_dozzle_users() {
     local dozzle_config_dir="$install_directory/config/dozzle"
     local dozzle_users_file="$dozzle_config_dir/users.yml"
-    local dozzle_password_file="$dozzle_config_dir/bootstrap-password.txt"
     mkdir -p "$dozzle_config_dir"
 
     if [ -s "$dozzle_users_file" ]; then
-        if [ -r "$dozzle_password_file" ]; then
-            dozzle_bootstrap_password=$(< "$dozzle_password_file")
-        fi
         log_info "Keeping existing Dozzle users.yml"
         return
     fi
 
-    dozzle_bootstrap_password="yams-$(< /proc/sys/kernel/random/uuid)"
-    if ! docker run --rm amir20/dozzle:latest generate yams \
-        --password "$dozzle_bootstrap_password" --user-roles none > "$dozzle_users_file"; then
-        log_error "Failed to create Dozzle bootstrap user"
-    fi
-    printf '%s\n' "$dozzle_bootstrap_password" > "$dozzle_password_file"
-    chmod 600 "$dozzle_users_file" "$dozzle_password_file" || \
-        log_error "Failed to secure Dozzle bootstrap credentials"
+    # bcrypt hash generated from a random 64 character string
+    local dummy_hash='$2b$11$8HxXT0N1zo5yE4Gdkh7Flu0dIj2vo.D9lqpduBpg/frXkySMjb7g6'
+
+    cat > "$dozzle_users_file" << YAMLEOF
+users:
+  yams:
+    email: ""
+    name: ""
+    password: $dummy_hash
+    filter: ""
+    roles: none
+YAMLEOF
+    chmod 600 "$dozzle_users_file" || \
+        log_error "Failed to secure Dozzle users.yml"
 
     log_success "Dozzle users.yml created ✅"
-}
-
-show_dozzle_bootstrap_credentials() {
-    [ -n "$dozzle_bootstrap_password" ] || return 0
-    log_info "Dozzle bootstrap username: yams"
-    log_info "Dozzle bootstrap password: $dozzle_bootstrap_password"
-    log_warning "Replace the bootstrap user, then remove $install_directory/config/dozzle/bootstrap-password.txt"
 }
 
 set_permissions() {
@@ -750,9 +742,8 @@ log_info "Configuring the docker-compose file for user \"$username\" in \"$insta
 copy_configuration_files
 update_configuration_files
 
-# Setup initial Dozzle user
+# Create locked Dozzle placeholder user so simple auth can boot
 setup_dozzle_users
-show_dozzle_bootstrap_credentials
 
 log_success "Everything installed correctly! 🎉"
 
@@ -794,7 +785,6 @@ EOF
 
 log_success "All done!✅  Enjoy YAMS!"
 log_info "You can check the installation in $install_directory"
-show_dozzle_bootstrap_credentials
 log_info "========================================================"
 log_info "Everything should be running now! To check everything running, go to:"
 echo

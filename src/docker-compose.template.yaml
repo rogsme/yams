@@ -1,8 +1,8 @@
 services:
   # <media_service> is used to serve your media to the client devices
   <media_service>:
-    image: lscr.io/linuxserver/${MEDIA_SERVICE}
-    container_name: ${MEDIA_SERVICE}
+    image: lscr.io/linuxserver/<media_service>
+    container_name: <media_service>
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -10,10 +10,10 @@ services:
       - VERSION=docker
     volumes:
       - ${MEDIA_DIRECTORY}:/data
-      - ${INSTALL_DIRECTORY}/config/${MEDIA_SERVICE}:/config
-    #network_mode: host # plex
-    ports: # comment out if using plex
-      - 8096:8096 # plex
+      - ${INSTALL_DIRECTORY}/config/<media_service>:/config
+    # network_mode: host # only required for Plex
+    ports: # not needed for Plex
+      - 8096:8096 # required for Jellyfin and Emby
     restart: unless-stopped
 
   # Gluetun is our VPN client
@@ -42,8 +42,8 @@ services:
       # port forwarding settings
       - PORT_FORWARD_ONLY=on
       - VPN_PORT_FORWARDING=on
-      #- 'VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c ''wget -O- --retry-connrefused --header="Authorization: Bearer ${QBITTORRENT_API_KEY}" --post-data "json={\"listen_port\":{{PORT}},\"current_network_interface\":\"{{VPN_INTERFACE}}\",\"random_port\":false,\"upnp\":false}" http://127.0.0.1:8081/api/v2/app/setPreferences 2>&1'''
-      #- 'VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c ''wget -O- --retry-connrefused --header="Authorization: Bearer ${QBITTORRENT_API_KEY}" --post-data "json={\"listen_port\":0,\"current_network_interface\":\"lo\"}" http://127.0.0.1:8081/api/v2/app/setPreferences 2>&1'''
+      #- 'VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c "wget -O- --retry-connrefused --header=\"Authorization: Bearer ${QBITTORRENT_API_KEY}\" --post-data \"json={\\\"listen_port\\\":{{PORT}}}\" http://127.0.0.1:8081/api/v2/app/setPreferences 2>&1"'
+      #- 'VPN_PORT_FORWARDING_DOWN_COMMAND=/bin/sh -c "wget -O- --retry-connrefused --header=\"Authorization: Bearer ${QBITTORRENT_API_KEY}\" --post-data \"json={\\\"listen_port\\\":0}\" http://127.0.0.1:8081/api/v2/app/setPreferences 2>&1"'
 
       - TZ=${TZ}
       #- HTTPPROXY=on
@@ -53,7 +53,6 @@ services:
     ports:
       - 8081:8081/tcp # qbittorrent web UI routed through VPN
       - 8090:8080/tcp # sabnzbd web UI routed through VPN
-      # - 8888:8888/tcp # HTTP proxy for Prowlarr
     restart: unless-stopped
 
   # qBitorrent is used to download torrents
@@ -65,7 +64,6 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       - WEBUI_PORT=8081
-      #- QBITTORRENT_API_KEY=${QBITTORRENT_API_KEY}
     volumes:
       - ${MEDIA_DIRECTORY}:/data
       - ${INSTALL_DIRECTORY}/config/qbittorrent:/config
@@ -110,7 +108,6 @@ services:
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
-
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
