@@ -11,7 +11,7 @@
 
     <div class="input-container">
       <label for="dozzle-password-input">Password:</label>
-      <input type="text" id="dozzle-password-input" value="password" autocomplete="off" spellcheck="false">
+      <input type="password" id="dozzle-password-input" value="password" autocomplete="new-password" spellcheck="false">
     </div>
 
     <div class="input-container">
@@ -20,7 +20,7 @@
     </div>
   </div>
 
-  <div class="dozzle-command-row">
+  <div class="dozzle-command-row" aria-live="polite">
     <code id="dozzle-command-output"></code>
   </div>
 </div>
@@ -38,7 +38,7 @@
 
     function updateCommand() {
       const user = username.value.trim() || 'admin';
-      const pass = password.value.trim() || 'password';
+      const pass = password.value || 'password';
       const name = displayName.value.trim() || 'Name';
       output.textContent = `docker run -it --rm amir20/dozzle generate ${shellQuote(user)} --password ${shellQuote(pass)} --name ${shellQuote(name)}`;
     }

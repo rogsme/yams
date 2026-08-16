@@ -29,6 +29,9 @@ In order to create this user, we will have to generate a valid user YAML to add 
 - `password` is the password for this new user
 - `name` is the display name that will show in the UI
 
+> [!WARNING]
+> Always be careful about entering your credentials into websites. The code for YAMS is fully open source [here](https://git.rogs.me/rogs/yams) and does not take any action from your entered credentials apart from command generation.
+
 {{< dozzle-user-generator >}}
 
 After you have filled out and copied the generation command for *your* user, copy it and run it on your machine.
@@ -46,7 +49,7 @@ users:
 
 Perfect. Open up the Dozzle `users.yml` file in your favorite text editor:
 ```
-nano [[install_path]]/config/dozzle/users.yml
+nano _INSTALL_PATH_/config/dozzle/users.yml
 ```
 and delete  **all** the contents and replace it with the output from the command above. Save and exit.
 
@@ -62,7 +65,7 @@ Once its fully started again, you are good to go.
 
 Now the user has been created, we can safely sign in and check Dozzle out!!
 
-Open up your Dozzle interface by using this link: [http://[[user_ip]]:8777](http://[[user_ip]]:8777)
+Open up your Dozzle interface by using this link: [http://_USER_IP_:8777](http://_USER_IP_:8777)
 
 You will see a sign in screen.
 

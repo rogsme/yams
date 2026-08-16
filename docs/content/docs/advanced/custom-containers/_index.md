@@ -40,9 +40,9 @@ Let's learn how to adapt a docker compose entry for a new container and add it t
 
 Let's walk through adding [Seerr](https://seerr.dev/) - a fantastic request management app for your media server. You don't need to add this if you don't want! Check out the [Other Containers](#other-containers) section for more options, or adapt this section to add your own container.
 
-#### 1. First, open `[[install_path]]/docker-compose.custom.yaml`:
+#### 1. First, open `_INSTALL_PATH_/docker-compose.custom.yaml`:
 ```bash
-nano [[install_path]]/.docker-compose.custom.yaml
+nano _INSTALL_PATH_/.docker-compose.custom.yaml
 ```
 
 If this is your first custom container, you'll need to uncomment the `services:` line. To uncomment you must remove the `#` symbol and the space. Your file should start like this:
@@ -111,7 +111,7 @@ Before you start up your new container, it can be a good idea to create the conf
 
 Run this command to create the config folder for Seerr, and set the correct permissions (if you are adding another container remember to change the folder name to match the container you are adding!):
 ```bash
-mkdir -p [[install_path]]/config/seerr && chown -R $(id -u):$(id -g) [[install_path]]/config/seerr
+mkdir -p _INSTALL_PATH_/config/seerr && chown -R $(id -u):$(id -g) _INSTALL_PATH_/config/seerr
 ```
 #### 4. Starting the container
 Now, it's time to start your new container:

@@ -64,7 +64,7 @@ Before you get the script up and running, you'll have to do some thinking about 
 - **A media folder**: This is where all your media will be stored (and it can sure take up lots of storage space). For example, if you pick `/srv/media`, the script will create:
 
 ```
-[[media_path]]
+_MEDIA_PATH_
   ├── blackhole/
   ├── books/
   ├── downloads/
@@ -93,8 +93,8 @@ Before you get the script up and running, you'll have to do some thinking about 
 Remember from before? This is where all the config files and application storage goes! First, create the folder and set up your user permissions if it hasn't been done already.
 
 ```bash
-sudo mkdir -p [[install_path]]
-sudo chown -R $USER:$USER [[install_path]]
+sudo mkdir -p _INSTALL_PATH_
+sudo chown -R $USER:$USER _INSTALL_PATH_
 ```
 
 #### 2. Setup your media directory
@@ -103,8 +103,8 @@ This is where your media files are stored (make sure it has tons of space).
 If your media directory doesn’t exist yet, you’ll need to create it and set the correct permissions.
 
 ```bash
-sudo mkdir -p [[media_path]]
-sudo chown -R $USER:$USER [[media_path]]
+sudo mkdir -p _MEDIA_PATH_
+sudo chown -R $USER:$USER _MEDIA_PATH_
 ```
 
 Important notes:
@@ -225,7 +225,7 @@ Installation directory? [/opt/yams]:
 ```
 
 - Press Enter to use the default `/opt/yams` or type a different path if you want to install somewhere else.
-  - Based on your configuration of this guide, you should type `[[install_path]]`
+  - Based on your configuration of this guide, you should type `_INSTALL_PATH_`
 
 > [!WARNING]
 > You must use an absolute path (e.g., `/mnt/yams`). Docker does not expand `~` to your home directory, so avoid using something like `~/yams`
@@ -238,14 +238,14 @@ Media directory [/srv/media]:
 ```
 
 - Press Enter to use the default `/srv/media` or type the path where you want your media stored. This path can also be a SMB/NFS mount, an external drive or a different partition.
-  - Based on your configuration of this guide, you should type `[[media_path]]`
+  - Based on your configuration of this guide, you should type `_MEDIA_PATH_`
 
 > [!WARNING]
 > You must use an absolute path (e.g., `/mnt/media`). Docker does not expand `~` to your home directory, so avoid using something like `~/media`
 
 Then confirm your choice:
 ```bash
-Are you sure your media directory is "[[media_path]]"? (y/N) [Default = n]:
+Are you sure your media directory is "_MEDIA_PATH_"? (y/N) [Default = n]:
 ```
 
 - Type `y` and press Enter if the path is correct
@@ -517,18 +517,18 @@ Enable Lidarr? (Y/n) [Default = y]:
 
 After you've answered all the questions, you'll see:
 ```bash
-Configuring the docker-compose file for user "yamstest" in "[[install_path]]"...
+Configuring the docker-compose file for user "yamstest" in "_INSTALL_PATH_"...
 
-Downloading .env.template to [[install_path]]/.env...
+Downloading .env.template to _INSTALL_PATH_/.env...
 .env.template downloaded successfully ✅
 
-Downloading docker-compose.custom.yaml to [[install_path]]/docker-compose.custom.yaml...
+Downloading docker-compose.custom.yaml to _INSTALL_PATH_/docker-compose.custom.yaml...
 docker-compose.custom.yaml downloaded successfully ✅
 
-Downloading docker-compose.template.yaml to [[install_path]]/docker-compose.yaml...
+Downloading docker-compose.template.yaml to _INSTALL_PATH_/docker-compose.yaml...
 docker-compose.template.yaml downloaded successfully ✅
 
-Downloading yams to [[install_path]]/yams...
+Downloading yams to _INSTALL_PATH_/yams...
 yams downloaded successfully ✅
 Updating environment configuration...
 Updating docker-compose configuration...
@@ -556,7 +556,7 @@ If everything works, you'll see these success messages:
 YAMS CLI installed successfully ✅
 Media directory ownership and permissions set successfully ✅
 Install directory ownership and permissions set successfully ✅
-Configuration folder "[[install_path]]/config" exists ✅
+Configuration folder "_INSTALL_PATH_/config" exists ✅
 Configuration folder ownership and permissions set successfully ✅
 ```
 
@@ -582,15 +582,15 @@ When everything's done, you'll see this awesome ASCII art:
 Following this, you'll get a list of all your service URLs:
 ```bash
 Service URLs:
-qBittorrent: http://[[user_ip]]:8081/
-SABnzbd: http://[[user_ip]]:8080/
-Radarr: http://[[user_ip]]:7878/
-Sonarr: http://[[user_ip]]:8989/
-Lidarr: http://[[user_ip]]:8686/
-Prowlarr: http://[[user_ip]]:9696/
-Bazarr: http://[[user_ip]]:6767/
-Media Service: http://[[user_ip]]:8096/
-Portainer: http://[[user_ip]]:9000/
+qBittorrent: http://_USER_IP_:8081/
+SABnzbd: http://_USER_IP_:8080/
+Radarr: http://_USER_IP_:7878/
+Sonarr: http://_USER_IP_:8989/
+Lidarr: http://_USER_IP_:8686/
+Prowlarr: http://_USER_IP_:9696/
+Bazarr: http://_USER_IP_:6767/
+Media Service: http://_USER_IP_:8096/
+Portainer: http://_USER_IP_:9000/
 ```
 
 Don't worry about memorizing these - they're saved in `~/yams_services.txt` for easy reference!

@@ -215,7 +215,7 @@ pre.book-copy-container { padding-right: 3.25rem; }
   text-underline-offset: 2px;
   text-decoration-color: var(--color-link);
   text-decoration-thickness: 1px;
-  cursor: alias;
+  cursor: help;
 }
 
 a[href] .ph { cursor: pointer; }
@@ -284,7 +284,6 @@ a[href] .ph { cursor: pointer; }
   align-items: center;
   background: transparent;
   border: 1px solid var(--gray-200);
-  border-radius: 0.35rem;
   color: inherit;
   cursor: pointer;
   display: flex;

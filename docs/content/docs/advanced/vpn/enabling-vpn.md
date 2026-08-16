@@ -21,12 +21,12 @@ yams stop
 Open your `.env` file:
 
 ```
-nano [[install_path]]/.env
+nano _INSTALL_PATH_/.env
 ```
 
 Update the VPN section with your provider's details:
 
-```bash {filename="[[install_path]]/.env"}
+```bash {filename="_INSTALL_PATH_/.env"}
 # VPN configuration
 VPN_SERVICE=protonvpn
 VPN_TYPE=openvpn
@@ -53,7 +53,7 @@ If you want to use Wireguard, follow the Gluetun steps for your provider to get 
 Open your Docker Compose file:
 
 ```
-nano [[install_path]]/docker-compose.yaml
+nano _INSTALL_PATH_/docker-compose.yaml
 ```
 
 #### Uncomment correct ENV vars in Gluetun entry
@@ -66,7 +66,7 @@ If you wish to use port forwarding and are certain your provider supports it, en
 
 Find the qBittorrent section, comment out the ports, and uncomment the `network_mode` line:
 
-```yaml {filename="[[install_path]]/docker-compose.yaml"}
+```yaml {filename="_INSTALL_PATH_/docker-compose.yaml"}
 qbittorrent:
   # ports:
   #   - 8081:8081
@@ -79,7 +79,7 @@ This routes qBittorrent's traffic through the VPN.
 
 If you use SABnzbd, make similar changes:
 
-```yaml {filename="[[install_path]]/docker-compose.yaml"}
+```yaml {filename="_INSTALL_PATH_/docker-compose.yaml"}
 sabnzbd:
   # ports:
   #   - 8080:8080
@@ -92,7 +92,7 @@ This routes SABnzbd's traffic through the VPN.
 
 Find the `gluetun` service and comment out or remove the `profiles` line:
 
-```yaml {filename="[[install_path]]/docker-compose.yaml"}
+```yaml {filename="_INSTALL_PATH_/docker-compose.yaml"}
 # profiles: ["disabled"]
 ```
 
@@ -102,7 +102,7 @@ If your VPN provider **requires** additional environment variables from the Glue
 
 Example:
 
-```yaml {filename="[[install_path]]/docker-compose.yaml"}
+```yaml {filename="_INSTALL_PATH_/docker-compose.yaml"}
 gluetun:
   environment:
     - SERVER_COUNTRIES=Antarctica
@@ -131,7 +131,7 @@ Getting your qBittorrent IP...
 Your country in qBittorrent is XYZ
 
 Getting your IP...
-[[user_ip]]
+_USER_IP_
 Your local IP country is ZYX
 
 Your IPs are different. qBittorrent is working as expected! ✅
@@ -154,13 +154,13 @@ yams stop
 
 Find the `gluetun` service in your Docker Compose file and uncomment the `profiles` line:
 
-```yaml {filename="[[install_path]]/docker-compose.yaml"}
+```yaml {filename="_INSTALL_PATH_/docker-compose.yaml"}
 # profiles: ["disabled"]
 ```
 
 It should become:
 
-```yaml {filename="[[install_path]]/docker-compose.yaml"}
+```yaml {filename="_INSTALL_PATH_/docker-compose.yaml"}
 profiles: ["disabled"]
 ```
 
@@ -170,7 +170,7 @@ This prevents Gluetun from starting when YAMS is up.
 
 Find the qBittorrent section, comment out the `network_mode` line, and uncomment the ports:
 
-```yaml {filename="[[install_path]]/docker-compose.yaml"}
+```yaml {filename="_INSTALL_PATH_/docker-compose.yaml"}
 qbittorrent:
   ports:
     - 8081:8081
@@ -183,7 +183,7 @@ This exposes qBittorrent directly on your host network so it remains accessible 
 
 If you use SABnzbd, make similar changes:
 
-```yaml {filename="[[install_path]]/docker-compose.yaml"}
+```yaml {filename="_INSTALL_PATH_/docker-compose.yaml"}
 sabnzbd:
   ports:
     - 8090:8080
@@ -195,12 +195,12 @@ sabnzbd:
 To optionally clean up, open your `.env` file and clear the VPN variables:
 
 ```bash
-nano [[install_path]]/.env
+nano _INSTALL_PATH_/.env
 ```
 
 Set them to empty values:
 
-```bash {filename="[[install_path]]/.env"}
+```bash {filename="_INSTALL_PATH_/.env"}
 VPN_ENABLED=
 VPN_SERVICE=
 VPN_USER=

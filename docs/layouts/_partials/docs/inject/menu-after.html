@@ -25,7 +25,9 @@
     setTheme(document.documentElement.dataset.theme || 'light');
     toggle.addEventListener('click', function () {
       const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('yams-theme', nextTheme);
+      if (window.YamsPlaceholders) {
+        window.YamsPlaceholders.set('yams-theme', nextTheme);
+      }
       setTheme(nextTheme);
     });
   })();
