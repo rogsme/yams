@@ -22,16 +22,23 @@ Dozzle is a simple log viewer for Docker containers. It allows you to view the l
 
 ### Creating a user
 
-Since Dozzle can perform actions on containers, YAMS creates it with authentication enabled by default. The installer prints a unique password for the bootstrap `yams` user. Use it for the first login, then create your own user and remove the bootstrap account.
+Since Dozzle can perform actions on containers, YAMS creates it with authentication enabled by default. The installer utilises a completely random hash as its default user, meaning it is impossible to sign into the default `yams` account. But don't worry, we are about to create you one you can actually use!
+
+In order to create this user, we will have to generate a valid user YAML to add into our Dozzle configuration files. Utilise the generator below to build this command for you:
+- `username` is the, well, username of your new user
+- `password` is the password for this new user
+- `name` is the display name that will show in the UI
 
 {{< dozzle-user-generator >}}
+
+After you have filled out and copied the generation command for *your* user, copy it and run it on your machine.
 
 You'll get something like this:
 ```yml
 users:
     admin:
         email: ""
-        name: Name
+        name: Admin
         password: $2a$11$FYTyP5VcWdhCwaUjMRx2eOoYPrLkck3jK7y5PORcg36qfWfQeoWQ2
         filter: ""
         roles: ""
