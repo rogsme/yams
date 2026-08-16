@@ -30,7 +30,7 @@ In order to create this user, we will have to generate a valid user YAML to add 
 - `name` is the display name that will show in the UI
 
 > [!WARNING]
-> Always be careful about entering your credentials into websites. The code for YAMS is fully open source [here](https://git.rogs.me/rogs/yams) and does not take any action from your entered credentials apart from command generation.
+> Always be careful about entering your credentials into websites. The code for YAMS is fully open source [here](https://git.rogs.me/rogs/yams) and does not take any action using your entered credentials.
 
 {{< dozzle-user-generator >}}
 
