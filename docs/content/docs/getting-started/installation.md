@@ -13,6 +13,8 @@ Your machine _must_ be running Debian 13 (recommended) or Ubuntu 24.04 on bare m
 {{% details "ℹ️ Proxmox LXC Users" %}}
 YAMS can be installed within an unprivileged Proxmox LXC container, but this requires specific configuration on the Proxmox host before you run the YAMS installation script inside the container. Please follow the steps below to ensure Docker and the VPN component (Gluetun) can function correctly within the LXC environment by providing access to the necessary TUN device.
 
+Make sure **Keyctl** and **Nesting** features are enabled under the container’s 'Options' in the Proxmox VE Web UI. Docker requires these features to run correctly inside the container.
+
 1. Log into your Proxmox server via SSH or use the web UI’s shell access for the **node** (not the LXC console).
 2. Open the configuration file specific to the LXC container where you intend to install YAMS. Replace <container-ID> with the actual numeric ID of your LXC container.
 
