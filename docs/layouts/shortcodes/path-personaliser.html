@@ -29,15 +29,16 @@
 
 <script>
   (function () {
+    const placeholders = window.YamsPlaceholders;
     const configIn = document.getElementById('config-input');
     const mediaIn = document.getElementById('media-input');
     const useripIn = document.getElementById('userip-input');
 
-    if (!configIn || !mediaIn || !useripIn) return;
+    if (!placeholders || !configIn || !mediaIn || !useripIn) return;
 
-    configIn.value = localStorage.getItem("install_path") || localStorage.getItem("INSTALL_PATH") || "";
-    mediaIn.value = localStorage.getItem("MEDIA_PATH") || "";
-    useripIn.value = localStorage.getItem("USER_IP") || "";
+    configIn.value = placeholders.getStored('install_path') || '';
+    mediaIn.value = placeholders.getStored('media_path') || '';
+    useripIn.value = placeholders.getStored('user_ip') || '';
 
     function focusRequestedInput() {
       const focusKey = new URLSearchParams(window.location.search).get('focus');
@@ -64,10 +65,9 @@
     }
 
     function handleTyping() {
-      localStorage.setItem("install_path", configIn.value.trim());
-      localStorage.setItem("INSTALL_PATH", configIn.value.trim());
-      localStorage.setItem("MEDIA_PATH", mediaIn.value.trim());
-      localStorage.setItem("USER_IP", useripIn.value.trim());
+      placeholders.set('install_path', configIn.value.trim());
+      placeholders.set('media_path', mediaIn.value.trim());
+      placeholders.set('user_ip', useripIn.value.trim());
 
       if (typeof window.updatePagePaths === 'function') {
         window.updatePagePaths();

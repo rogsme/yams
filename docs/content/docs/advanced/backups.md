@@ -6,7 +6,7 @@ title: Backing up YAMS
 
 Backups are always important. You never know when something might break, and you are forced to recreate your server. If you have a backup of your YAMS install directory ready to go, this is **much easier** (it saves DAYS).
 
-The key item you should backup from your media server is your YAMS install directory (`[[install_path]]`). This contains:
+The key item you should backup from your media server is your YAMS install directory (`_INSTALL_PATH_`). This contains:
 - All your container data
 - Your YAMS settings
 - Important environment variables

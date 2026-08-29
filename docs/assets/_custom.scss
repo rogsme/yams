@@ -59,7 +59,7 @@ pre,
 
 .simple-card {
   border: 1px solid var(--gray-200);
-  border-radius: 0 !important; // Stays sharp and boxy
+  border-radius: 0 !important;
   padding: 1.25rem;
   margin: 1.5rem 0;
   background: transparent;
@@ -75,7 +75,7 @@ pre,
       height: 24px;
       object-fit: contain;
       flex-shrink: 0;
-      filter: var(--icon-filter); // Inverts cleanly for theme dark modes
+      filter: var(--icon-filter);
     }
 
     .card-title {
@@ -89,32 +89,19 @@ pre,
     font-size: 0.95rem;
     opacity: 0.85;
 
-    // Forces inner markdown paragraphs to align nicely inside the block margins
-    p:first-child {
-      margin-top: 0 !important;
-    }
-    p:last-child {
-      margin-bottom: 0 !important;
-    }
+    p:first-child { margin-top: 0 !important; }
+    p:last-child { margin-bottom: 0 !important; }
   }
 }
 
-// Controls the multi-column row wrapping container
 .card-row {
   display: grid;
-  grid-template-columns: repeat(
-    3,
-    minmax(0, 1fr)
-  ); // Creates 3 equal width columns
-  gap: 1rem; // Spacing between the columns
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
   margin: 1.5rem 0;
 
-  // Overrides the margin on individual cards inside the row so they align evenly
-  .simple-card {
-    margin: 0 !important;
-  }
+  .simple-card { margin: 0 !important; }
 
-  // Mobile responsiveness: Stacks the columns vertically on narrow tablet/phone viewports
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
@@ -129,46 +116,27 @@ pre,
 
   .panel-header {
     margin-bottom: 1rem;
-    h3 {
-      margin: 0 0 0.25rem 0 !important;
-      font-size: 1.05rem;
-      font-weight: bold;
-    }
-    p {
-      margin: 0 !important;
-      font-size: 0.85rem;
-      opacity: 0.7;
-    }
+    h3 { margin: 0 0 0.25rem 0 !important; font-size: 1.05rem; font-weight: bold; }
+    p { margin: 0 !important; font-size: 0.85rem; opacity: 0.7; }
   }
 
   .panel-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-
-    @media (max-width: 600px) {
-      grid-template-columns: 1fr;
-    }
+    @media (max-width: 600px) { grid-template-columns: 1fr; }
   }
 
   .panel-grid-3 {
     grid-template-columns: repeat(3, 1fr);
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
+    @media (max-width: 768px) { grid-template-columns: 1fr; }
   }
 
   .input-container {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-
-    label {
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-
+    label { font-size: 0.8rem; font-weight: bold; }
     input {
       padding: 0.4rem 0.6rem;
       border: 1px solid var(--gray-200);
@@ -177,19 +145,183 @@ pre,
       font-family: monospace;
       font-size: 0.875rem;
       border-radius: 0 !important;
-
-      &:focus {
-        outline: 1px solid var(--color-link) !important;
-      }
+      &:focus { outline: 1px solid var(--color-link) !important; }
     }
   }
 }
 
-// ── Placeholder substitution indicator ──
+.dozzle-command-row {
+  display: flex;
+  align-items: stretch;
+  margin-top: 1rem;
+  border: 1px solid var(--gray-200);
+  background: var(--body-background);
+  code {
+    flex: 1;
+    padding: 0.65rem 0.75rem;
+    padding-right: 3.25rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.book-copy-container { position: relative; }
+pre.book-copy-container { padding-right: 3.25rem; }
+
+.book-copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.35rem;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent;
+  box-shadow: none !important;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.55;
+
+  img { width: 1.1rem; height: 1.1rem; opacity: 0.85; }
+  &.is-copied {
+    opacity: 1;
+    img {
+      opacity: 1;
+      filter: invert(56%) sepia(55%) saturate(650%) hue-rotate(85deg) brightness(92%) contrast(90%);
+      animation: copy-success-in 120ms ease-out forwards;
+    }
+    &.is-copy-fading img { animation: copy-success-out 120ms ease-in forwards; }
+  }
+}
+
+@keyframes copy-success-in {
+  from { transform: scale(0.65); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes copy-success-out {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(0.65); opacity: 0; }
+}
+
 .ph {
   text-decoration: underline dotted;
   text-underline-offset: 2px;
   text-decoration-color: var(--color-link);
   text-decoration-thickness: 1px;
-  cursor: help;
+  cursor: alias;
+}
+
+a[href] .ph {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+// Keep both palettes available so the theme can be changed at runtime.
+@import "plugins/themes";
+
+// Match the original yams.media palette.
+@mixin theme-light {
+  --body-background: #ffffff;
+  --body-background-tint: none;
+  --body-font-color: #212529;
+
+  --color-link: #367a3b;
+  --color-visited-link: #2f4bb7;
+  --icon-filter: none;
+
+  --gray-100: #f5f5f5;
+  --gray-200: #cccccc;
+  --gray-500: #777777;
+
+  @include accent("default", #5faf63);
+  @include accent("note", #2f4bb7);
+  @include accent("tip", #5faf63);
+  @include accent("important", #2f4bb7);
+  @include accent("warning", #f59e42);
+  @include accent("caution", #d84747);
+  @include accent("info", #2f4bb7);
+  @include accent("success", #5faf63);
+  @include accent("danger", #d84747);
+}
+
+@mixin theme-dark {
+  --body-background: #1a1a1a;
+  --body-background-tint: none;
+  --body-font-color: #f5f5f5;
+
+  --color-link: #8fd993;
+  --color-visited-link: #a5dda9;
+  --icon-filter: brightness(0) invert(1);
+
+  --gray-100: #2d2d2d;
+  --gray-200: #4a4a4a;
+  --gray-500: #d4d4d4;
+
+  @include accent("default", #8fd993);
+  @include accent("note", #2f4bb7);
+  @include accent("tip", #8fd993);
+  @include accent("important", #a5dda9);
+  @include accent("warning", #d08770);
+  @include accent("caution", #bf616a);
+  @include accent("info", #2f4bb7);
+  @include accent("success", #8fd993);
+  @include accent("danger", #bf616a);
+}
+
+:root {
+  @include theme-light;
+}
+
+:root[data-theme="dark"] {
+  @include theme-dark;
+}
+
+.theme-toggle {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--gray-200);
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  margin-top: $padding-16;
+  padding: 0.5rem 0.65rem;
+  width: 100%;
+
+  &:hover {
+    background: var(--gray-100);
+  }
+
+  svg {
+    fill: none;
+    height: 1em;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    width: 1em;
+  }
+
+  .theme-toggle-moon {
+    display: none;
+  }
+}
+
+:root[data-theme="dark"] .theme-toggle {
+  .theme-toggle-sun {
+    display: none;
+  }
+
+  .theme-toggle-moon {
+    display: inline;
+  }
 }

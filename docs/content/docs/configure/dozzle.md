@@ -22,21 +22,26 @@ Dozzle is a simple log viewer for Docker containers. It allows you to view the l
 
 ### Creating a user
 
-Since Dozzle can perform actions on containers, YAMS creates it with authentication enabled by default. The installer prints a unique password for the bootstrap `yams` user. Use it for the first login, then create your own user and remove the bootstrap account.
+Since Dozzle can perform actions on containers, YAMS creates it with authentication enabled by default. The installer utilises a completely random hash as its default user, meaning it is impossible to sign into the default `yams` account. But don't worry, we are about to create you one you can actually use!
 
-ADD DYNAMIC COMMAND GENERATOR HERE
+In order to create this user, we will have to generate a valid user YAML to add into our Dozzle configuration files. Utilise the generator below to build this command for you:
+- `username` is the, well, username of your new user
+- `password` is the password for this new user
+- `name` is the display name that will show in the UI
 
-Run this command, replacing `admin` with your desired username, `password` with your desired password, and `Name` with your desired name to show in the interface. This will generate a yml output.
-```bash
-docker run -it --rm amir20/dozzle generate admin --password password --name "Name"
-```
+> [!WARNING]
+> Always be careful about entering your credentials into websites. The code for YAMS is fully open source [here](https://git.rogs.me/rogs/yams) and does not take any action using your entered credentials.
+
+{{< dozzle-user-generator >}}
+
+After you have filled out and copied the generation command for *your* user, copy it and run it on your machine.
 
 You'll get something like this:
 ```yml
 users:
     admin:
         email: ""
-        name: Name
+        name: Admin
         password: $2a$11$FYTyP5VcWdhCwaUjMRx2eOoYPrLkck3jK7y5PORcg36qfWfQeoWQ2
         filter: ""
         roles: ""
@@ -44,7 +49,7 @@ users:
 
 Perfect. Open up the Dozzle `users.yml` file in your favorite text editor:
 ```
-nano [[install_path]]/config/dozzle/users.yml
+nano _INSTALL_PATH_/config/dozzle/users.yml
 ```
 and delete  **all** the contents and replace it with the output from the command above. Save and exit.
 
@@ -60,8 +65,7 @@ Once its fully started again, you are good to go.
 
 Now the user has been created, we can safely sign in and check Dozzle out!!
 
-THESE LINKS DONT WORK YET, NEED TO FIGURE OUT HOW TO USE PLACEHOLDERS IN MARKDOWN LINKS
-Open up your Dozzle interface by using this link: [http://your_ip:8777](http://localhost:8777)
+Open up your Dozzle interface by using this link: [http://_USER_IP_:8777](http://_USER_IP_:8777)
 
 You will see a sign in screen.
 

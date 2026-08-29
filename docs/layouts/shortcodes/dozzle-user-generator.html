@@ -1,0 +1,50 @@
+<div class="interactive-path-panel dozzle-user-panel" id="dozzle-user-generator">
+  <div class="panel-header">
+    <h3>Dozzle user command generator</h3>
+  </div>
+
+  <div class="panel-grid panel-grid-3">
+    <div class="input-container">
+      <label for="dozzle-username-input">Username:</label>
+      <input type="text" id="dozzle-username-input" value="admin" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="input-container">
+      <label for="dozzle-password-input">Password:</label>
+      <input type="password" id="dozzle-password-input" value="password" autocomplete="new-password" spellcheck="false">
+    </div>
+
+    <div class="input-container">
+      <label for="dozzle-display-name-input">Display Name:</label>
+      <input type="text" id="dozzle-display-name-input" value="Name" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+
+  <div class="dozzle-command-row">
+    <code id="dozzle-command-output"></code>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const username = document.getElementById('dozzle-username-input');
+    const password = document.getElementById('dozzle-password-input');
+    const displayName = document.getElementById('dozzle-display-name-input');
+    const output = document.getElementById('dozzle-command-output');
+
+    if (!username || !password || !displayName || !output) return;
+
+    const shellQuote = value => `'${value.replaceAll("'", "'\\''")}'`;
+
+    function updateCommand() {
+      const user = username.value.trim() || 'admin';
+      const pass = password.value || 'password';
+      const name = displayName.value.trim() || 'Name';
+      output.textContent = `docker run -it --rm amir20/dozzle generate ${shellQuote(user)} --password ${shellQuote(pass)} --name ${shellQuote(name)}`;
+    }
+
+    [username, password, displayName].forEach(input => input.addEventListener('input', updateCommand));
+
+    updateCommand();
+  })();
+</script>

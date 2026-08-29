@@ -1,165 +1,143 @@
 <script>
   (function () {
+    const registry = window.YamsPlaceholders;
     const pageContainer = document.querySelector('.book-page') || document.querySelector('article') || document.body;
-    if (!pageContainer) return;
+    if (!registry || !pageContainer) return;
 
-    const INSTALL_PAGE_URL = '/docs/getting-started/installation/';
-    const INSTALL_PAGE_ANCHOR = '#pre-installation-setup';
-
-    const PLACEHOLDERS = [
-      { pattern: '[[install_path]]', key: 'install_path', storage: 'install_path', fallback: '/opt/yams' },
-      { pattern: '[[media_path]]', key: 'media_path', storage: 'MEDIA_PATH', fallback: '/srv/media' },
-      { pattern: '[[user_ip]]', key: 'user_ip', storage: 'USER_IP', fallback: 'YOUR_IP' },
-    ];
-
-    const phMap = {};
-    for (const ph of PLACEHOLDERS) {
-      phMap[ph.pattern] = ph;
-    }
-
-    function getConfiguredValue(ph) {
-      const stored = localStorage.getItem(ph.storage);
-      return stored || ph.fallback;
-    }
-
-    function getPlaceholderTarget(ph) {
-      return `${INSTALL_PAGE_URL}?focus=${encodeURIComponent(ph.key)}${INSTALL_PAGE_ANCHOR}`;
-    }
-
-    function isCustomized(ph) {
-      const stored = localStorage.getItem(ph.storage);
-      return stored !== null && stored !== '';
-    }
+    const patternSource = registry.values.map(item => escapeRegExp(item.token)).join('|');
+    const attributeTemplates = new WeakMap();
 
     function escapeRegExp(value) {
       return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    function makePattern() { return new RegExp(patternSource, 'g'); }
+    function replaceValue(value) {
+      return value.replace(makePattern(), match => registry.get(registry.byToken[match].key));
+    }
+
     function restoreSpans() {
-      const spans = pageContainer.querySelectorAll('.ph');
-      for (const span of spans) {
-        const key = span.dataset.ph;
-        const text = document.createTextNode(`[[${key}]]`);
-        span.parentNode.replaceChild(text, span);
+      for (const span of pageContainer.querySelectorAll('.ph[data-ph]')) {
+        span.replaceWith(document.createTextNode(registry.tokenFor(span.dataset.ph)));
       }
     }
 
-    function collectTextNodes() {
-      const walker = document.createTreeWalker(pageContainer, NodeFilter.SHOW_TEXT, {
+    function replaceAttributes() {
+      for (const element of pageContainer.querySelectorAll('*')) {
+        for (const attribute of [...element.attributes]) {
+          let templates = attributeTemplates.get(element);
+          if (templates?.has(attribute.name)) {
+            element.setAttribute(attribute.name, replaceValue(templates.get(attribute.name)));
+            continue;
+          }
+          if (attribute.name.startsWith('data-placeholder-') || !attribute.value.match(makePattern())) continue;
+          if (!templates) {
+            templates = new Map();
+            attributeTemplates.set(element, templates);
+          }
+          if (!templates.has(attribute.name)) templates.set(attribute.name, attribute.value);
+          element.setAttribute(attribute.name, replaceValue(templates.get(attribute.name)));
+        }
+      }
+    }
+
+    function createPlaceholderSpan(definition) {
+      const span = document.createElement('span');
+      span.className = 'ph';
+      span.dataset.ph = definition.key;
+      span.textContent = registry.get(definition.key);
+      span.title = 'Uses your configured value';
+      return span;
+    }
+
+    // Markdown interprets _INSTALL_PATH_ as emphasis and removes the outer
+    // underscores. Restore that source token before normal replacement.
+    function replaceMarkdownTokens() {
+      for (const element of pageContainer.querySelectorAll('em')) {
+        const definition = registry.byBareToken[element.textContent];
+        if (definition) element.replaceWith(createPlaceholderSpan(definition));
+      }
+    }
+
+    function textNodes(container) {
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
         acceptNode(node) {
           const parent = node.parentElement;
-          if (!parent) return NodeFilter.FILTER_REJECT;
-          if (parent.closest('script,style,noscript')) return NodeFilter.FILTER_REJECT;
+          if (!parent || parent.closest('script,style,noscript,.ph')) return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
-        }
+        },
       });
-
       const nodes = [];
       let node;
-      while ((node = walker.nextNode())) {
-        nodes.push(node);
-      }
+      while ((node = walker.nextNode())) nodes.push(node);
       return nodes;
     }
 
-    function buildSegments(nodes) {
-      const segments = [];
-      let offset = 0;
-
-      for (const node of nodes) {
-        const text = node.nodeValue || '';
-        const start = offset;
-        const end = start + text.length;
-        segments.push({ node, start, end });
-        offset = end;
-      }
-
-      return segments;
-    }
-
-    function locateOffset(segments, index) {
-      let low = 0;
-      let high = segments.length - 1;
-
-      while (low <= high) {
-        const mid = Math.floor((low + high) / 2);
-        const segment = segments[mid];
-        if (index < segment.start) {
-          high = mid - 1;
-        } else if (index >= segment.end) {
-          low = mid + 1;
-        } else {
-          return { node: segment.node, offset: index - segment.start };
-        }
-      }
-
-      return null;
-    }
-
-    function replaceMatches() {
-      const textNodes = collectTextNodes();
-      if (textNodes.length === 0) return;
-
-      const segments = buildSegments(textNodes);
-      const fullText = textNodes.map(node => node.nodeValue || '').join('');
-      const matches = [];
-      const pattern = new RegExp(PLACEHOLDERS.map(ph => escapeRegExp(ph.pattern)).join('|'), 'g');
-
+    function replaceTextNode(node) {
+      const text = node.nodeValue || '';
+      const pattern = makePattern();
+      const fragment = document.createDocumentFragment();
+      let lastIndex = 0;
       let match;
-      while ((match = pattern.exec(fullText)) !== null) {
-        const ph = phMap[match[0]];
-        if (ph) {
-          matches.push({ start: match.index, end: match.index + match[0].length, placeholder: ph });
+      while ((match = pattern.exec(text)) !== null) {
+        if (match.index > lastIndex) fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+        fragment.appendChild(createPlaceholderSpan(registry.byToken[match[0]]));
+        lastIndex = match.index + match[0].length;
+      }
+      if (lastIndex === 0) return;
+      if (lastIndex < text.length) fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+      node.replaceWith(fragment);
+    }
+
+    function locate(segments, index) {
+      const segment = segments.find(item => index >= item.start && index < item.end);
+      return segment ? { node: segment.node, offset: index - segment.start } : null;
+    }
+
+    // Syntax highlighting can split a placeholder across token spans. Process
+    // each code block as one text stream, but never join unrelated elements.
+    function replaceCodeBlockPlaceholders() {
+      for (const block of pageContainer.querySelectorAll('pre, .highlight')) {
+        const nodes = textNodes(block);
+        const segments = [];
+        let offset = 0;
+        for (const node of nodes) {
+          const end = offset + node.nodeValue.length;
+          segments.push({ node, start: offset, end });
+          offset = end;
+        }
+        const matches = [...nodes.map(node => node.nodeValue).join('').matchAll(makePattern())];
+        for (const match of matches.reverse()) {
+          const start = locate(segments, match.index);
+          const end = locate(segments, match.index + match[0].length - 1);
+          if (!start || !end) continue;
+          const range = document.createRange();
+          range.setStart(start.node, start.offset);
+          range.setEnd(end.node, end.offset + 1);
+          range.deleteContents();
+          range.insertNode(createPlaceholderSpan(registry.byToken[match[0]]));
         }
       }
+    }
 
-      for (const item of matches.reverse()) {
-        const start = locateOffset(segments, item.start);
-        const end = locateOffset(segments, item.end - 1);
-        if (!start || !end) continue;
-
-        const range = document.createRange();
-        range.setStart(start.node, start.offset);
-        range.setEnd(end.node, end.offset + 1);
-
-        const span = document.createElement('span');
-        span.className = 'ph';
-        span.dataset.ph = item.placeholder.key;
-        span.dataset.target = getPlaceholderTarget(item.placeholder);
-        span.setAttribute('role', 'link');
-        span.setAttribute('tabindex', '0');
-        span.title = 'Open the installation guide for this value';
-        span.textContent = getConfiguredValue(item.placeholder);
-
-        span.addEventListener('click', function () {
-          window.location.href = span.dataset.target;
-        });
-
-        span.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            window.location.href = span.dataset.target;
-          }
-        });
-
-        range.deleteContents();
-        range.insertNode(span);
-      }
+    function replaceRegularText() {
+      for (const node of textNodes(pageContainer)) replaceTextNode(node);
     }
 
     function walkAndProcess() {
       restoreSpans();
-      replaceMatches();
+      replaceMarkdownTokens();
+      replaceAttributes();
+      replaceCodeBlockPlaceholders();
+      replaceRegularText();
     }
 
     window.updatePagePaths = walkAndProcess;
-
-    window.addEventListener('storage', function (e) {
-      if (e.key === 'install_path' || e.key === 'MEDIA_PATH' || e.key === 'USER_IP') {
+    window.addEventListener('storage', event => {
+      if (registry.values.some(definition => [definition.storage, definition.legacyStorage].includes(event.key))) {
         walkAndProcess();
       }
     });
-
     walkAndProcess();
   })();
 </script>

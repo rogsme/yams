@@ -7,14 +7,14 @@ title: File Structure and Hardlinking
 
 YAMS mounts folders from your local filesystem into the Docker containers for them to store data on. It has two main locations that you will have to declare in the installation script. You can see these values in your `.env` file:
 
-```{filename="[[install_path]]/.env"}
-MEDIA_DIRECTORY=[[media_path]]
-INSTALL_DIRECTORY=[[install_path]]
+```{filename="_INSTALL_PATH_/.env"}
+MEDIA_DIRECTORY=_MEDIA_PATH_
+INSTALL_DIRECTORY=_INSTALL_PATH_
 ```
 
 ### Media Directory
 
-*The default media directory is `/srv/media`, you have configured the guide to use [[media_path]].*
+*The default media directory is `/srv/media`, you have configured the guide to use _MEDIA_PATH_.*
 
 The media directory is the main storage directory for your Docker containers. It is used by your downloaders (qBitTorrent, sabnzbd) to store torrents, and by Radarr/Sonarr to organise these media files into a nice folder structure Jellyfin then reads. Your media folder will look like this:
 ```text
@@ -48,11 +48,11 @@ This allows the file to essentially exist in two places in your media server, al
 
 ### Install Directory
 
-*The default install directory is `/opt/yams`, you have configured the guide to use [[install_path]].*
+*The default install directory is `/opt/yams`, you have configured the guide to use _INSTALL_PATH_.*
 
 This is the top-level YAMS directory where the `.env` file and Docker Compose files live.
 
-Also in this directory is the `config` folder, which contains named configuration folders mounted into each of the Docker containers. This is where all your container data is stored, such as Radarr's database (inside `[[install_path]]/config/radarr`), qBitTorrent's settings (in `[[install_path]]/config/qbittorrent`), and Jellyfin's metadata (in `[[install_path]]/config/jellyfin`).
+Also in this directory is the `config` folder, which contains named configuration folders mounted into each of the Docker containers. This is where all your container data is stored, such as Radarr's database (inside `_INSTALL_PATH_/config/radarr`), qBitTorrent's settings (in `_INSTALL_PATH_/config/qbittorrent`), and Jellyfin's metadata (in `_INSTALL_PATH_/config/jellyfin`).
 
 > [!WARNING]
 > It is important to back this folder up, as it contains all your settings and data for your YAMS containers. If you ever need to restore your YAMS setup, this is the folder you will need to restore from backup. Check out our [Backing up YAMS](/docs/advanced/backups/) guide for more information on how to do this.
