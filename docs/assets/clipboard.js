@@ -1,12 +1,38 @@
 (function () {
-  function copyText(text, button) {
-    if (!navigator.clipboard) return;
+  function fallbackCopyText(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
 
+    let copied = false;
+    try {
+      copied = document.execCommand("copy");
+    } catch (error) {
+      copied = false;
+    } finally {
+      textarea.remove();
+    }
+    return copied;
+  }
+
+  function writeText(text) {
+    if (!navigator.clipboard?.writeText) return Promise.resolve(fallbackCopyText(text));
+    return navigator.clipboard.writeText(text)
+      .then(function () { return true; })
+      .catch(function () { return fallbackCopyText(text); });
+  }
+
+  function copyText(text, button) {
     clearTimeout(button.copyFadeTimer);
     clearTimeout(button.copyResetTimer);
     button.classList.remove("is-copy-fading");
 
-    navigator.clipboard.writeText(text).then(function () {
+    writeText(text).then(function (copied) {
+      if (!copied) return;
       button.classList.add("is-copied");
       button.setAttribute("aria-label", "Copied");
       button.title = "Copied";
@@ -51,14 +77,6 @@
   }
 
   document.querySelectorAll("pre:has(code)").forEach(pre => {
-    pre.addEventListener("click", pre.focus);
-    pre.addEventListener("copy", function (event) {
-      event.preventDefault();
-      if (navigator.clipboard) {
-        const content = window.getSelection().toString() || pre.textContent;
-        navigator.clipboard.writeText(content);
-      }
-    });
     addCopyButton(pre, pre.querySelector("code"));
   });
 

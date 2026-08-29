@@ -1,9 +1,9 @@
 <script>
   (function () {
     const definitions = {
-      install_path: { token: '_INSTALL_PATH_', storage: 'yams.install_path', fallback: '/opt/yams' },
-      media_path: { token: '_MEDIA_PATH_', storage: 'yams.media_path', fallback: '/srv/media' },
-      user_ip: { token: '_USER_IP_', storage: 'yams.user_ip', fallback: 'YOUR_IP' },
+      install_path: { token: '_INSTALL_PATH_', storage: 'yams.install_path', legacyStorage: 'install_path', fallback: '/opt/yams' },
+      media_path: { token: '_MEDIA_PATH_', storage: 'yams.media_path', legacyStorage: 'MEDIA_PATH', fallback: '/srv/media' },
+      user_ip: { token: '_USER_IP_', storage: 'yams.user_ip', legacyStorage: 'USER_IP', fallback: 'YOUR_IP' },
     };
     const values = Object.entries(definitions).map(([key, definition]) => ({ key, ...definition }));
     const byToken = Object.fromEntries(values.map(definition => [definition.token, definition]));
@@ -17,6 +17,15 @@
       try { window.localStorage.setItem(key, value); } catch (error) { /* Storage is optional. */ }
     }
 
+    function getStoredValue(definition) {
+      const stored = storageGet(definition.storage);
+      if (stored !== null) return stored;
+
+      const legacy = definition.legacyStorage ? storageGet(definition.legacyStorage) : null;
+      if (legacy !== null) storageSet(definition.storage, legacy);
+      return legacy;
+    }
+
     window.YamsPlaceholders = {
       definitions,
       byToken,
@@ -24,9 +33,12 @@
       values,
       get(key) {
         const definition = definitions[key];
-        return definition ? (storageGet(definition.storage) || definition.fallback) : '';
+        return definition ? (getStoredValue(definition) || definition.fallback) : '';
       },
-      getStored(key) { return storageGet(definitions[key]?.storage || key); },
+      getStored(key) {
+        const definition = definitions[key];
+        return definition ? getStoredValue(definition) : storageGet(key);
+      },
       set(key, value) { storageSet(definitions[key]?.storage || key, value); },
       tokenFor(key) {
         return definitions[key] ? definitions[key].token : '';

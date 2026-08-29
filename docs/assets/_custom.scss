@@ -215,10 +215,13 @@ pre.book-copy-container { padding-right: 3.25rem; }
   text-underline-offset: 2px;
   text-decoration-color: var(--color-link);
   text-decoration-thickness: 1px;
-  cursor: help;
+  cursor: alias;
 }
 
-a[href] .ph { cursor: pointer; }
+a[href] .ph {
+  cursor: pointer;
+  text-decoration: none;
+}
 
 // Keep both palettes available so the theme can be changed at runtime.
 @import "plugins/themes";
@@ -229,7 +232,7 @@ a[href] .ph { cursor: pointer; }
   --body-background-tint: none;
   --body-font-color: #212529;
 
-  --color-link: #5faf63;
+  --color-link: #367a3b;
   --color-visited-link: #2f4bb7;
   --icon-filter: none;
 

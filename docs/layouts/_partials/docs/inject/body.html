@@ -25,8 +25,12 @@
     function replaceAttributes() {
       for (const element of pageContainer.querySelectorAll('*')) {
         for (const attribute of [...element.attributes]) {
-          if (attribute.name.startsWith('data-placeholder-') || !attribute.value.match(makePattern())) continue;
           let templates = attributeTemplates.get(element);
+          if (templates?.has(attribute.name)) {
+            element.setAttribute(attribute.name, replaceValue(templates.get(attribute.name)));
+            continue;
+          }
+          if (attribute.name.startsWith('data-placeholder-') || !attribute.value.match(makePattern())) continue;
           if (!templates) {
             templates = new Map();
             attributeTemplates.set(element, templates);
@@ -130,7 +134,9 @@
 
     window.updatePagePaths = walkAndProcess;
     window.addEventListener('storage', event => {
-      if (registry.values.some(definition => definition.storage === event.key)) walkAndProcess();
+      if (registry.values.some(definition => [definition.storage, definition.legacyStorage].includes(event.key))) {
+        walkAndProcess();
+      }
     });
     walkAndProcess();
   })();

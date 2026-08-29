@@ -19,7 +19,6 @@
       document.documentElement.dataset.theme = theme;
       document.documentElement.style.colorScheme = theme;
       toggle.setAttribute('aria-pressed', String(isDark));
-      toggle.querySelector('.theme-toggle-label').textContent = isDark ? 'Light theme' : 'Dark theme';
     }
 
     setTheme(document.documentElement.dataset.theme || 'light');
