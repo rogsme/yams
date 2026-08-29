@@ -56,9 +56,10 @@ EOF
         [ -d "$MEDIA_DIR/$directory" ]
     done
 
-    grep -Fxq "readonly DC=\"docker compose -f $INSTALL_DIR/docker-compose.yaml -f $INSTALL_DIR/docker-compose.custom.yaml\"" "$INSTALL_DIR/yams"
-    grep -Fxq "readonly INSTALL_DIRECTORY=\"$INSTALL_DIR\"" "$INSTALL_DIR/yams"
-    bash -n "$INSTALL_DIR/yams"
+    grep -Fxq "readonly DC=\"docker compose -f $INSTALL_DIR/docker-compose.yaml -f $INSTALL_DIR/docker-compose.custom.yaml\"" "$YAMS_SYSTEM_BIN/yams"
+    grep -Fxq "readonly INSTALL_DIRECTORY=\"$INSTALL_DIR\"" "$YAMS_SYSTEM_BIN/yams"
+    bash -n "$YAMS_SYSTEM_BIN/yams"
+    [ ! -e "$INSTALL_DIR/yams" ]
 
     [ -f "$HOME/yams_services.txt" ]
     [ "$(wc -l < "$HOME/yams_services.txt")" -eq 10 ]

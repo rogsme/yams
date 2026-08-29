@@ -663,7 +663,7 @@ update_configuration_files() {
 install_cli() {
     echo
     log_info "Installing YAMS CLI..."
-    if sudo cp "$install_directory/yams" /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
+    if sudo mv "$install_directory/yams" /usr/local/bin/yams && sudo chmod +x /usr/local/bin/yams; then
         log_success "YAMS CLI installed successfully ✅"
     else
         log_error "Failed to install YAMS CLI. Check permissions ❌"
