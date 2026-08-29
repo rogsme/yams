@@ -38,13 +38,6 @@ html {
   }
 }
 
-// Remove border-radius from EVERYTHING site-wide
-*,
-*::before,
-*::after {
-  border-radius: 0 !important;
-}
-
 // Removes the container focus outline from code blocks
 pre,
 .highlight,
