@@ -57,7 +57,7 @@ assert_valid_install() {
     grep -q "^    image: lscr.io/linuxserver/$expected_service$" "$INSTALL_DIR/docker-compose.yaml"
     grep -q "^    container_name: $expected_service$" "$INSTALL_DIR/docker-compose.yaml"
     ! grep -Eq '<[^>]+>|vpn_service|vpn_user|vpn_password|wireguard_(private_key|preshared_key|addresses)' \
-        "$INSTALL_DIR/.env" "$INSTALL_DIR/docker-compose.yaml" "$INSTALL_DIR/yams"
+        "$INSTALL_DIR/.env" "$INSTALL_DIR/docker-compose.yaml" "$YAMS_SYSTEM_BIN/yams"
     assert_command "$YAMS_DOCKER_LOG" docker compose \
         --env-file "$INSTALL_DIR/.env" \
         -f "$INSTALL_DIR/docker-compose.yaml" \

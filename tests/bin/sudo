@@ -23,9 +23,9 @@ case "${1:-}" in
     chown|usermod)
         exit 0
         ;;
-    cp)
+    cp|mv)
         if [[ "${3:-}" == /usr/local/bin/yams ]]; then
-            cp "$2" "$YAMS_SYSTEM_BIN/yams"
+            "$1" "$2" "$YAMS_SYSTEM_BIN/yams"
             exit 0
         fi
         ;;
