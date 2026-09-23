@@ -3,6 +3,12 @@ weight: 120
 title: Recommendations
 ---
 
+Ideas:
+- Add more indexers/subtitle providers
+- Download apps on all your devices
+- Set up profilarr for quality profiles to ensure you are downloading good things
+- Join discord servers for services you enjoy
+
 
 # What should YOU do now?
 

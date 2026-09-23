@@ -17,6 +17,25 @@
       try { window.localStorage.setItem(key, value); } catch (error) { /* Storage is optional. */ }
     }
 
+    const themeStorageKey = 'yams.theme';
+    const validThemes = ['light', 'dark', 'auto'];
+    const configuredTheme = document.documentElement.dataset.theme || 'auto';
+    const storedTheme = storageGet(themeStorageKey) || storageGet('yams-theme');
+    const theme = validThemes.includes(storedTheme) ? storedTheme : configuredTheme;
+
+    window.YamsTheme = {
+      get() { return document.documentElement.dataset.theme; },
+      set(nextTheme) {
+        if (!validThemes.includes(nextTheme)) return;
+        document.documentElement.dataset.theme = nextTheme;
+        document.documentElement.style.colorScheme = nextTheme === 'auto' ? 'light dark' : nextTheme;
+        storageSet(themeStorageKey, nextTheme);
+      },
+    };
+
+    document.documentElement.dataset.theme = validThemes.includes(theme) ? theme : 'auto';
+    document.documentElement.style.colorScheme = theme === 'auto' ? 'light dark' : theme;
+
     function getStoredValue(definition) {
       const stored = storageGet(definition.storage);
       if (stored !== null) return stored;
@@ -45,11 +64,5 @@
       },
     };
 
-    const savedTheme = window.YamsPlaceholders.getStored('yams-theme');
-    const theme = savedTheme === 'dark' || savedTheme === 'light'
-      ? savedTheme
-      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    document.documentElement.dataset.theme = theme;
-    document.documentElement.style.colorScheme = theme;
   })();
 </script>

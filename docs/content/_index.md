@@ -1,20 +1,21 @@
 ---
+title: YAMS
 layout: landing
 ---
 
-<div class="book-hero">
-
-# Documentation {anchor=false}
-This content is rendered from `content/index.md`
-
-{{<button href="/docs/">}}Action{{</button>}}
-
+<div class="yams-home-intro">
+  <img class="yams-home-logo" src="/logo.png" alt="YAMS logo">
+  <div>
+    <h1>YAMS (Yet Another Media Server)</h1>
+    <p>A simple, beginner-friendly setup script and handwritten guide build a self-hosted media server with Docker Compose.</p>
+  </div>
 </div>
 
-{{% columns %}}
-- ## Nunc infans rigidique etiam
-  Lorem markdownum quondam mediamque visis aevi, peregrinaeque Aeacidae, vita vos? Iacet exhortatus picta plures; placet Pandrose tremescere; mediis aera enim resonat scinditur dea nocuit fabrilis est per. Signum pater paventes pectore maris humo, aegide illos religarat si! Romana secutis erat, cum omnia vincere virtutem nomine ascensu poenas? Gradus cum quoque potitur.
+{{< button href="/docs/getting-started/what-is-yams" >}}Get started{{< /button >}}
+<span class="book-toc-links__icons yams-home-repositories" aria-label="YAMS repositories">
+  <a href="https://github.com/rogsme/yams" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository"><img src="/icons/github.svg" alt="GitHub"></a>
+  <a href="https://git.rogs.me/rogs/yams" target="_blank" rel="noopener noreferrer" aria-label="Gitea repository"><img src="/icons/gitea.svg" alt="Gitea"></a>
+  <a href="https://gitlab.com/rogs/yams" target="_blank" rel="noopener noreferrer" aria-label="GitLab repository"><img src="/icons/gitlab.svg" alt="GitLab"></a>
+</span>
 
-- ## Carmina fallacia polluit lenta
-  Lorem markdownum, omnes exire lumen noctis concava multaque fieri inplevere oculi *nisi sua* subigebat iamque? Herse sum `hardBox`, pervenit linguae altera. Clymenen magna illi latera parent omnia felicia ter bifurcum nulla atque alta cannas ita? Pariter stetit carina adspexerit spargentem festa concrevit `process_upnp` primos! Huic et sulphure paelice iuppiter vitat quem genitas, fera vertice relinque.
-{{% /columns %}}
+![YAMS installation script walkthrough](/pics/install-yams.gif)

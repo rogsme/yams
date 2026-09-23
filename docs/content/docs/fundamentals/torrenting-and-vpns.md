@@ -69,6 +69,9 @@ A VPN provider that supports port forwarding gives you a dedicated port on their
 
 Port forwarding is a useful but **not-compulsory** feature offered by some VPN providers, that can help enhance your media server.
 
+Also note that Gluetun, the VPN client YAMS uses has in-built port forwarding support for these providers: Private Internet Access,  ProtonVPN, Perfect Privacy, PrivateVPN.
+
+
 ---
 
 # What is a VPN?
@@ -110,7 +113,7 @@ YAMS works with tons of VPN providers! If Gluetun supports it, YAMS does too. He
 Here are some of the most popular choices for torrenting that support port forwarding:
 - {{< icon "logos/proton-vpn" >}} [ProtonVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/protonvpn.md) (Recommended by the YAMS creator! Easy to set up and great privacy)
 - {{< icon "logos/private-internet-access" >}} [Private Internet Access (PIA)](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/private-internet-access.md) (Can be very good value if you purchase a long time up front)
-- {{< icon "logos/air-vpn" >}} [AirVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/airvpn.md)
+- {{< icon "logos/air-vpn" >}} [AirVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/airvpn.md) (*Port forwarding is not implemented natively into Gluetun, but possible.*)
 
 Some popular options that do *not* have port forwarding capabilities are:
 - {{< icon "logos/mullvad-vpn" >}} [Mullvad](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/mullvad.md)
@@ -119,7 +122,7 @@ Some popular options that do *not* have port forwarding capabilities are:
 - {{< icon "logos/express-vpn" >}} [ExpressVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/expressvpn.md)
 
 ### Other Options 📋
-Here are the rest of the providers that Gluetun also supports. *Providers that also support port forwarding are indicated.*
+Here are the rest of the providers that Gluetun also supports. Providers that also support port forwarding are indicated. *If a provider support port forwarding but this feature is not natively implemented into Gluetun, it is recommended only for advanced users and YAMS does not cover setting this up.*
 - [Cyberghost](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/cyberghost.md)
 - [FastestVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/fastestvpn.md)
 - [Giganews](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/giganews.md)
@@ -129,16 +132,18 @@ Here are the rest of the providers that Gluetun also supports. *Providers that a
 - [Perfect Privacy](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/perfect-privacy.md) *(Supports port forwarding)*
 - [Privado](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/privado.md)
 - [PrivateVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/privatevpn.md) *(Supports port forwarding)*
-- [PureVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/purevpn.md) *(Supports port forwarding)*
+- [PureVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/purevpn.md) *(Supports port forwarding, but this feature is not implemented natively into Gluetun)*
 - [SlickVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/slickvpn.md)
-- [Torguard](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/torguard.md) *(Supports port forwarding)*
+- [Torguard](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/torguard.md) *(Supports port forwarding, but this feature is not implemented natively into Gluetun)*
 - [VPN Secure](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/vpn-secure.md)
-- [VPN Unlimited](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/vpn-unlimited.md) *(Supports port forwarding)*
+- [VPN Unlimited](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/vpn-unlimited.md) *(Supports port forwarding, but this feature is not implemented natively into Gluetun)*
 - [VyprVPN](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/vyprvpn.md)
-- [Windscribe](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/windscribe.md) *(Supports port forwarding)*
+- [Windscribe](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/windscribe.md) *(Supports port forwarding, but this feature is not implemented natively into Gluetun)*
 - [Custom Configuration](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/custom.md)
 
 Want to use a different VPN? You can set up a [custom VPN provider](https://github.com/qdm12/gluetun-wiki/blob/main/setup/providers/custom.md), but keep in mind this isn't officially supported by YAMS. This is an *advanced* DIY process for experienced server owners who already own a VPN 🛠️!
+
+---
 
 If you haven't installed YAMS yet and just came to learn more about VPNs, feel free to return to the [installation page](/docs/getting-started/installation/#prerequisites).
 

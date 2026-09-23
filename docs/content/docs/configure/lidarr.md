@@ -5,11 +5,16 @@ title: Lidarr
 
 # What is Lidarr?
 
-From their [wiki](https://lidarr.audio/):
+Lidarr is an application that controls behind-the-scenes processes related to **music**. It will do many helpful things in our media server:
+- Search for music we have added across our indexers to find available torrents and Usenet files
+- Rank these based information such as file size, quality, number of seeders, etc
+- Send the best match to the downloader (qBitTorrent for torrents, SABnzbd for Usenet)
+- After the download is done, hardlink the file into an organised folder on disk for our streaming application to read from
 
-> Lidarr is a music collection manager for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new albums from your favorite artists and will interface with clients and indexers to grab, sort, and rename them. It can also be configured to automatically upgrade the quality of existing files in the library when a better quality format becomes available.
+In short, Lidarr is going to manage all our movies: find them, pick sort them, and keep everything organized on disk.
 
-In YAMS, Lidarr is going to manage all our music: download, sort, etc.
+Check out their website [here](https://lidarr.audio/).
+
 
 ## Initial configuration
 

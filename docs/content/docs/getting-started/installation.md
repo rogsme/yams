@@ -83,7 +83,7 @@ _MEDIA_PATH_
 
 - **A VPN service (optional but *STRONGLY* recommended)**: First lesson! A VPN is a paid service that encrypts your server's traffic, and masks its public IP address whilst it's sailing the high seas. This hides your activity from cooperations such as your ISP or copyright providers.
   - Note that most of these services are paid but don't worry, they aren't too expensive. (Cheaper than paying for 4 streaming services 😅)
-  - To learn more about VPNs and how to pick a good option, check out the [YAMS VPN page](/docs/advanced/concept-explanations/vpn/)
+  - To learn more about VPNs and how to pick a good option, check out the [YAMS VPN page](/docs/advanced/vpn/)
   - **Ensure you have an account with your chosen VPN provider before continuing with the installation and guide**
 
 ## Pre-Installation Setup

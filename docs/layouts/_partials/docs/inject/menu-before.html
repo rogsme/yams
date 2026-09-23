@@ -1,0 +1,24 @@
+<script>
+  (function () {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+
+    function updateToggle(theme) {
+      const isDark = theme === 'dark';
+      const label = isDark ? 'Switch to light theme' : 'Switch to dark theme';
+      toggle.setAttribute('aria-pressed', String(isDark));
+      toggle.setAttribute('aria-label', label);
+      toggle.setAttribute('title', label);
+    }
+
+    const theme = window.YamsTheme;
+    if (!theme) return;
+
+    updateToggle(theme.get());
+    toggle.addEventListener('click', function () {
+      const nextTheme = theme.get() === 'dark' ? 'light' : 'dark';
+      theme.set(nextTheme);
+      updateToggle(nextTheme);
+    });
+  })();
+</script>

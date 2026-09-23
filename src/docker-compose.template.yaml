@@ -18,7 +18,7 @@ services:
 
   # Gluetun is our VPN client
   gluetun:
-    image: qmcgaw/gluetun:v3.41.1
+    image: qmcgaw/gluetun:v3.41.3
     container_name: gluetun
     #profiles: ["disabled"] # Uncomment this line to disable the VPN container
     cap_add:

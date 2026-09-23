@@ -59,7 +59,7 @@ WIREGUARD_ADDRESSES=10.2.0.2/32
 
 Ensure your `VPN_TYPE` variable is set to `wireguard`.
 
-> 💡 Not sure how the `.env` file works? Check out our [Environment File Guide](/docs/advanced/concept-explanations/environment-variables/) to learn how to manage variables like `WIREGUARD_PRIVATE_KEY` securely.
+> 💡 Not sure how the `.env` file works? Check out our [Environment File Guide](/docs/fundamentals/environment-variables/) to learn how to manage variables like `WIREGUARD_PRIVATE_KEY` securely.
 
 ---
 
@@ -237,4 +237,3 @@ VPN type: openvpn
 
 > [!WARNING]
 > ⚠️ Not all providers support WireGuard or port forwarding. Check their documentation carefully.
-

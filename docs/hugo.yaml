@@ -1,8 +1,8 @@
 baseURL: http://localhost:1313/
-title: ""
+title: "YAMS"
 theme: hugo-book
 
-copyright: "This is a copyright placeholder"
+# copyright: "This is a copyright placeholder"
 
 # Book configuration
 disablePathToLower: true
@@ -39,28 +39,21 @@ markup:
 menu:
   home:
     - name: "Documentation"
-      pageRef: "/docs/"
-      weight: 10
-  after:
-    - name: "Gitea"
-      url: "https://git.rogs.me/rogs/yams"
+      url: "/docs/"
       weight: 1
-    - name: "GitLab"
-      url: "https://gitlab.com/rogs/yams"
-      weight: 2
-    - name: "GitHub"
-      url: "https://github.com/rogsme/yams"
-      weight: 3
-    - name: Discord
+    - name: "Discord ↗"
       url: "https://discord.gg/Gwae3tNMST"
-      weight: 4
+      weight: 2
+    - name: "Forums ↗"
+      url: "https://forum.yams.media"
+      weight: 3
 taxonomies:
   tag: tags
 
 params:
   # (Optional, default light) Sets color theme: light, dark or auto.
   # Theme 'auto' switches between dark and light modes based on browser/os preferences
-  BookTheme: "light"
+  BookTheme: "auto"
 
   # (Optional, default none) Controls table of contents visibility on right side of pages.
   # Start and end levels can be controlled with markup.tableOfContents setting.
@@ -76,19 +69,19 @@ params:
   BookLogo: /logo.png
 
   # (Optional, default docs) Specify root page to render child pages as menu.
-  # Page is resoled by .GetPage function: https://gohugo.io/functions/getpage/
+  # Page is resolved by .GetPage function: https://gohugo.io/functions/getpage/
   # For backward compatibility you can set '*' to render all sections to menu. Acts same as '/'
   # BookSection: docs
 
   # (Optional, default none) Set template for commit link for the page. Requires enableGitInfo.
   # When set enabled 'Last Modified' and a link to the commit in the footer of the page.
   # Param is executed as template using .Site, .Page and .GitInfo as context.
-  # BookLastChangeLink: 'https://github.com/alex-shpak/hugo-book/commit/{{ .GitInfo.Hash }}'
+  BookLastChangeLink: "https://github.com/rogsme/yams/commit/{{ .GitInfo.Hash }}"
 
   # (Optional, default none) Set template for edit page link.
   # When set enabled 'Edit this page' link in the footer of the page.
   # Param is executed as template using .Site, .Page and .Path as context.
-  # BookEditLink: 'https://github.com/alex-shpak/hugo-book/edit/main/exampleSite/{{ .Path }}'
+  BookEditLink: "https://github.com/rogsme/yams/edit/main/exampleSite/{{ .Path }}"
 
   # (Optional, default 'January 2, 2006') Configure the date format used on the pages
   # - In git information
@@ -117,8 +110,10 @@ params:
   # /!\ This is an experimental feature, might be removed or changed at any time
   # (Optional, experimental, default false) Enables service worker that caches visited pages and resources for offline use.
   # can be false, true or 'precache', precache will try to download all content pages on install.
-  BookServiceWorker: "precache"
+  BookServiceWorker: "false"
 
   # /!\ This is an experimental feature, might be removed or changed at any time
   # (Optional, experimental, default false) Enables a drop-down menu for translations only if a translation is present.
   BookTranslatedOnly: false
+
+  BookBreadcrumbs: true

@@ -32,7 +32,7 @@ Before reaching out, please:
 - Be patient and kind
 
 > [!SUCCESS]
-> **Pro Tip:** The more clearly you describe your issue, the faster we can help you! 🚀
+> The more clearly you describe your issue, the faster we can help you!
 
 ## Reporting Bugs
 
@@ -40,7 +40,6 @@ Found an issue? Awesome! Head to our [GitLab Issues](https://gitlab.com/rogs/yam
 - Search existing issues first
 - Provide detailed reproduction steps
 - Include system information
-- Be awesome! 😎
 
 
 ## Social Media? Nope!

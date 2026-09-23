@@ -4,6 +4,8 @@
 
 YAMS - Yet Another Media Server is committed to providing a welcoming and inclusive community for all contributors, users, and collaborators. We value and respect diversity and want to ensure that everyone can participate in the project, free from discrimination, harassment, and other forms of misconduct.
 
+This project is maintained as a single, unified YAMS repository that brings together the installer, CLI, documentation, and related project assets. When we refer to "the YAMS project" or "the YAMS community" in this document, we mean the entire project as it exists in this repository and the spaces where it is discussed and supported.
+
 ## Table of Contents
 
 - [YAMS Code of Conduct](#yams-code-of-conduct)

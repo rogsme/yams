@@ -8,18 +8,18 @@ weight: 1000
 ## General Questions
 
 ### Why another media server script?
-YAMS was born from a simple goal: Create a media server that's so easy to use, your non-tech-savvy family members could handle it! While there are other solutions out there, YAMS focuses on simplicity and automation without sacrificing power.
+YAMS was born from a simple goal: Create a media server that's so easy to use, your non-tech-savvy family members could handle it! While there are other solutions out there, YAMS focuses on simplicity and a beginner-friendly educational approach that doesn't sacrifice on any functionality.
 
 ### Why these specific software choices?
 YAMS is **opinionated** by design. Every choice was made to create a reliable, user-friendly experience. If you're curious about specific choices:
 
-- **Sonarr/Radarr**: Best-in-class for automated media management
-- **Prowlarr**: Unified indexer management
+- **Sonarr/Radarr + Prowlarr**: Standard for automated media and indexer management
 - **qBittorrent**: Reliable, open-source torrent client
-- **Gluetun**: Robust VPN management
-- **Jellyfin/Emby/Plex**: Top-tier media streaming options
+- **Gluetun**: Robust VPN client
+- **Jellyfin/Emby/Plex**: Best self-hosted media streaming options
+- **Dozzle**: Easy log management
 
-Don't agree with our choices? That's totally fine! You can always use our source code as inspiration for your own setup. 🔧
+Don't agree with our choices? That's totally fine! After installation YAMS is just a Docker Compose setup, and you are free to change anything you like.
 
 ## Platform Support
 
@@ -39,26 +39,24 @@ Please visit [zavan/yams on GitLab](https://gitlab.com/zavan/yams) to access the
 ## Advanced Usage
 
 ### How do I add custom containers?
-Easy! Check out our [Adding Custom Containers](/docs/advanced/adding-your-own-containers/) guide. You can add any Docker container to work alongside YAMS.
+Easy! Check out our [Adding Custom Containers](/docs/advanced/custom-containers/) guide. You can add *any* Docker container to work alongside YAMS.
 
 ### Can I modify YAMS's default settings?
-Absolutely! While YAMS comes with sensible defaults, you can customize:
+Absolutely! While YAMS guides setting up sensible defaults, you can customize any settings within your apps. This could include:
 - Container configurations
 - Download settings
 - Media organization
 - Network settings
 - And much more!
 
-### Need more advanced configurations?
-Check out [TRaSH Guides](https://trash-guides.info/) - they're fantastic for deep-diving into each component's settings!
 
 ## Network & VPN
 
 ### Can I add more containers to the VPN?
-Yes! Everything's documented in the [VPN guide](https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md). Your Docker Compose file is in your install directory at `/opt/yams/docker-compose.yaml` (or your custom install location).
+Yes! Everything's documented in the [Gluetun connection guide](https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md). Your Docker Compose file is in your install directory at `_INSTALL_PATH_/docker-compose.yaml`.
 
 ### Which VPN providers work with YAMS?
-We support many popular providers! Check our [VPN Configuration](/docs/advanced/concept-explanations/vpn/) page for the full list.
+We support many popular providers! Check our [VPN Configuration](/docs/advanced/vpn/) page for the full list.
 
 ## Troubleshooting
 
@@ -80,7 +78,7 @@ Need more help? We've got you covered!
    - Search existing forum posts
 
 2. **Community**
-   - Join our [Discord](https://discord.gg/Gwae3tNMST)
+   - Join our [Discord](https://discord.gg/Gwae3tNMST) to search for similar problems/ask our friendly members
    - Post on our [Forum](https://forum.yams.media)
 
 3. **Issues & Bugs**
@@ -96,10 +94,9 @@ Want to help make YAMS better? Awesome!
 - Submit a pull request
 - Or help improve our documentation!
 
-Remember: YAMS is a community project, and we welcome all contributions! 🌟
+Remember: YAMS is a community project, and we welcome all contributions!
 
 ---
-
 
 # Common YAMS Issues & Solutions 🔧
 
@@ -196,7 +193,7 @@ If your VPN isn't working, let's troubleshoot step by step:
 ### qBittorrent Not Accessible 🔒
 
 1. **Check if VPN is Enabled**
-   - Review [VPN Configuration](/docs/advanced/concept-explanations/vpn/)
+   - Review [VPN Configuration](/docs/advanced/vpn/)
    - Run VPN check:
      ```bash
      yams check-vpn

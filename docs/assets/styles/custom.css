@@ -1,0 +1,492 @@
+/* Site-specific styles and palette overrides. */
+
+*,
+html {
+  scrollbar-width: thin;
+  scrollbar-color: gray transparent;
+}
+
+/* Remove the container focus outline from code blocks. */
+pre:focus,
+pre:focus-visible,
+pre:active,
+.highlight:focus,
+.highlight:focus-visible,
+.highlight:active,
+.chroma:focus,
+.chroma:focus-visible,
+.chroma:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.simple-card {
+  border: 1px solid var(--gray-200);
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  background: transparent;
+}
+
+.simple-card .card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.simple-card .card-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: var(--icon-filter);
+}
+
+.simple-card .card-title {
+  margin: 0 !important;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.simple-card .card-content {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+.simple-card .card-content p:first-child {
+  margin-top: 0 !important;
+}
+.simple-card .card-content p:last-child {
+  margin-bottom: 0 !important;
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.card-row .simple-card {
+  margin: 0 !important;
+}
+
+.interactive-path-panel {
+  border: 1px solid var(--gray-200);
+  background: transparent;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  border-radius: var(--border-radius) !important;
+  overflow: hidden;
+}
+
+.interactive-path-panel .panel-header {
+  margin-bottom: 1rem;
+}
+.interactive-path-panel .panel-header h3 {
+  margin: 0 0 0.25rem 0 !important;
+  font-size: 1.05rem;
+  font-weight: bold;
+}
+.interactive-path-panel .panel-header p {
+  margin: 0 !important;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.interactive-path-panel .panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.interactive-path-panel .panel-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.interactive-path-panel .input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.interactive-path-panel .input-container label {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.interactive-path-panel .input-container input {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--gray-200);
+  background: var(--body-background);
+  color: inherit;
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+.interactive-path-panel .input-container input:focus {
+  outline: 1px solid var(--color-link) !important;
+}
+
+.dozzle-command-row {
+  display: flex;
+  align-items: stretch;
+  margin-top: 1rem;
+  border: 1px solid var(--gray-200);
+  background: color-mix(in srgb, var(--gray-100) 70%, transparent);
+  border-radius: var(--border-radius) !important;
+  overflow: hidden;
+}
+
+.dozzle-command-row code {
+  flex: 1;
+  padding: 0.65rem 0.75rem;
+  padding-right: 3.25rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: transparent;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.book-copy-container {
+  position: relative;
+}
+pre.book-copy-container {
+  padding-right: 3.25rem;
+}
+
+.book-copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.35rem;
+  border: 0 !important;
+  background: transparent;
+  box-shadow: none !important;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.55;
+}
+
+.book-copy-button img {
+  width: 1.1rem;
+  height: 1.1rem;
+  opacity: 0.85;
+}
+.book-copy-button.is-copied {
+  opacity: 1;
+}
+.book-copy-button.is-copied img {
+  opacity: 1;
+  filter: invert(56%) sepia(55%) saturate(650%) hue-rotate(85deg)
+    brightness(92%) contrast(90%);
+  animation: copy-success-in 120ms ease-out forwards;
+}
+.book-copy-button.is-copied.is-copy-fading img {
+  animation: copy-success-out 120ms ease-in forwards;
+}
+
+@keyframes copy-success-in {
+  from {
+    transform: scale(0.65);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes copy-success-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.65);
+    opacity: 0;
+  }
+}
+
+.ph {
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--color-link);
+  text-decoration-thickness: 1px;
+  cursor: help;
+}
+
+a[href] .ph {
+  cursor: pointer;
+}
+
+/* Keep the original yams palette */
+:root,
+:root[data-theme="light"],
+:root[data-theme="dark"],
+:root[data-theme="auto"] {
+  --body-background: #ffffff;
+  --body-background-tint: none;
+  --body-font-color: #212529;
+  --color-link: #5faf63;
+  --color-visited-link: #5faf63;
+  --icon-filter: none;
+  --gray-100: #f5f5f5;
+  --gray-200: #cccccc;
+  --gray-500: #777777;
+  --color-accent-default: #5faf63;
+  --color-accent-note: #2f4bb7;
+  --color-accent-tip: #5faf63;
+  --color-accent-important: #2f4bb7;
+  --color-accent-warning: #f59e42;
+  --color-accent-caution: #d84747;
+}
+
+:root[data-theme="dark"] {
+  --body-background: #1a1a1a;
+  --body-background-tint: none;
+  --body-font-color: #f5f5f5;
+  --color-link: #8fd993;
+  --color-visited-link: #8fd993;
+  --icon-filter: brightness(0) invert(1);
+  --gray-100: #2d2d2d;
+  --gray-200: #4a4a4a;
+  --gray-500: #d4d4d4;
+  --color-accent-default: #8fd993;
+  --color-accent-note: #2f4bb7;
+  --color-accent-tip: #8fd993;
+  --color-accent-important: #a5dda9;
+  --color-accent-warning: #d08770;
+  --color-accent-caution: #bf616a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] {
+    --body-background: #1a1a1a;
+    --body-background-tint: none;
+    --body-font-color: #f5f5f5;
+    --color-link: #8fd993;
+    --color-visited-link: #8fd993;
+    --icon-filter: brightness(0) invert(1);
+    --gray-100: #2d2d2d;
+    --gray-200: #4a4a4a;
+    --gray-500: #d4d4d4;
+    --color-accent-default: #8fd993;
+    --color-accent-note: #2f4bb7;
+    --color-accent-tip: #8fd993;
+    --color-accent-important: #a5dda9;
+    --color-accent-warning: #d08770;
+    --color-accent-caution: #bf616a;
+  }
+}
+
+.theme-toggle {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--gray-200);
+  border-radius: 0.35rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--gray-100);
+  border-color: var(--color-link);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+.theme-toggle svg {
+  flex: 0 0 1.1rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.theme-toggle-moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-toggle-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-toggle-moon {
+  display: block;
+}
+
+.book-brand {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.book-brand > a {
+  min-width: 0;
+}
+
+.book-brand .theme-toggle {
+  margin-left: auto;
+}
+
+:root {
+  --color-accent-info: var(--color-accent-note);
+  --color-accent-success: var(--color-accent-tip);
+  --color-accent-danger: var(--color-accent-caution);
+}
+
+.book-toc-links {
+  margin-top: 1.35rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+.book-toc-links__icons {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.book-toc-links__icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 0;
+  border-radius: 0.35rem;
+  background: transparent;
+  opacity: 0.8;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.book-toc-links__icons a:hover,
+.book-toc-links__icons a:focus-visible {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+.book-toc-links__icons img {
+  width: 1.25rem;
+  height: 1.25rem;
+  object-fit: contain;
+  filter: var(--icon-filter);
+}
+
+@media (max-width: 768px) {
+  .card-row,
+  .interactive-path-panel .panel-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .interactive-path-panel .panel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.yams-home-logo {
+  display: block;
+  width: 6rem;
+  height: 6rem;
+  margin: 0;
+  object-fit: contain;
+}
+
+.yams-home-intro {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.yams-home-intro h1 {
+  margin: 0;
+}
+
+.yams-home-intro p {
+  margin: 0.75rem 0 0;
+}
+
+.yams-home-repositories {
+  display: inline-flex;
+  margin-left: 0.75rem;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+  vertical-align: middle;
+}
+
+.book-layout-landing a.book-btn[href] {
+  color: #ffffff !important;
+  background: var(--color-link);
+}
+
+.book-layout-landing a.book-btn[href]:hover {
+  color: #ffffff !important;
+  background: var(--color-accent-tip);
+}
+
+.book-breadcrumbs ul {
+  margin-bottom: calc(var(--space-8) + var(--space-4));
+}
+
+/* The landing page does not need the docs layout's reserved gutter or
+   minimum-width constraint. Keep the normal docs behavior unchanged. */
+html:has(body.book-layout-landing) {
+  scrollbar-gutter: auto;
+}
+
+body.book-layout-landing,
+.book-layout-landing .book-page {
+  min-width: 0;
+}
+
+body.book-layout-landing {
+  overflow-x: hidden;
+}
+
+.book-layout-landing .book-footer {
+  display: none;
+}
+
+.book-layout-landing .book-page {
+  padding-bottom: 0;
+}
+
+.book-layout-landing .book-article > p:last-child {
+  margin-bottom: 0;
+  line-height: 0;
+}
+
+.book-layout-landing .book-article > p:last-child img {
+  max-height: calc(100vh - 14rem);
+  width: auto;
+}
